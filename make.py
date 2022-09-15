@@ -23,8 +23,8 @@ setenv(
 	TZ="Europe/Paris",
 	ENV=str(_env),
 	VER=str(_ver),
-	BOT_TOKEN=rfile("../bot_token"),
-	SENTRY_DSN=rfile("../sentry_dsn"),
+	BOT_TOKEN=rfile("../../bot_token"),
+	SENTRY_DSN=rfile("../../sentry_dsn"),
 )
 
 def create_data():
