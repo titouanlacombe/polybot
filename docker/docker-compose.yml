@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  bot:
+    restart: always
+    build:
+      context: ../
+      dockerfile: ./docker/bot.Dockerfile
+    environment:
+      - SENTRY_DSN=${SENTRY_DSN}
+      - TZ=${TZ}
+      - ENV=${ENV}
+      - VER=${VER}
+      - BOT_TOKEN=${BOT_TOKEN}
+    volumes:
+      - ../../data:/home/app/data
+
+  nginx:
+    restart: always
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - bot

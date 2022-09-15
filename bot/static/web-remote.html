@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<title>Polybot</title>
+	<meta name='viewport' content='width=device-width, initial-scale=1'>
+
+	<link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+	<script src='main.js'></script>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+	<h1 class="title">Polybot Remote</h1>
+
+	<div class="bot_div" id="bot_status_div">
+		<h3>Bot status</h3>
+		<p id="bot_status" class="js_output"></p>
+	</div>
+
+	<div class="bot_div" id="command_input">
+		<h3>Command input</h3>
+		<label for="command">Command</label>
+		<select class="bot_input" id="command">
+			<option value="send">Send</option>
+			<option value="message">Message</option>
+			<option value="pause">Pause</option>
+			<option value="unpause">Unpause</option>
+			<option value="status">Status</option>
+		</select>
+		<br>
+		<div id="send_options" class="options">
+			<label for="input_text">Message:</label>
+			<br>
+			<textarea class="bot_input input_text" id='send_text'></textarea>
+			<br>
+		</div>
+		<div id="message_options" class="options">
+			<label for="input_text">Message:</label>
+			<br>
+			<textarea class="bot_input input_text" id='message_text'></textarea>
+			<br>
+			<label for="as_user">As user:</label>
+			<input class="bot_input" type="text" id="as_user" value="Tester">
+			<br>
+		</div>
+
+		<button class="bot_input" id='send_btn'>Send</button>
+	</div>
+
+	<div class="bot_div" id="bot_response_div">
+		<h3>Command response</h3>
+		<p id="bot_response" class="js_output"></p>
+	</div>
+
+	<img src="resources/polybot.png" alt="Polybot" id="polybot_img">
+</body>
+
+</html>

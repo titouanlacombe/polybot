@@ -1,0 +1,12 @@
+# TODO versionize
+# Framework
+flask
+gunicorn
+sentry-sdk[flask]
+supervisor
+aiohttp
+requests
+
+# Discord
+unidecode
+discord.py
