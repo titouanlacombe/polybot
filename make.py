@@ -5,10 +5,8 @@ makepie_load()
 # Setup vars
 app_name = "polybot"
 _env = Environment(rfile("../env", False) or "dev")
-_ver = Version(rfile("ver", False) or "0.0.0")
-_ver.separator = "_"
-compose_project_name = f"{app_name}-{_env.short}-{_ver}"
-_ver.separator = "."
+_ver = rfile("ver", False) or "0.0.0"
+compose_project_name = f"{app_name}-{_env.short}-{_ver.replace('.', '_')}"
 
 # Setup filesystem
 root = Path(".").resolve()
