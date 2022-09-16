@@ -11,6 +11,7 @@ compose_project_name = f"{app_name}-{_env.short}-{_ver.replace('.', '_')}"
 # Setup filesystem
 root = Path(".").resolve()
 data = root.parent / "data"
+logs = root / "logs"
 static = root / "bot" / "static"
 static_resources = static / "resources"
 resources = root / "resources"
@@ -27,6 +28,7 @@ setenv(
 
 def create_data():
 	data.mkdir(exist_ok=True)
+	logs.mkdir(exist_ok=True)
 	static.mkdir(exist_ok=True)
 	static_resources.mkdir(exist_ok=True)
 
