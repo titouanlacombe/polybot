@@ -11,7 +11,7 @@ compose_project_name = f"{app_name}-{_env.short}-{_ver.replace('.', '_')}"
 # Setup filesystem
 root = Path(".").resolve()
 data = root.parent / "data"
-logs = root / "logs"
+logs = data / "logs"
 static = root / "bot" / "static"
 static_resources = static / "resources"
 resources = root / "resources"
