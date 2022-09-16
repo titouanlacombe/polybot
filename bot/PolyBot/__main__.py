@@ -1,4 +1,5 @@
 import asyncio, logging, os, json, discord, sentry_sdk
+import importlib
 from discord.ext.commands import Bot
 
 from Config.Filesystem import logs_dir
@@ -9,7 +10,6 @@ from .BotCommands import register_commands
 from .BotEvents import register_events
 from .BotPresences import presences
 from .BotTriggers import triggers
-from .SecretTriggers import triggers as secret_triggers
 import Utils.Sentry as Sentry
 
 basicConfig(logs_dir, "polybot", logging.INFO)
@@ -34,7 +34,12 @@ async def main():
 	intents.message_content = True
 	bot = Bot(command_prefix=App.command_prefix, intents=intents)
 
-	triggers.extend(secret_triggers)
+	try:
+		secret_triggers_mod = importlib.import_module(".SecretTriggers", package="PolyBot")
+		triggers.extend(secret_triggers_mod.triggers)
+	except ModuleNotFoundError:
+		log.warning("No secret triggers found")
+		
 	polybot = PolyBot(bot, triggers, presences)
 
 	register_commands(polybot)
