@@ -99,7 +99,7 @@ class PolyBot:
 		
 		if App.in_pre():
 			log.warning(f"Sending message to pre channel (original: {channel.name})")
-			channel = discord.utils.get(self.get_all_channels(), name="polybot-preprod")
+			channel = discord.utils.get(self.bot.get_all_channels(), name="polybot-preprod")
 
 		if App.in_pro() or App.in_pre():
 			log.info(f"Sending message: '{message}'")
@@ -121,7 +121,7 @@ class PolyBot:
 
 		# Ignore bot messages
 		if self.ignore_self and message.author.display_name == self.bot.user.display_name:
-			log.info(f"Ignoring message, author is polybot")
+			log.debug(f"Ignoring message, author is polybot")
 			return
 
 		# TODO Check if we can remove this check
