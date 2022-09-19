@@ -113,7 +113,7 @@ def register_commands(polybot: PolyBot):
 	)
 	async def pause(ctx: Context):
 		if ctx.author.display_name not in Users.admins:
-			await polybot.send("You don't have admin rights")
+			raise Exception("You don't have admin rights")
 		await polybot.pause()
 
 	@bot.command(
@@ -123,7 +123,6 @@ def register_commands(polybot: PolyBot):
 		if ctx.author.display_name not in Users.admins:
 			raise Exception("You don't have admin rights")
 		await polybot.unpause()
-		await polybot.send(":)")
 
 	@bot.command(
 		brief="Envie de musique ? écoutez cette playlist !",
