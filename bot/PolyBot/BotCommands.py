@@ -16,7 +16,7 @@ def register_commands(polybot: PolyBot):
 	bot = polybot.bot
 	
 	@bot.command(
-		description="Vous vous ennuiyez ? j'ai la solution !",
+		brief="Vous vous ennuiyez ? j'ai la solution !",
 	)
 	async def ennui(ctx: Context):
 		message = random.choice([
@@ -32,7 +32,7 @@ def register_commands(polybot: PolyBot):
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
-		description="Vous vous sentez mal ? regardez l'argent que vous gagnez pas seconde !",
+		brief="Vous vous sentez mal ? regardez l'argent que vous gagnez pas seconde !",
 	)
 	async def salaire(ctx: Context):
 		start_work = time(9, 0, 0)
@@ -56,7 +56,7 @@ def register_commands(polybot: PolyBot):
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
-		description="Vous avez faim ? regardez cette magnifique nourriture !",
+		brief="Vous avez faim ? regardez cette magnifique nourriture !",
 	)
 	async def morfal(ctx: Context):
 		message = random.choice([
@@ -73,7 +73,7 @@ def register_commands(polybot: PolyBot):
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
-		description="Pong",
+		brief="Pong",
 	)
 	async def ping(ctx: Context):
 		lat = bot.latency
@@ -85,14 +85,14 @@ def register_commands(polybot: PolyBot):
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
-		description="Vous avez envie d'en finir ? attendez au moins jusqu'à la fin du timer !",
+		brief="Vous avez envie d'en finir ? attendez au moins jusqu'à la fin du timer !",
 	)
 	async def timetosuffer(ctx: Context):
 		message = gettimetosuffer(endofformation)
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
-		description="Donne le status du bot",
+		brief="Donne le status du bot",
 	)
 	async def info(ctx: Context):
 		status = await polybot.status()
@@ -100,7 +100,7 @@ def register_commands(polybot: PolyBot):
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
-		description="Affiche le nombre de triggers actifs",
+		brief="Affiche le nombre de triggers actifs",
 	)
 	async def triggers(ctx: Context):
 		# _triggers = len(rpc_handler.triggers)
@@ -109,7 +109,7 @@ def register_commands(polybot: PolyBot):
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
-		description="Met le bot en pause",
+		brief="Met le bot en pause",
 	)
 	async def pause(ctx: Context):
 		if ctx.author.display_name not in Users.admins:
@@ -117,7 +117,7 @@ def register_commands(polybot: PolyBot):
 		await polybot.pause()
 
 	@bot.command(
-		description="Reprend le bot",
+		brief="Reprend le bot",
 	)
 	async def unpause(ctx: Context):
 		if ctx.author.display_name not in Users.admins:
@@ -126,7 +126,7 @@ def register_commands(polybot: PolyBot):
 		await polybot.send(":)")
 
 	@bot.command(
-		description="Envie de musique ? écoutez cette playlist !",
+		brief="Envie de musique ? écoutez cette playlist !",
 	)
 	async def classics(ctx: Context):
 		resp = random.choice([
