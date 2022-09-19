@@ -7,10 +7,10 @@ services:
       context: ../
       dockerfile: ./docker/bot.Dockerfile
     environment:
-      - SENTRY_DSN=${SENTRY_DSN}
-      - TZ=${TZ}
       - ENV=${ENV}
       - VER=${VER}
+      - TZ=${TZ}
+      - SENTRY_DSN=${SENTRY_DSN}
       - BOT_TOKEN=${BOT_TOKEN}
     volumes:
       - ../../data:/home/app/data
