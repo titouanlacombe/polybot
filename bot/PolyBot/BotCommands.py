@@ -103,9 +103,7 @@ def register_commands(polybot: PolyBot):
 		brief="Affiche le nombre de triggers actifs",
 	)
 	async def triggers(ctx: Context):
-		# _triggers = len(rpc_handler.triggers)
-		_triggers = "TODO"
-		message = f"Il y a {_triggers} triggers"
+		message = f"Il y a {len(polybot.triggers)} triggers"
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
