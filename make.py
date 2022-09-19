@@ -60,6 +60,6 @@ def attach(target):
 
 @default()
 def build_up():
-	log(f"{app_name}-{_env} v{_ver}")
+	log(f"{app_name}-{_env}@{_ver}")
 	build()
 	up()
