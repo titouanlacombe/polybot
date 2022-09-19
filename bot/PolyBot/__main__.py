@@ -12,7 +12,7 @@ from .BotPresences import presences
 from .BotTriggers import triggers
 import Utils.Sentry as Sentry
 
-basicConfig(logs_dir, "polybot", logging.INFO)
+basicConfig(logs_dir, "polybot", logging.DEBUG)
 log = logging.getLogger(__name__)
 
 Sentry.init()
