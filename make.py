@@ -17,7 +17,7 @@ app_name = root.parent.parent.name
 compose_project_name = f"{app_name}-{_env.short}-{_ver.replace('.', '_')}"
 
 # Setup env
-setenv(
+env(
 	COMPOSE_PROJECT_NAME=compose_project_name,
 	TZ="Europe/Paris",
 	ENV=str(_env),
