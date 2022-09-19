@@ -44,8 +44,7 @@ def register_events(polybot: PolyBot):
 			log.info(f"Ignoring message, app in dev")
 			return
 
-		log.info(f"Allo")
-		polybot.handle_message(message)
+		await polybot.handle_message(message)
 
 	@bot.event
 	async def on_error(event_method, *args, **kwargs):
