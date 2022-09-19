@@ -127,7 +127,18 @@ def register_commands(polybot: PolyBot):
 	)
 	async def classics(ctx: Context):
 		resp = random.choice([
+			# Bangers
 			"https://www.youtube.com/watch?v=s36eQwgPNSE",
 			"https://www.youtube.com/watch?v=6JhVo2zS8hU",
+			"https://www.youtube.com/watch?v=PGNiXGX2nLU",
+			"https://www.youtube.com/watch?v=djV11Xbc914",
+
+
+			# Funny bangers
+			"https://www.youtube.com/watch?v=2Nat0rOEMCA",
+			"https://www.youtube.com/watch?v=M5a7mrwXVFs",
+			"https://www.youtube.com/watch?v=-G3MLjqicC8",
+			"https://www.youtube.com/watch?v=tYseHTv9Xx0",
+			"https://www.youtube.com/watch?v=NBw2I3obQTY",
 		])
 		await polybot.send(resp, ctx.channel)
