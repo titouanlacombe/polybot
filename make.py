@@ -2,12 +2,6 @@ from PIL import Image
 from makepie import *
 makepie_load()
 
-# Setup vars
-app_name = "polybot"
-_env = Environment(rfile("../env", False) or "dev")
-_ver = rfile("ver", False) or "0.0.0"
-compose_project_name = f"{app_name}-{_env.short}-{_ver.replace('.', '_')}"
-
 # Setup filesystem
 root = Path(".").resolve()
 data = root.parent / "data"
@@ -15,6 +9,12 @@ logs = data / "logs"
 static = root / "bot" / "static"
 static_resources = static / "resources"
 resources = root / "resources"
+
+# Setup vars
+_ver = root.name
+_env = Environment(root.parent.name)
+app_name = root.parent.parent.name
+compose_project_name = f"{app_name}-{_env.short}-{_ver.replace('.', '_')}"
 
 # Setup env
 setenv(
