@@ -81,7 +81,7 @@ def register_commands(polybot: PolyBot):
 		if math.isnan(lat):
 			lat = 0
 
-		message = f"Ta gueule ({math.floor(lat * 1000)} ms)"
+		message = f"{math.floor(lat * 1000)} ms"
 		await polybot.send(message, ctx.channel)
 
 	@bot.command(
