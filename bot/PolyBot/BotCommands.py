@@ -15,7 +15,9 @@ def time_sub(t1, t2):
 def register_commands(polybot: PolyBot):
 	bot = polybot.bot
 	
-	@bot.command()
+	@bot.command(
+		description="Vous vous ennuiyez ? j'ai la solution !",
+	)
 	async def ennui(ctx: Context):
 		message = random.choice([
 			"Pti geoguesser ?\nhttps://www.geoguessr.com/",
@@ -29,7 +31,9 @@ def register_commands(polybot: PolyBot):
 		])
 		await polybot.send(message, ctx.channel)
 
-	@bot.command()
+	@bot.command(
+		description="Vous vous sentez mal ? regardez l'argent que vous gagnez pas seconde !",
+	)
 	async def salaire(ctx: Context):
 		start_work = time(9, 0, 0)
 		end_work = time(17, 0, 0)
@@ -51,7 +55,9 @@ def register_commands(polybot: PolyBot):
 		message = f"Vous avez gagné %.2f€ depuis le début de la journée\nhttps://tenor.com/view/wealth-gif-24406365" % gain
 		await polybot.send(message, ctx.channel)
 
-	@bot.command()
+	@bot.command(
+		description="Vous avez faim ? regardez cette magnifique nourriture !",
+	)
 	async def morfal(ctx: Context):
 		message = random.choice([
 			"https://tenor.com/view/big-buger-eat-buger-the-rock-burger-gif-22532545",
@@ -66,7 +72,9 @@ def register_commands(polybot: PolyBot):
 		])
 		await polybot.send(message, ctx.channel)
 
-	@bot.command()
+	@bot.command(
+		description="Pong",
+	)
 	async def ping(ctx: Context):
 		lat = bot.latency
 
@@ -76,33 +84,50 @@ def register_commands(polybot: PolyBot):
 		message = f"Ta gueule ({math.floor(lat * 1000)} ms)"
 		await polybot.send(message, ctx.channel)
 
-	@bot.command()
+	@bot.command(
+		description="Vous avez envie d'en finir ? attendez au moins jusqu'à la fin du timer !",
+	)
 	async def timetosuffer(ctx: Context):
 		message = gettimetosuffer(endofformation)
 		await polybot.send(message, ctx.channel)
 
-	@bot.command()
+	@bot.command(
+		description="Donne le status du bot",
+	)
 	async def info(ctx: Context):
 		status = await polybot.status()
 		message = f"Je suis PolyBot v{App.ver} {App.env} actif depuis {status['up_since']}\n"
 		await polybot.send(message, ctx.channel)
 
-	@bot.command()
+	@bot.command(
+		description="Affiche le nombre de triggers actifs",
+	)
 	async def triggers(ctx: Context):
 		# _triggers = len(rpc_handler.triggers)
 		_triggers = "TODO"
 		message = f"Il y a {_triggers} triggers"
 		await polybot.send(message, ctx.channel)
 
-	@bot.command()
+	@bot.command(
+		description="Met le bot en pause",
+	)
 	async def pause(ctx: Context):
 		if ctx.author.display_name not in Users.admins:
+			await polybot.send("You don't have admin rights")
+		await polybot.pause()
+
+	@bot.command(
+		description="Reprend le bot",
+	)
+	async def unpause(ctx: Context):
+		if ctx.author.display_name not in Users.admins:
 			raise Exception("You don't have admin rights")
+		await polybot.unpause()
+		await polybot.send(":)")
 
-		# rpc_handler.pause()
-		await polybot.send("Ok")
-
-	@bot.command()
+	@bot.command(
+		description="Envie de musique ? écoutez cette playlist !",
+	)
 	async def classics(ctx: Context):
 		resp = random.choice([
 			"https://www.youtube.com/watch?v=s36eQwgPNSE",

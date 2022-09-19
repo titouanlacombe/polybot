@@ -124,10 +124,10 @@ class PolyBot:
 			log.debug(f"Ignoring message, author is polybot")
 			return
 
-		# TODO Check if we can remove this check
 		# Check if the message is a command
 		if message.content.startswith(App.command_prefix):
-			log.debug(f"Message is a command, ignoring")
+			log.debug(f"Message is a command, handling...")
+			await self.bot.process_commands(message)
 			return None
 
 		processed = preprocess_text(message.content)
