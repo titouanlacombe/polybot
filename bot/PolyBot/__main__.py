@@ -29,7 +29,6 @@ async def main():
 	log.info(f"Starting discord client")
 
 	# Setup
-	# TODO search what are intents
 	intents = discord.Intents.default()
 	intents.message_content = True
 	bot = Bot(command_prefix=App.command_prefix, intents=intents)

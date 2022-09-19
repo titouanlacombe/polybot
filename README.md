@@ -1,6 +1,6 @@
 # PolyBot
 
-TODO Readme
+### Deploy config example
 
 ```yaml
 polybot:

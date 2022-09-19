@@ -24,7 +24,6 @@ def register_commands(polybot: PolyBot):
 			"Pti pédantix ?\nhttps://cemantix.herokuapp.com/pedantix",
 			"Pti pixelmovie ?\nhttps://pixelmovie.github.io/",
 			"Pti tusmo ?\nhttps://www.tusmo.xyz/",
-			# TODO include games from antoine daniel
 			"Pti worldle ?\nhttps://worldle.teuteuf.fr/",
 			"Pti framed ?\nhttps://framed.wtf/",
 		])
