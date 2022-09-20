@@ -49,9 +49,9 @@ class PolyBot:
 	def __del__(self):
 		self.http_session.close()
 
-	async def call_app(self, command, *args, **kwargs):
-		log.info(f"Calling app: {command} {args} {kwargs}")
-		async with self.http_session.post(f"http://0.0.0.0:{App.api_port}/rpc", json={
+	async def call_service(self, service, command, *args, **kwargs):
+		log.info(f"Calling {service}: {command}(*{args}, **{kwargs})")
+		async with self.http_session.post(f"http://{service}/rpc", json={
 			"command": command,
 			"args": args,
 			"kwargs": kwargs
@@ -116,24 +116,10 @@ class PolyBot:
 			"ver": App.ver,
 		}
 
-	async def handle_message(self, message):
-		log.info(f"Handling message: {message.content}")
-
-		# Ignore bot messages
-		if self.ignore_self and message.author.display_name == self.bot.user.display_name:
-			log.debug(f"Ignoring message, author is polybot")
-			return
-
-		# Check if the message is a command
-		if message.content.startswith(App.command_prefix):
-			log.debug(f"Message is a command, handling...")
-			await self.bot.process_commands(message)
-			return None
-
+	async def handle_triggers(self, message):
 		processed = preprocess_text(message.content)
 		log.debug(f"Processed text: '{processed}'")
 
-		# Check if the message is a trigger
 		trigger: Trigger
 		for trigger in self.triggers:
 			if trigger.triggered(message, processed):
@@ -144,6 +130,43 @@ class PolyBot:
 				return response
 
 		log.info(f"No trigger found for message")
+		return None
+
+	async def handle_message(self, message):
+		log.info(f"Handling message: {message.content}")
+
+		# Ignore bot messages
+		if self.ignore_self and message.author.display_name == self.bot.user.display_name:
+			log.debug(f"Ignoring message, author is polybot")
+			return "Ignored"
+
+		# Check if the message is a command
+		if message.content.startswith(App.command_prefix):
+			log.debug(f"Message is a command, handling...")
+			await self.bot.process_commands(message)
+			return "Command handled"
+
+		# Check if the message is posted in the image-gen channel
+		if message.channel.name == "image-gen":
+			log.debug(f"Message is posted in stable diffusion channel, calling service...")
+
+			resp = await self.call_service("image-gen", "generate", message.content)
+
+			# Send image
+			if resp['image'] is not None:
+				await self.send(resp['image'], message.channel)
+			else:
+				log.warning(f"No image returned by stable diffusion service: {resp}")
+				await self.send(resp['text'], message.channel)
+
+			return "Image generated"
+
+		# Let message go through triggers
+		trig = await self.handle_triggers(message)
+		if trig is not None:
+			return f"Triggered '{trig}'"
+
+		return "No response"
 
 	# Function used to test bot response to a message
 	async def message(self, text, author):
