@@ -1,0 +1,9 @@
+# Stable diff
+diffusers==0.3.0
+transformers
+scipy
+ftfy
+
+# API
+flask
+gunicorn

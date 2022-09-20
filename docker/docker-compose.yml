@@ -15,6 +15,14 @@ services:
     volumes:
       - ../../data:/home/app/data
 
+  image-gen:
+    restart: always
+    build:
+      context: ../
+      dockerfile: ./docker/image-gen/Dockerfile
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+
   nginx:
     restart: always
     image: nginx:latest
