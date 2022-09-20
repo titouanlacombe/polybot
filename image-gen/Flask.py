@@ -1,6 +1,7 @@
 import json, logging, flask
 from ImageGenerator import text2img
 
+# TODO configure logging
 log = logging.getLogger(__name__)
 app = flask.Flask(__name__)
 
@@ -15,10 +16,10 @@ def home():
 
 @app.route('/rpc', methods=['POST'])
 def rpc():
-	data = flask.request.json
+	data: dict = flask.request.json
 
 	try:
-		res = rpc_methods[data['command']](*data['args'], **data['kwargs'])
+		res = rpc_methods[data['command']](*data.get("args", []), **data.get("kwargs", {}))
 	except Exception as e:
 		log.exception(e)
 		res = {

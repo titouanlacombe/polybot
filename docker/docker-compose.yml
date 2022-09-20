@@ -22,6 +22,8 @@ services:
       dockerfile: ./docker/image-gen/Dockerfile
     environment:
       - HF_TOKEN=${HF_TOKEN}
+    volumes:
+      - ../../data:/home/app/data
 
   nginx:
     restart: always
