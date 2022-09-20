@@ -5,6 +5,7 @@ from PIL import Image
 from diffusers import StableDiffusionPipeline
 import torch
 
+# TODO fix permissions by learning about bitnami default user
 log = logging.getLogger(__name__)
 
 # TODO support json text to allow for model tweaking per message
