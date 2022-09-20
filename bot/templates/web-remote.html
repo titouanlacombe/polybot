@@ -6,13 +6,13 @@
 	<title>Polybot</title>
 	<meta name='viewport' content='width=device-width, initial-scale=1'>
 
-	<link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-	<script src='main.js'></script>
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<link rel='stylesheet' type='text/css' media='screen' href='static/main.css'>
+	<script src='static/main.js'></script>
+	<link rel="shortcut icon" href="static/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
-	<h1 class="title" style="color: {{ color }}">Polybot Remote</h1>
+	<h1 class="title">Polybot Remote</h1>
 
 	<div class="bot_div" id="bot_status_div">
 		<h3>Bot status</h3>
@@ -54,6 +54,12 @@
 		<p id="bot_response" class="js_output"></p>
 	</div>
 
-	<img src="resources/polybot.png" alt="Polybot" id="polybot_img">
+	<img src="static/resources/polybot.png" alt="Polybot" id="polybot_img">
 </body>
+
+<style>
+.bot_div {
+	border-color: {{ env_color }};
+}
+</style>
 </html>

@@ -20,11 +20,11 @@ def in_pro():
 command_prefix = "/"
 activity_update_interval = 180 # seconds
 
-# App color
-color = "0x00ff00" # Green
+# env_color
+env_color = "#1a9122" # Green
 if in_sta():
-	color = "0x0000ff" # Blue
+	env_color = "#1a6a91" # Blue
 elif in_pre():
-	color = "0xffa500" # Orange
+	env_color = "#d98b25" # Orange
 elif in_pro():
-	color = "0xff0000" # Red
+	env_color = "#de1616" # Red

@@ -22,7 +22,7 @@ def socket_send(host: str, port: int, data: str, buffer=1024*4):
 
 @app.route('/')
 def home():
-	return flask.render_template("/static/web-remote.html", color=App.color)
+	return flask.render_template("web-remote.html", env_color=App.env_color)
 
 @app.route('/ping')
 def ping():
