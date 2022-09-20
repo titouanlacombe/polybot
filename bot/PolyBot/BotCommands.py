@@ -132,7 +132,10 @@ def register_commands(polybot: PolyBot):
 			"https://www.youtube.com/watch?v=6JhVo2zS8hU",
 			"https://www.youtube.com/watch?v=PGNiXGX2nLU",
 			"https://www.youtube.com/watch?v=djV11Xbc914",
-
+			"https://www.youtube.com/watch?v=urWV2OjAmUQ",
+			"https://www.youtube.com/watch?v=HXdP15Ubu6M",
+			"https://www.youtube.com/watch?v=4DuUejBkMqE",
+			"https://www.youtube.com/watch?v=S5Xa31jYxYc",
 
 			# Funny bangers
 			"https://www.youtube.com/watch?v=2Nat0rOEMCA",
