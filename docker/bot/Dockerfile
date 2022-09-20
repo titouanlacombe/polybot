@@ -14,13 +14,14 @@ RUN apt update && apt install -y --no-install-recommends \
 	&& apt clean \
 	&& rm -rf /var/lib/apt/lists/*
 
-# Source
+# Python requirements
+COPY ./docker/bot/requirements.txt ./requirements.txt
+RUN python3 -m pip install --no-cache-dir -r ./requirements.txt
+
+# Sources
 COPY ./bot ./src
 RUN chown app:app -R /home/app
 WORKDIR /home/app/src
-
-# Python requirements
-RUN python3 -m pip install --no-cache-dir -r ./requirements.txt
 
 # Entrypoint
 USER app

@@ -5,7 +5,7 @@ services:
     restart: always
     build:
       context: ../
-      dockerfile: ./docker/bot.Dockerfile
+      dockerfile: ./docker/bot/Dockerfile
     environment:
       - ENV=${ENV}
       - VER=${VER}
