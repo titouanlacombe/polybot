@@ -132,7 +132,7 @@ class PolyBot:
 		log.info(f"No trigger found for message")
 		return None
 
-	async def handle_message(self, message):
+	async def handle_message(self, message: discord.Message):
 		log.info(f"Handling message: {message.content}")
 
 		# Ignore bot messages
@@ -157,7 +157,7 @@ class PolyBot:
 				await self.send(resp['image'], message.channel)
 			else:
 				log.warning(f"No image returned by stable diffusion service: {resp}")
-				await self.send(resp['text'], message.channel)
+				await self.send(resp['error'], message.channel)
 
 			return "Image generated"
 
