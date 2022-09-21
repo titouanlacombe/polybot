@@ -1,9 +1,10 @@
 from io import BytesIO
 import logging
-import os
 from PIL import Image
-from diffusers import StableDiffusionPipeline
-import torch
+from setup_pipeline import pipe
+
+# Loading pipe
+pipe.to("cpu")
 
 # TODO fix permissions by learning about bitnami default user
 log = logging.getLogger(__name__)
@@ -15,21 +16,6 @@ log = logging.getLogger(__name__)
 def text2img(text: str):
 	log.info(f"Generating from '{text}'")
 
-	# Setup pipeline
-	pipe = StableDiffusionPipeline.from_pretrained(
-		"CompVis/stable-diffusion-v1-4",
-		use_auth_token=os.getenv("HF_TOKEN"),
-		cache_dir="../data/hf_cache/models",
-
-		# Optimization because i have no RAM :'(
-		# TODO how to fix fp16 on the CPU
-		revision="fp16",
-		torch_dtype=torch.float16,
-	)
-	pipe.to("cpu")
-
-	log.info("Pipe initialized")
-	
 	# Generate image
 	# results = pipe(text, num_inference_steps=15)
 	# image = results.images[0]
