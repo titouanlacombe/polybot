@@ -20,7 +20,6 @@ else:
 	# CPU or unknown device
 	# fp16 not supported on CPU
 	kwargs = {
-		"revision": "fp32",
 		"torch_dtype": torch.float32
 	}
 
