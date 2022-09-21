@@ -20,7 +20,7 @@ def load_env(f: Path):
 			if line.startswith("#"):
 				continue
 			k, v = line.split("=", 1)
-			env[k] = v
+			env[k] = v.strip()
 	return env
 
 # Add context to env
