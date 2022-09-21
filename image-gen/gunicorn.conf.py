@@ -7,7 +7,7 @@ reload = True
 # max_requests = 3
 # max_requests_jitter = 2
 capture_output = True
-timeout = 60 * 5 # 5 minutes
+timeout = 60 * 5 # minutes
 
 loglevel = "info"
 accesslog = "../data/logs/image-gen.log"

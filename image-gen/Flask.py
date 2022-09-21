@@ -1,7 +1,7 @@
 import json, logging, flask
 from ImageGenerator import text2img
 
-# TODO configure logging
+logging.basicConfig(filename="../data/logs/image-gen.log", level=logging.INFO)
 log = logging.getLogger(__name__)
 app = flask.Flask(__name__)
 
