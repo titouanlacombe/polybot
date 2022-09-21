@@ -150,10 +150,11 @@ class PolyBot:
 		if message.channel.name == "image-gen":
 			log.debug(f"Message is posted in stable diffusion channel, calling service...")
 
-			resp = await self.call_service("image-gen", "generate", message.content)
+			resp: dict = await self.call_service("image-gen", "generate", message.content)
 
 			# Send image
-			if resp['image'] is not None:
+			if resp.get("error", None) is None:
+				# TODO test image sending (base64 & ascii encoded)
 				await self.send(resp['image'], message.channel)
 			else:
 				log.warning(f"No image returned by stable diffusion service: {resp}")
