@@ -19,7 +19,10 @@ elif device.type == "rocm":
 else:
 	# CPU or unknown device
 	# fp16 not supported on CPU
-	kwargs = {}
+	kwargs = {
+		"revision": "fp32",
+		"torch_dtype": torch.float32
+	}
 
 print("Setting up pipeline, caching pretrained model")
 
