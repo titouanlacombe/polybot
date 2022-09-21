@@ -1,8 +1,9 @@
 bind = "0.0.0.0:80"
+reload = True
 
+# Keep those workers because stable diffusion use all of the RAM
 workers = 1
 threads = 1
-reload = True
 
 # max_requests = 3
 # max_requests_jitter = 2

@@ -6,13 +6,11 @@ from setup_pipeline import pipe
 # Loading pipe
 pipe.to("cpu")
 
-# TODO fix permissions by learning about bitnami default user
 log = logging.getLogger(__name__)
 
 # TODO support json text to allow for model tweaking per message
 # TODO support image input to allow for image generation
 # TODO how to make a discord proggress bar
-# TODO add semaphore to limit the number of running jobs
 def text2img(text: str):
 	log.info(f"Generating from '{text}'")
 
