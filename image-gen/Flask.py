@@ -1,4 +1,4 @@
-import json, logging, flask
+import json, logging, flask, base64
 from ImageGenerator import text2img
 
 logging.basicConfig(filename="../data/logs/image-gen.log", level=logging.INFO)
@@ -19,7 +19,10 @@ def rpc():
 	data: dict = flask.request.json
 
 	try:
-		res = rpc_methods[data['command']](*data.get("args", []), **data.get("kwargs", {}))
+		image_data: bytes = rpc_methods[data['command']](*data.get("args", []), **data.get("kwargs", {}))
+		res = {
+			"image_data": base64.b64encode(image_data).decode("ascii"),
+		}
 	except Exception as e:
 		log.exception(e)
 		res = {
