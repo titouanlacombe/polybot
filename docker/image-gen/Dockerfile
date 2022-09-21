@@ -2,7 +2,7 @@ FROM bitnami/pytorch:latest
 
 # Create user
 USER root
-RUN useradd app -ms /bin/bash
+RUN useradd app -ms /bin/bash --uid 1000
 WORKDIR /home/app
 
 # Install linux packages
@@ -18,6 +18,9 @@ RUN apt update && apt install -y --no-install-recommends \
 # Python reqs
 COPY ./docker/image-gen/requirements.txt ./
 RUN python3 -m pip install --no-cache-dir -r ./requirements.txt
+
+# Patch for hugging face
+RUN mkdir -p /.cache/huggingface/ && chown -R app:app /.cache/huggingface/
 
 # Sources
 COPY ./image-gen ./src
