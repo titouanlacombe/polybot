@@ -1,4 +1,5 @@
-import os
+import os, time
+from requests.exceptions import ConnectionError
 from diffusers import StableDiffusionPipeline
 import torch
 
@@ -25,13 +26,21 @@ else:
 
 print("Setting up pipeline, caching pretrained model")
 
-pipeline = StableDiffusionPipeline.from_pretrained(
-	"CompVis/stable-diffusion-v1-4",
-	use_auth_token=os.getenv("HF_TOKEN"),
-	cache_dir="../data/hf_cache/models",
-	resume_download=True,
-	**kwargs
-)
+while True:
+	try:
+		pipeline = StableDiffusionPipeline.from_pretrained(
+			"CompVis/stable-diffusion-v1-4",
+			use_auth_token=os.getenv("HF_TOKEN"),
+			cache_dir="../data/hf_cache/models",
+			resume_download=True,
+			**kwargs
+		)
+		break
+	except ConnectionError as exc:
+		print(f"Connection error: {exc}")
+		print("Retrying in 5 seconds")
+		time.sleep(5)
+		continue
 
 # From https://github.com/CompVis/stable-diffusion/issues/95
 # remove VAE encoder as it's not needed
