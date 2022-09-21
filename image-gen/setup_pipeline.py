@@ -11,17 +11,15 @@ if device.type == "cuda":
 		"torch_dtype": torch.float16
 	}
 elif device.type == "rocm":
+	# Optimization because i have no RAM :'(
 	kwargs = {
 		"revision": "fp16",
 		"torch_dtype": torch.float16
 	}
 else:
 	# CPU or unknown device
-	# TODO fix fp16 on the CPU (test)
-	kwargs = {
-		"revision": "fp16",
-		"torch_dtype": torch.float16
-	}
+	# fp16 not supported on CPU
+	kwargs = {}
 
 print("Setting up pipeline, caching pretrained model")
 
