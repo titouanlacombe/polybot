@@ -19,7 +19,7 @@ def text2img(text: str):
 	pipe = StableDiffusionPipeline.from_pretrained(
 		"CompVis/stable-diffusion-v1-4",
 		use_auth_token=os.getenv("HF_TOKEN"),
-		cache_dir="../data/hf_cache",
+		cache_dir="../data/hf_cache/models",
 
 		# Optimization because i have no RAM :'(
 		# TODO how to fix fp16 on the CPU
