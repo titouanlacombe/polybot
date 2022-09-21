@@ -19,9 +19,6 @@ RUN apt update && apt install -y --no-install-recommends \
 COPY ./docker/image-gen/requirements.txt ./
 RUN python3 -m pip install --no-cache-dir -r ./requirements.txt
 
-# Patch for hugging face
-RUN mkdir -p /.cache/huggingface/ && chown -R app:app /.cache/huggingface/
-
 # Sources
 COPY ./image-gen ./src
 RUN chown app:app -R /home/app
