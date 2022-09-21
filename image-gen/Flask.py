@@ -30,3 +30,5 @@ def rpc():
 		}
 
 	return json.dumps(res)
+
+log.info("Worker started")
