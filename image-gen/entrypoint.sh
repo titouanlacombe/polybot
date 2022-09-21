@@ -2,6 +2,9 @@
 # Hugging face cache fix
 export TRANSFORMERS_CACHE="../data/hf_cache/transformers"
 
+# Exit on error
+set -e
+
 echo "Initializing cache..."
 # TODO Fix not exit on error
 python3 -m setup_pipeline
