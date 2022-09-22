@@ -5,26 +5,24 @@ import torch
 
 device = torch.device(os.getenv("COMPUTE_DEVICE", "cpu"))
 
-if device.type == "cuda":
-	# Optimization because i have no RAM :'(
-	kwargs = {
-		"revision": "fp16",
-		"torch_dtype": torch.float16
-	}
-elif device.type == "rocm":
-	# Optimization because i have no RAM :'(
-	kwargs = {
-		"revision": "fp16",
-		"torch_dtype": torch.float16
-	}
-else:
-	# CPU or unknown device
+# Pipeline kwargs depend on the device
+if device.type == "cpu":
 	# fp16 not supported on CPU
+	# TODO fix on small PC (why expecting bfloat16?)
 	kwargs = {
 		"torch_dtype": torch.float32
 	}
+else:
+	# TODO No GPU on WSL => dual boot or use windows
+	# https://old.reddit.com/r/StableDiffusion/comments/wv3zam/i_got_stable_diffusion_public_release_working_on/ild7yv3/?context=3
+	# Optimization for low VRAM usage
+	kwargs = {
+		"revision": "fp16",
+		"torch_dtype": torch.float16
+	}
 
 print("Setting up pipeline, caching pretrained model")
+print(f"Device: {device.type}, kwargs: {kwargs}")
 
 while True:
 	try:
@@ -38,9 +36,8 @@ while True:
 		break
 	except ConnectionError as exc:
 		print(f"Connection error: {exc}")
-		print("Retrying in 5 seconds")
-		time.sleep(5)
-		continue
+		print("Retrying in 2 seconds")
+		time.sleep(2)
 
 # From https://github.com/CompVis/stable-diffusion/issues/95
 # remove VAE encoder as it's not needed
