@@ -2,11 +2,9 @@ from io import BytesIO
 import logging
 from PIL import Image
 from torch import autocast
-from setup_pipeline import pipeline, device
+from setup_pipeline import load_pipeline, device
 
-# Loading pipe
-if device.type != "cpu":
-	pipeline.to(device)
+pipeline = load_pipeline()
 
 log = logging.getLogger(__name__)
 
