@@ -31,6 +31,11 @@ rpc_methods = {
 def home():
 	return "Image generator"
 
+@app.route('/test', methods=["POST"])
+def test():
+	text = flask.request.data.decode()
+	generate_image(text)
+
 @app.route('/rpc', methods=['POST'])
 def rpc():
 	data: dict = flask.request.json
