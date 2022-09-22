@@ -1,24 +1,27 @@
-import logging, os, time
+import logging, os, time, torch
 from requests.exceptions import ConnectionError
 from diffusers import StableDiffusionPipeline
-from Config import device, revision, torch_dtype
+from Config import device
 
 log = logging.getLogger(__name__)
 
 def load_pipeline(results: dict):
 	log.info("Caching and loading pretrained pipeline")
-	log.info(f"Device: {device.type}, revision: {revision}, torch_dtype: {torch_dtype}")
+	log.info(f"Device: {device.type}")
 
 	while True:
 		try:
 			pipeline = StableDiffusionPipeline.from_pretrained(
 				"CompVis/stable-diffusion-v1-4",
-				revision=revision,
+				
+				# CPU does not support half precision optimizations
+				revision = "fp16" if device.type == "cuda" else None,
+				torch_dtype = torch.float16 if device.type == "cuda" else None,
+
 				use_auth_token=os.getenv("HF_TOKEN"),
 				cache_dir="../data/hf_cache/models",
 				device=device,
 				resume_download=True,
-				torch_dtype=torch_dtype,
 			)
 			break
 		except ConnectionError as exc:
