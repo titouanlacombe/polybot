@@ -10,9 +10,8 @@ def set_default(dict, key, value):
 		dict[key] = value
 
 # Ordered by priority:
-# https://www.gabriel.urdhr.fr/2022/08/28/trying-to-run-stable-diffusion-on-amd-ryzen-5-5600g/
-# https://old.reddit.com/r/StableDiffusion/comments/wv3zam/i_got_stable_diffusion_public_release_working_on/ild7yv3/?context=3
-# TODO No GPU on WSL => dual boot or use windows
+# TODO ROCm: https://www.reddit.com/r/StableDiffusion/comments/ww436j/howto_stable_diffusion_on_an_amd_gpu/
+# TODO ROCm backup: https://www.gabriel.urdhr.fr/2022/08/28/trying-to-run-stable-diffusion-on-amd-ryzen-5-5600g/
 # TODO how to make a discord proggress bar
 # TODO support json text to allow for model tweaking per message (or parse message intent in polybot)
 # TODO support image input to allow for image generation
