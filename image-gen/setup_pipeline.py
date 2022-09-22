@@ -16,6 +16,7 @@ else:
 	# Optimization for low VRAM usage
 	kwargs = {
 		"revision": "fp16",
+		"torch_dtype": torch.float16,
 	}
 
 print("Setting up pipeline, caching pretrained model")
@@ -28,7 +29,6 @@ while True:
 			use_auth_token=os.getenv("HF_TOKEN"),
 			cache_dir="../data/hf_cache/models",
 			resume_download=True,
-			torch_dtype="auto",
 			**kwargs
 		)
 		break
