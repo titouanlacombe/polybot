@@ -9,16 +9,13 @@ device = torch.device(os.getenv("COMPUTE_DEVICE", "cpu"))
 if device.type == "cpu":
 	# fp16 not supported on CPU
 	# TODO fix on small PC (why expecting bfloat16?)
-	kwargs = {
-		"torch_dtype": torch.float32
-	}
+	kwargs = {}
 else:
 	# TODO No GPU on WSL => dual boot or use windows
 	# https://old.reddit.com/r/StableDiffusion/comments/wv3zam/i_got_stable_diffusion_public_release_working_on/ild7yv3/?context=3
 	# Optimization for low VRAM usage
 	kwargs = {
 		"revision": "fp16",
-		"torch_dtype": torch.float16
 	}
 
 print("Setting up pipeline, caching pretrained model")
@@ -31,6 +28,7 @@ while True:
 			use_auth_token=os.getenv("HF_TOKEN"),
 			cache_dir="../data/hf_cache/models",
 			resume_download=True,
+			torch_dtype="auto",
 			**kwargs
 		)
 		break
