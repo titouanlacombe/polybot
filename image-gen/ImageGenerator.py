@@ -9,12 +9,13 @@ def set_default(dict, key, value):
 	if key not in dict:
 		dict[key] = value
 
-# Ordered by priority:
-# TODO ROCm: https://www.reddit.com/r/StableDiffusion/comments/ww436j/howto_stable_diffusion_on_an_amd_gpu/
-# TODO ROCm backup: https://www.gabriel.urdhr.fr/2022/08/28/trying-to-run-stable-diffusion-on-amd-ryzen-5-5600g/
-# TODO how to make a discord proggress bar
-# TODO support json text to allow for model tweaking per message (or parse message intent in polybot)
-# TODO support image input to allow for image generation
+# TODO Ordered by priority:
+# Remove NSFW filter to save RAM
+# ROCm: https://www.reddit.com/r/StableDiffusion/comments/ww436j/howto_stable_diffusion_on_an_amd_gpu/
+# ROCm backup: https://www.gabriel.urdhr.fr/2022/08/28/trying-to-run-stable-diffusion-on-amd-ryzen-5-5600g/
+# make a discord proggress bar with ETA
+# support json messages to allow for model tweaking per message
+# support image messages to allow for image2image
 def text2img(pipeline, text: str, **kwargs) -> bytes:
 	log.info(f"Generating image from '{text}', kwargs: {kwargs}")
 
