@@ -1,13 +1,30 @@
 import json, logging, flask, base64
+from threading import Thread
+from werkzeug.exceptions import ServiceUnavailable, HTTPException
 from ImageGenerator import text2img
 
 logging.basicConfig(filename="../data/logs/image-gen.log", level=logging.INFO)
 log = logging.getLogger(__name__)
-app = flask.Flask(__name__)
+
+app = flask.Flask("ImageGenerator")
+
+def generate_image(text: str, **kwargs) -> bytes:
+	loader_thread: Thread = app.config.get("pipeline_loader_thread")
+
+	if loader_thread is None:
+		raise Exception("Pipeline loader thread not started")
+
+	if loader_thread.is_alive():
+		raise ServiceUnavailable("Pipeline loading in progress", retry_after=60*2)
+
+	# Recover thread result
+	pipeline = app.config["pipeline"]
+
+	return text2img(pipeline, text, **kwargs)
 
 rpc_methods = {
 	"ping": lambda: "pong",
-	"generate": text2img,
+	"generate": generate_image,
 }
 
 @app.route('/')
@@ -23,6 +40,9 @@ def rpc():
 		res = {
 			"image_data": base64.b64encode(image_data).decode("ascii"),
 		}
+	except HTTPException:
+		raise
+	
 	except Exception as e:
 		log.exception(e)
 		res = {
@@ -30,5 +50,3 @@ def rpc():
 		}
 
 	return json.dumps(res)
-
-log.info("Worker started")
