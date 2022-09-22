@@ -35,6 +35,7 @@ def home():
 def test():
 	text = flask.request.data.decode()
 	generate_image(text)
+	return "OK"
 
 @app.route('/rpc', methods=['POST'])
 def rpc():
