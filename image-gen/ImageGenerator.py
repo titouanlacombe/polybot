@@ -5,7 +5,7 @@ from werkzeug.exceptions import ServiceUnavailable
 from PIL import Image
 
 from Config import precision_scope
-from Microservices import call_rpc, polybot_host
+from Microservices import call_rpc, polybot_api_host
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 	request_id = kwargs.pop("request_id", None)
 	if request_id is not None:
 		# Call polybot to create a progress bar
-		call_rpc(polybot_host, "pbar_create", request_id, steps,
+		call_rpc(polybot_api_host, "pbar_create", request_id, steps,
 			f"Generating image from '{input}'"
 		)
 
