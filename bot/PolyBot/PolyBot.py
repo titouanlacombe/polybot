@@ -153,7 +153,7 @@ class PolyBot:
 			"request_id": message.id,
 		}
 		
-		images = message2images(message, self.http_session)
+		images = message2images(message)
 		if len(images) > 0:
 			if len(images) > 1:
 				raise Exception("Too many images in message")
