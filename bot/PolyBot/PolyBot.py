@@ -236,7 +236,7 @@ class PolyBot:
 			"type": "unknown",
 			"message": message,
 		}
-		self._handle_message(message)
+		await self._handle_message(message)
 		del self.requests[message.id]
 
 	# Function used to test bot response to a message
