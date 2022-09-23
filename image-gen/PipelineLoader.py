@@ -6,6 +6,8 @@ from Config import device
 log = logging.getLogger(__name__)
 
 def load_pipeline(results: dict):
+	start = time.time()
+	
 	log.info("Caching and loading pretrained pipeline")
 	log.info(f"Device: {device.type}")
 
@@ -20,7 +22,7 @@ def load_pipeline(results: dict):
 
 				use_auth_token=os.getenv("HF_TOKEN"),
 				cache_dir="../data/hf_cache/models",
-				device=device,
+				# device=device,
 				resume_download=True,
 			)
 			break
@@ -28,15 +30,23 @@ def load_pipeline(results: dict):
 			log.info(f"Connection error: {exc}")
 			log.info("Retrying in 2 seconds")
 			time.sleep(2)
-	
-	log.info("Pipeline loading complete")
 
-	# From https://github.com/CompVis/stable-diffusion/issues/95
-	# remove VAE encoder as it's not needed
+	# TODO Create own pipeline to avoid this (packages/diffusers/pipelines/stable_diffusion/pipeline_stable_diffusion.py)
+	# Remove VAE encoder as it's only needed for training (https://huggingface.co/blog/stable_diffusion)
 	del pipeline.vae.encoder
 
-	# TODO Do i need these lines (do device=device work)?
-	# if device.type != "cpu":
-	# 	pipeline.to(device)
+	# Remove NSFW filter to save RAM
+	def feature_extractor_dummy(image, **kwargs):
+		t = torch.Tensor()
+		t.pixel_values = None
+		return t
+	pipeline.feature_extractor = feature_extractor_dummy
+	pipeline.safety_checker = lambda images, **kwargs: (images, False)
+
+	if device.type != "cpu":
+		pipeline.to(device)
 
 	results["pipeline"] = pipeline
+	
+	t = time.time() - start
+	log.info(f"Pipeline loaded in {t:.2f} s")
