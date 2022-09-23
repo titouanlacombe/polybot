@@ -12,17 +12,6 @@ static_resources = static / "resources"
 resources = root / "resources"
 context_f = root / "context.env"
 
-# TODO move to makepie
-def load_env(f: Path):
-	env = {}
-	with open(f) as stream:
-		for line in stream:
-			if line.startswith("#"):
-				continue
-			k, v = line.split("=", 1)
-			env[k] = v.strip()
-	return env
-
 # Add context to env
 env(**load_env(context_f))
 _env = Environment(env("ENV"))
