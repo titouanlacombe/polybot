@@ -41,35 +41,37 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 		raise ServiceUnavailable("Pipeline loading not finished", retry_after=60*2)
 	pipeline = app_conf["pipeline"]
 
-	# Parsing config
+	log.info(f"Parsing config: {kwargs}")
 	set_default(kwargs, "num_inference_steps", 15)
 	set_default(kwargs, "guidance_scale", 7.5)
 	set_default(kwargs, "width", 512)
 	set_default(kwargs, "height", 512)
 
 	if "text" in kwargs:
-		target = kwargs.pop("text")
-		target_str = f"\"{target}\""
-		f = text2img
-	elif "image" in kwargs:
+		input = kwargs.pop("text")
+		steps = kwargs["num_inference_steps"]
+		op = text2img
+	elif "image_url" in kwargs:
 		# TODO support image2image
-		target = kwargs.pop("image")
-		target_str = f"<Image>"
+		input = kwargs.pop("image_url")
+		steps = 1
+		op = lambda *args, **kwargs: Image.new("RGB", (512, 512))
 
 	request_id = kwargs.pop("request_id", None)
 	if request_id is not None:
 		# Call polybot to create a progress bar
 		port = 8080 # TODO pass ports as docker args
-		call_rpc(f"bot:{port}", "pbar_create", request_id, kwargs["num_inference_steps"],
-			f"Generating image from {target_str}"
+		call_rpc(f"bot:{port}", "pbar_create", request_id, steps,
+			f"Generating image from '{input}'"
 		)
 
 	# Generate image
-	image = f(pipeline, target, **kwargs)
+	image = op(pipeline, input, **kwargs)
 
 	# Encode image to PNG and create response
 	im_file = BytesIO()
 	image.save(im_file, format="PNG")
 	return {
+		# TODO check if i need to specify ascii
 		"image": base64.b64encode(im_file.getvalue()).decode("ascii"),
 	}

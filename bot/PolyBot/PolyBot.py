@@ -154,7 +154,7 @@ class PolyBot:
 		if len(images) > 0:
 			if len(images) > 1:
 				raise Exception("Too many images in message")
-			image_gen_kwargs["image"] = images[0]
+			image_gen_kwargs["image_url"] = images[0]
 
 		if len(message.content) > 0:
 			try:
@@ -206,6 +206,7 @@ class PolyBot:
 		await bar.finish()
 
 	async def handle_message(self, message: discord.Message):
+		# TODO handle requests lifecycle here
 		log.info(f"Handling message: {message.content}")
 
 		# Ignore bot messages
