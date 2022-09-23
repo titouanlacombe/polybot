@@ -23,6 +23,9 @@ poly_rpc_targets = [
 	PolyBot.pause.__name__,
 	PolyBot.unpause.__name__,
 	PolyBot.status.__name__,
+	PolyBot.pbar_create.__name__,
+	PolyBot.pbar_update.__name__,
+	PolyBot.pbar_finish.__name__,
 ]
 
 async def main():

@@ -1,9 +1,12 @@
-import asyncio, discord, logging, aiohttp, unidecode, re
-import random
+import asyncio, discord, logging, aiohttp, unidecode, re, base64, json, random
+from io import BytesIO
 from datetime import datetime
-import Config.App as App
 from discord.ext.commands import Bot
+
+import Config.App as App
 from .Trigger import Trigger
+from .Message2Images import message2images
+from .DiscordProggressBar import DiscordProgressBar
 
 log = logging.getLogger(__name__)
 random.seed()
@@ -45,6 +48,16 @@ class PolyBot:
 		self.up_since: datetime = datetime.now()
 		self.triggers = triggers
 		self.presences = presences
+
+		self.requests: dict = {}
+
+	def get_request(self, request_id, expected_type=None):
+		request = self.requests.get(request_id)
+		if request is None:
+			raise Exception(f"Unknown request id '{request_id}'")
+		if expected_type is not None and request["type"] != expected_type:
+			raise Exception(f"Invalid request type for id '{request_id}'")
+		return request
 
 	def __del__(self):
 		self.http_session.close()
@@ -132,6 +145,66 @@ class PolyBot:
 		log.info(f"No trigger found for message")
 		return None
 
+	async def handle_image_gen(self, message: discord.Message):
+		image_gen_kwargs = {
+			"request_id": message.id,
+		}
+		
+		images = message2images(message, self.http_session)
+		if len(images) > 0:
+			if len(images) > 1:
+				raise Exception("Too many images in message")
+			image_gen_kwargs["image"] = images[0]
+
+		if len(message.content) > 0:
+			try:
+				image_gen_kwargs.update(json.loads(message.content))
+			except Exception:
+				image_gen_kwargs["text"] = message.content
+
+		# Store request for update handling
+		self.requests[message.id] = {
+			"type": "image-gen",
+			"message": message,
+		}
+
+		resp: dict = await self.call_service("image-gen", "generate", **image_gen_kwargs)
+
+		if resp.get("error", None) is not None:
+			log.warning(f"Error occured in image-gen service: {resp}")
+			await self.send(resp['error'], message.channel)
+			return
+
+		file_obj = BytesIO(base64.b64decode(resp['image'].encode("ascii")))
+
+		# TODO use message.reply() (refactor my send method)
+		await self.send(file=discord.File(file_obj, "image.png"), channel=message.channel)
+
+	async def pbar_create(self, request_id: int, total: int, title: str):
+		request = self.get_request(request_id)
+
+		async def send_callback(txt):
+			await self.send(txt, request['message'].channel)
+
+		bar = DiscordProgressBar(
+			total=total,
+			title=title,
+			send_callback=send_callback
+		)
+		request['progress_bar'] = bar
+
+		await bar.start()
+
+	async def pbar_update(self, request_id: int, current: int):
+		request = self.get_request(request_id)
+		bar: DiscordProgressBar = request['progress_bar']
+		await bar.update(current)
+
+	async def pbar_finish(self, request_id: int):
+		request = self.get_request(request_id)
+		bar: DiscordProgressBar = request['progress_bar']
+		await bar.finish()
+
 	async def handle_message(self, message: discord.Message):
 		log.info(f"Handling message: {message.content}")
 
@@ -148,18 +221,8 @@ class PolyBot:
 
 		# Check if the message is posted in the image-gen channel
 		if message.channel.name == "image-gen":
-			log.debug(f"Message is posted in stable diffusion channel, calling service...")
-
-			resp: dict = await self.call_service("image-gen", "generate", message.content)
-
-			# Send image
-			if resp.get("error", None) is None:
-				# TODO test image sending (base64 & ascii encoded)
-				await self.send(resp['image'], message.channel)
-			else:
-				log.warning(f"No image returned by stable diffusion service: {resp}")
-				await self.send(resp['error'], message.channel)
-
+			log.debug(f"Message posted in image-gen channel, handling...")
+			await self.handle_image_gen(message)
 			return "Image generated"
 
 		# Let message go through triggers
