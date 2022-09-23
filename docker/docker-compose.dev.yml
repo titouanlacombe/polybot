@@ -7,7 +7,6 @@ services:
       - ../../data:/home/app/data
 
   image-gen:
-    # TODO remove exposed port
     ports:
       - 5010:80
     volumes:

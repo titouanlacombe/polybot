@@ -17,7 +17,6 @@ rpc_methods = {
 def home():
 	return "Image generator"
 
-# TODO search {'trained_betas'} was not found in config. Values will be initialized to default values.
 @app.route('/test', methods=["POST"])
 def test():
 	# curl localhost:5010/test -d "text=<TEXT>"
