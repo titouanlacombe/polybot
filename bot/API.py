@@ -35,21 +35,13 @@ def rpc():
 
 	try:
 		# Call polybot rpc
-		result = json.loads(
-			socket_send("localhost", int(App.polybot_port), json.dumps(data))
-		)
-		code = 200
+		res = socket_send("localhost", int(App.polybot_port), json.dumps(data))
+		res = json.loads(res)
 	except Exception as exc:
 		log.exception(exc)
 		sentry_sdk.capture_exception(exc)
-		result = str(exc)
-		code = 500
+		res = {
+			"error": str(exc)
+		}
 
-	# Patch
-	if result is None:
-		result = json.dumps(None)
-
-	rep = flask.make_response(result)
-	rep.status_code = code
-	rep.headers['Content-Type'] = 'application/json'
-	return rep
+	return flask.jsonify(res)

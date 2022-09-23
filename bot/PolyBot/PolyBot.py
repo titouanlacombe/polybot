@@ -69,8 +69,13 @@ class PolyBot:
 			"args": args,
 			"kwargs": kwargs
 		}) as resp:
-			log.debug(f"Received response from app: {resp}")
-			return await resp.json()
+			response: dict = await resp.json()
+			log.debug(f"Response: {response}")
+
+		if response.get("error") is not None:
+			raise Exception(response["error"])
+
+		return response["result"]
 
 	# --- API RPC ---
 	async def pause(self):

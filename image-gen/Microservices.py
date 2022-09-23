@@ -11,7 +11,7 @@ def call_rpc(host: str, command: str, *args, **kwargs):
 	}
 
 	log.info(f"Calling {host}: {data}")
-	response = requests.post(url, json=data).json()
+	response: dict = requests.post(url, json=data).json()
 	log.info(f"Response from {host}: {response}")
 	
 	if response.get("error") is not None:

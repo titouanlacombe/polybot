@@ -1,4 +1,4 @@
-import json, logging, flask
+import logging, flask
 from werkzeug.exceptions import HTTPException
 
 from ImageGenerator import generate_image
@@ -27,7 +27,9 @@ def rpc():
 	data: dict = flask.request.json
 
 	try:
-		res: dict = rpc_methods[data['command']](*data.get("args", []), **data.get("kwargs", {}))
+		res = {
+			"result": rpc_methods[data['command']](*data.get("args", []), **data.get("kwargs", {})),
+		}
 	
 	except HTTPException:
 		raise
@@ -38,4 +40,4 @@ def rpc():
 			"error": str(e)
 		}
 
-	return json.dumps(res)
+	return flask.jsonify(res)
