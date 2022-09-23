@@ -9,7 +9,6 @@ def load_pipeline(results: dict):
 	start = time.time()
 	
 	log.info("Caching and loading pretrained pipeline")
-	log.info(f"Device: {device.type}")
 
 	while True:
 		try:
