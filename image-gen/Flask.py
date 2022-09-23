@@ -17,9 +17,11 @@ rpc_methods = {
 def home():
 	return "Image generator"
 
+# TODO search {'trained_betas'} was not found in config. Values will be initialized to default values.
 @app.route('/test', methods=["POST"])
 def test():
-	rpc_methods["generate"](text=flask.request.data.decode())
+	# curl localhost:5010/test -d "text=<TEXT>"
+	rpc_methods["generate"](**flask.request.values.to_dict())
 	return "OK"
 
 @app.route('/rpc', methods=['POST'])
