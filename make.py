@@ -13,7 +13,7 @@ resources = root / "resources"
 context_f = root / "context.env"
 
 # Add context to env
-env(**load_env(context_f))
+env(**env2dict(context_f))
 _env = Environment(env("ENV"))
 
 # Setup env
