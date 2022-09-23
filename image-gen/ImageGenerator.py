@@ -20,7 +20,11 @@ def text2img(pipeline, text: str, **kwargs) -> bytes:
 	log.info(f"Generating image from '{text}', kwargs: {kwargs}")
 
 	# Loading config
+	# For info on args: https://huggingface.co/blog/stable_diffusion
 	set_default(kwargs, "num_inference_steps", 15)
+	set_default(kwargs, "guidance_scale", 7.5)
+	set_default(kwargs, "width", 512)
+	set_default(kwargs, "height", 512)
 
 	# Generate image
 	with precision_scope:
