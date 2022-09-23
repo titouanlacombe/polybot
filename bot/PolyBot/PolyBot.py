@@ -162,12 +162,6 @@ class PolyBot:
 			except Exception:
 				image_gen_kwargs["text"] = message.content
 
-		# Store request for update handling
-		self.requests[message.id] = {
-			"type": "image-gen",
-			"message": message,
-		}
-
 		resp: dict = await self.call_service("image-gen", "generate", **image_gen_kwargs)
 
 		if resp.get("error", None) is not None:
@@ -205,9 +199,8 @@ class PolyBot:
 		bar: DiscordProgressBar = request['progress_bar']
 		await bar.finish()
 
-	async def handle_message(self, message: discord.Message):
-		# TODO handle requests lifecycle here
-		log.info(f"Handling message: {message.content}")
+	async def _handle_message(self, message: discord.Message):
+		log.info(f"Handling message: '{message.content}'")
 
 		# Ignore bot messages
 		if self.ignore_self and message.author.display_name == self.bot.user.display_name:
@@ -217,21 +210,32 @@ class PolyBot:
 		# Check if the message is a command
 		if message.content.startswith(App.command_prefix):
 			log.debug(f"Message is a command, handling...")
+			self.requests[message.id]['type'] = "command"
 			await self.bot.process_commands(message)
 			return "Command handled"
 
 		# Check if the message is posted in the image-gen channel
 		if message.channel.name == "image-gen":
 			log.debug(f"Message posted in image-gen channel, handling...")
+			self.requests[message.id]['type'] = "image-gen"
 			await self.handle_image_gen(message)
 			return "Image generated"
 
 		# Let message go through triggers
 		trig = await self.handle_triggers(message)
 		if trig is not None:
+			self.requests[message.id]['type'] = "trigger"
 			return f"Triggered '{trig}'"
 
 		return "No response"
+
+	async def handle_message(self, message: discord.Message):
+		self.requests[message.id] = {
+			"type": "unknown",
+			"message": message,
+		}
+		self._handle_message(message)
+		del self.requests[message.id]
 
 	# Function used to test bot response to a message
 	async def message(self, text, author):
