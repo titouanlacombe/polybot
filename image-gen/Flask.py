@@ -1,4 +1,5 @@
 import json, logging, flask, base64
+from io import BytesIO
 from threading import Thread
 from werkzeug.exceptions import ServiceUnavailable, HTTPException
 from ImageGenerator import text2img
@@ -20,7 +21,15 @@ def generate_image(text: str, **kwargs) -> bytes:
 	# Recover thread result
 	pipeline = app.config["pipeline"]
 
-	return text2img(pipeline, text, **kwargs)
+	image = text2img(pipeline, text, **kwargs)
+
+	# Encode image to PNG
+	im_file = BytesIO()
+	image.save(im_file, format="PNG")
+
+	return {
+		"image": base64.b64encode(im_file.getvalue()).decode("ascii"),
+	}
 
 rpc_methods = {
 	"ping": lambda: "pong",
@@ -42,10 +51,8 @@ def rpc():
 	data: dict = flask.request.json
 
 	try:
-		image_data: bytes = rpc_methods[data['command']](*data.get("args", []), **data.get("kwargs", {}))
-		res = {
-			"image_data": base64.b64encode(image_data).decode("ascii"),
-		}
+		res: dict = rpc_methods[data['command']](*data.get("args", []), **data.get("kwargs", {}))
+	
 	except HTTPException:
 		raise
 	
