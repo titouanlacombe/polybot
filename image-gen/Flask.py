@@ -10,7 +10,7 @@ app = flask.Flask("ImageGenerator")
 
 rpc_methods = {
 	"ping": lambda: "pong",
-	"generate": lambda text, **kwargs: generate_image(text, app.config, **kwargs),
+	"generate": lambda **kwargs: generate_image(app.config, **kwargs),
 }
 
 @app.route('/')
@@ -19,8 +19,7 @@ def home():
 
 @app.route('/test', methods=["POST"])
 def test():
-	text = flask.request.data.decode()
-	rpc_methods["generate"](text)
+	rpc_methods["generate"](text=flask.request.data.decode())
 	return "OK"
 
 @app.route('/rpc', methods=['POST'])
