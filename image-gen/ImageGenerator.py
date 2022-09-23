@@ -56,12 +56,13 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 		target = kwargs.pop("image")
 		target_str = f"<Image>"
 
-	# Create progress bar
-	request_id = kwargs.pop("request_id")
-	port = 8080 # TODO pass ports as docker args
-	call_rpc(f"bot:{port}", "pbar_create", request_id, kwargs["num_inference_steps"],
-		f"Generating image from {target_str}"
-	)
+	request_id = kwargs.pop("request_id", None)
+	if request_id is not None:
+		# Call polybot to create a progress bar
+		port = 8080 # TODO pass ports as docker args
+		call_rpc(f"bot:{port}", "pbar_create", request_id, kwargs["num_inference_steps"],
+			f"Generating image from {target_str}"
+		)
 
 	# Generate image
 	image = f(pipeline, target, **kwargs)
