@@ -93,10 +93,8 @@ class PolyBot:
 		else:
 			log.warning(f"Dry run, would set presence: {kwargs}")
 
-	# channel.send wrapper
-	async def send(self, message, channel=None):
-		if message == "":
-			raise Exception("Empty message")
+	async def send(self, content=None, **kwargs):
+		kwargs["content"] = content
 
 		if not self.ready:
 			raise Exception("Bot is not connected, can't talk")
@@ -104,22 +102,24 @@ class PolyBot:
 		if self.paused:
 			raise Exception("Bot is paused, no talking")
 		
-		if channel is None:
-			channel = self.main_channel
-
-		if channel is None:
-			raise Exception("Can't talk: no channel specified and no main channel set")
-		
 		if App.in_pre():
-			log.warning(f"Sending message to pre channel (original: {channel.name})")
+			log.warning(f"Replacing channel to preprod channel (original: {channel.name})")
 			channel = discord.utils.get(self.bot.get_all_channels(), name="polybot-preprod")
 
-		if App.in_pro() or App.in_pre():
-			log.info(f"Sending message: '{message}'")
-			await channel.send(message)
-		else:
-			log.warning(f"Dry run, would send message: '{message}'")
+		if App.in_dev() or App.in_sta():
+			log.warning(f"Dry run, would send {kwargs}")
 
+		log.info(f"Sending {kwargs}")
+
+		if kwargs.get("reply_to") is not None:
+			return await kwargs.pop("reply_to").reply(**kwargs)
+
+		if kwargs.get("channel") is None:
+			if self.main_channel is None:
+				raise Exception("Can't talk: no channel specified and no main channel set")
+			kwargs["channel"] = self.main_channel
+			return await kwargs.pop("channel").send(**kwargs)
+		
 	async def status(self):
 		return {
 			"ready": self.ready,
@@ -137,7 +137,7 @@ class PolyBot:
 		for trigger in self.triggers:
 			if trigger.triggered(message, processed):
 				response = trigger.get_response(message)
-				await self.send(response, message.channel)
+				await self.send(response, reply_to=message)
 
 				# Only one trigger per message
 				return response
@@ -166,19 +166,18 @@ class PolyBot:
 
 		if resp.get("error", None) is not None:
 			log.warning(f"Error occured in image-gen service: {resp}")
-			await self.send(resp['error'], message.channel)
+			await self.send(resp['error'], reply_to=message)
 			return
 
 		file_obj = BytesIO(base64.b64decode(resp['image'].encode("ascii")))
 
-		# TODO use message.reply() (refactor my send method)
-		await self.send(file=discord.File(file_obj, "image.png"), channel=message.channel)
+		await self.send(file=discord.File(file_obj, "image.png"), reply_to=message)
 
 	async def pbar_create(self, request_id: int, total: int, title: str):
 		request = self.get_request(request_id)
 
 		async def send_callback(txt):
-			await self.send(txt, request['message'].channel)
+			await self.send(txt, reply_to=request['message'])
 
 		bar = DiscordProgressBar(
 			total=total,

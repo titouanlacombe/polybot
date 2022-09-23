@@ -29,7 +29,7 @@ def register_commands(polybot: PolyBot):
 			"Pti worldle ?\nhttps://worldle.teuteuf.fr/",
 			"Pti framed ?\nhttps://framed.wtf/",
 		])
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Vous vous sentez mal ? regardez l'argent que vous gagnez pas seconde !",
@@ -53,7 +53,7 @@ def register_commands(polybot: PolyBot):
 		gain = (work_time.seconds / 3600) * hourly_rate
 
 		message = f"Vous avez gagné %.2f€ depuis le début de la journée\nhttps://tenor.com/view/wealth-gif-24406365" % gain
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Vous avez faim ? regardez cette magnifique nourriture !",
@@ -70,7 +70,7 @@ def register_commands(polybot: PolyBot):
 			"https://tenor.com/view/sushiroll-shrimp-californiaroll-crunchyroll-nom-gif-4834623",
 			"https://tenor.com/view/beef-meat-food-gif-15154168",
 		])
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Pong",
@@ -82,14 +82,14 @@ def register_commands(polybot: PolyBot):
 			lat = 0
 
 		message = f"{math.floor(lat * 1000)} ms"
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Vous avez envie d'en finir ? attendez au moins jusqu'à la fin du timer !",
 	)
 	async def timetosuffer(ctx: Context):
 		message = gettimetosuffer(endofformation)
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Donne le status du bot",
@@ -97,14 +97,14 @@ def register_commands(polybot: PolyBot):
 	async def info(ctx: Context):
 		status = await polybot.status()
 		message = f"Je suis PolyBot v{App.ver} {App.env} actif depuis {status['up_since']}\n"
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Affiche le nombre de triggers actifs",
 	)
 	async def triggers(ctx: Context):
 		message = f"Il y a {len(polybot.triggers)} triggers"
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Met le bot en pause",
@@ -144,4 +144,4 @@ def register_commands(polybot: PolyBot):
 			"https://www.youtube.com/watch?v=tYseHTv9Xx0",
 			"https://www.youtube.com/watch?v=NBw2I3obQTY",
 		])
-		await polybot.send(resp, ctx.channel)
+		await polybot.send(resp, reply_to=ctx.message)

@@ -53,5 +53,5 @@ def register_events(polybot: PolyBot):
 	@bot.event
 	async def on_command_error(ctx: Context, error):
 		log.exception(f"Error while executing command", exc_info=error)
-		await polybot.send("Error: " + str(error), ctx.channel)
+		await polybot.send("Error: " + str(error), reply_to=ctx.message)
 
