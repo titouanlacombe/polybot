@@ -26,3 +26,5 @@ elif in_pre():
 	env_color = "#d98b25" # Orange
 elif in_pro():
 	env_color = "#de1616" # Red
+
+image_gen_host = f"image-gen:{os.getenv('IMAGE_GEN_PORT')}"

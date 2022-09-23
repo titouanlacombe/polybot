@@ -62,9 +62,9 @@ class PolyBot:
 	def __del__(self):
 		self.http_session.close()
 
-	async def call_service(self, service, command, *args, **kwargs):
-		log.info(f"Calling {service}: {command}(*{args}, **{kwargs})")
-		async with self.http_session.post(f"http://{service}/rpc", json={
+	async def call_service(self, host, command, *args, **kwargs):
+		log.info(f"Calling {host}: {command}(*{args}, **{kwargs})")
+		async with self.http_session.post(f"http://{host}/rpc", json={
 			"command": command,
 			"args": args,
 			"kwargs": kwargs
@@ -165,7 +165,7 @@ class PolyBot:
 			except Exception:
 				image_gen_kwargs["text"] = message.content
 
-		resp: dict = await self.call_service("image-gen", "generate", **image_gen_kwargs)
+		resp: dict = await self.call_service(App.image_gen_host, "generate", **image_gen_kwargs)
 
 		if resp.get("error", None) is not None:
 			log.warning(f"Error occured in image-gen service: {resp}")
