@@ -14,6 +14,7 @@ def set_default(dict, key, value):
 		dict[key] = value
 
 # TODO Ordered by priority:
+# ROCm: dualboot linux
 # ROCm: https://www.reddit.com/r/StableDiffusion/comments/ww436j/howto_stable_diffusion_on_an_amd_gpu/
 # ROCm backup: https://www.gabriel.urdhr.fr/2022/08/28/trying-to-run-stable-diffusion-on-amd-ryzen-5-5600g/
 def text2img(pipeline, text: str, **kwargs) -> Image.Image:
