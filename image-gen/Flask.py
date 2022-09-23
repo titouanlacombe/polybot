@@ -3,7 +3,6 @@ from werkzeug.exceptions import HTTPException
 
 from ImageGenerator import generate_image
 
-logging.basicConfig(filename="../data/logs/image-gen.log", level=logging.INFO)
 log = logging.getLogger(__name__)
 
 app = flask.Flask("ImageGenerator")

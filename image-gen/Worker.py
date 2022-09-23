@@ -1,3 +1,6 @@
+import logging
+logging.basicConfig(filename="../data/logs/image-gen.log", level=logging.INFO)
+
 import threading
 from Flask import app
 from PipelineLoader import load_pipeline
