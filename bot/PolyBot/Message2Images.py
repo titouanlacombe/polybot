@@ -2,7 +2,7 @@ import discord
 from typing import List
 
 # Recover every image embeded or attached to a discord message
-async def message2images(message: discord.Message) -> List[str]:
+def message2images(message: discord.Message) -> List[str]:
 	urls = []
 
 	# Recover every image embeded in the message
