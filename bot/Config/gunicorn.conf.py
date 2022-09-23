@@ -1,8 +1,9 @@
+import os
 from Utils.Logging import getFormat
 from Config.Filesystem import logs_dir
 import Config.App as App
 
-bind=f"0.0.0.0:{App.api_port}"
+bind=f"0.0.0.0:{os.environ['POLYBOT_API_PORT']}"
 
 if App.in_pro() or App.in_pre():
 	workers=2

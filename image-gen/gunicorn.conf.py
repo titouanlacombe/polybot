@@ -1,4 +1,6 @@
-bind = "0.0.0.0:80"
+import os
+
+bind = f"0.0.0.0:{os.environ['IMAGE_GEN_PORT']}"
 reload = True
 
 # Keep those workers because stable diffusion use all of the RAM

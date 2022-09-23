@@ -31,6 +31,9 @@ _env = Environment(env("ENV"))
 env(
 	COMPOSE_PROJECT_NAME=f"{env('APP_NAME')}-{_env.short}-{env('VER').replace('.', '_')}",
 	TZ="Europe/Paris",
+	POLYBOT_PORT=8080,
+	POLYBOT_API_PORT=5000,
+	IMAGE_GEN_PORT=5001,
 )
 
 def create_data():

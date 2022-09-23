@@ -2,8 +2,6 @@ import os
 
 env = os.getenv("ENV")
 ver = os.getenv("VER")
-api_port = os.getenv("API_PORT")
-polybot_port = os.getenv("POLYBOT_PORT")
 
 def in_dev():
 	return env.startswith("dev")

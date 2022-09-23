@@ -8,7 +8,7 @@ services:
 
   image-gen:
     ports:
-      - 5010:80
+      - 5010:${IMAGE_GEN_PORT}
     volumes:
       - ../image-gen:/home/app/src
       - ../../data:/home/app/data

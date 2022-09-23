@@ -1,4 +1,4 @@
-import logging, requests
+import logging, requests, os
 
 log = logging.getLogger(__name__)
 
@@ -15,3 +15,6 @@ def call_rpc(host: str, command: str, *args, **kwargs):
 	log.info(f"Response from {host}: {response}")
 	
 	return response.json()
+
+polybot_host = f"bot:{os.environ['POLYBOT_PORT']}"
+polybot_api_host = f"bot:{os.environ['POLYBOT_API_PORT']}"

@@ -77,7 +77,7 @@ async def main():
 	server = await asyncio.start_server(
 		request,
 		"0.0.0.0",
-		App.polybot_port
+		os.environ["POLYBOT_PORT"],
 	)
 	
 	# Start the discord client
