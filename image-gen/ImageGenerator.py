@@ -1,4 +1,3 @@
-from io import BytesIO
 import logging
 from PIL import Image
 from Config import precision_scope
@@ -13,10 +12,8 @@ def set_default(dict, key, value):
 # Remove NSFW filter to save RAM
 # ROCm: https://www.reddit.com/r/StableDiffusion/comments/ww436j/howto_stable_diffusion_on_an_amd_gpu/
 # ROCm backup: https://www.gabriel.urdhr.fr/2022/08/28/trying-to-run-stable-diffusion-on-amd-ryzen-5-5600g/
-# make a discord proggress bar with ETA
-# support json messages to allow for model tweaking per message
 # support image messages to allow for image2image
-def text2img(pipeline, text: str, **kwargs) -> bytes:
+def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 	log.info(f"Generating image from '{text}', kwargs: {kwargs}")
 
 	# Loading config
@@ -36,10 +33,5 @@ def text2img(pipeline, text: str, **kwargs) -> bytes:
 	# Save tmp image for debugging
 	image.save("../data/tmp.png")
 
-	# Return image as PNG bytes
-	bytes = BytesIO()
-	image.save(bytes, format="PNG")
-	image_data = bytes.getvalue()
-
 	log.info("Image encoded")
-	return image_data
+	return image
