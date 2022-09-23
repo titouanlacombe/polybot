@@ -58,21 +58,21 @@ async def main():
 
 			if command not in poly_rpc_targets:
 				raise Exception(f"Unknown RPC command '{command}'")
-			result = await getattr(polybot, command)(*args, **kwargs)
-
-			resp = json.dumps({
-				"result": result,
-			})
-			log.info(f"Sending rpc response: {resp}")
-			response.write(resp.encode())
-			
+				
+			resp = {
+				"result": await getattr(polybot, command)(*args, **kwargs),
+			}
 		except Exception as e:
 			log.exception("Exception during request")
 			sentry_sdk.capture_exception(e)
-			resp = json.dumps({
+			resp = {
 				"error": str(e)
-			})
-			response.write(resp.encode())
+			}
+
+		resp = json.dumps(resp).encode()
+		log.info(f"Sending rpc response: {resp}")
+		response.write(len(resp).to_bytes(4, "big"))
+		response.write(resp)
 
 	server = await asyncio.start_server(
 		request,
