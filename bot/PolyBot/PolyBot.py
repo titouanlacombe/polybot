@@ -102,9 +102,12 @@ class PolyBot:
 		if self.paused:
 			raise Exception("Bot is paused, no talking")
 		
-		if App.in_pre():
-			log.warning(f"Replacing channel to preprod channel (original: {channel.name})")
-			channel = discord.utils.get(self.bot.get_all_channels(), name="polybot-preprod")
+		if kwargs.get("reply_to") is not None and kwargs.get("channel") is not None:
+			raise Exception("Can't reply and send to a channel at the same time")
+
+		if App.in_pre() and kwargs.get("channel") is not None:
+			log.warning(f"Replacing channel to preprod channel (original: {kwargs['channel'].name})")
+			kwargs["channel"] = discord.utils.get(self.bot.get_all_channels(), name="polybot-preprod")
 
 		if App.in_dev() or App.in_sta():
 			log.warning(f"Dry run, would send {kwargs}")
