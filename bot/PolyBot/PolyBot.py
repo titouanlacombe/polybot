@@ -1,4 +1,5 @@
 import asyncio, discord, logging, aiohttp, unidecode, re, base64, json, random
+from copy import deepcopy
 from io import BytesIO
 from datetime import datetime
 from discord.ext.commands import Bot
@@ -19,20 +20,11 @@ def preprocess_text(text: str):
 	text = re.sub(r" +", " ", text)
 	return text
 
-# Dict to object
-class MessageDummy:
-	pass
-
-class AuthorDummy:
-	pass
-
-def create_message(text, author):
-	msg = MessageDummy()
-	msg.content = text
-	msg.author = AuthorDummy()
-	msg.author.display_name = author
-	msg.channel = None
-	return msg
+def create_message(dummy: discord.Message, text, author, channel):
+	dummy.content = text
+	dummy.author.name = author
+	dummy.channel.name = channel
+	return dummy
 
 class PolyBot:
 	def __init__(self, bot, triggers=[], presences=[], ignore_self=True):
@@ -40,6 +32,7 @@ class PolyBot:
 		self.bot: Bot = bot
 
 		self.main_channel: discord.channel.TextChannel = None
+		self.message_example: discord.Message = None
 		self.http_session = aiohttp.ClientSession()
 		self.ignore_self = ignore_self
 
@@ -116,6 +109,7 @@ class PolyBot:
 
 		if App.in_dev() or App.in_sta():
 			log.warning(f"Dry run, would send {kwargs}")
+			return
 
 		log.info(f"Sending {kwargs}")
 
@@ -245,8 +239,8 @@ class PolyBot:
 		del self.requests[message.id]
 
 	# Function used to test bot response to a message
-	async def message(self, text, author):
-		return await self.handle_message(create_message(text, author))
+	async def message(self, text="", author="None", channel="general"):
+		return await self.handle_message(create_message(self.message_example, text, author, channel))
 
 	async def activity_loop(self):
 		log.info(f"Starting activity loop, update interval: {App.activity_update_interval}")

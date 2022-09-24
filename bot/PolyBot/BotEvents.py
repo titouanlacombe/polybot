@@ -1,5 +1,4 @@
-import asyncio
-import logging, discord
+import asyncio, logging, discord
 from discord.ext.commands import Bot, Context
 from .PolyBot import PolyBot
 
@@ -20,6 +19,10 @@ def register_events(polybot: PolyBot):
 
 		# Set main channel
 		polybot.main_channel = discord.utils.get(bot.get_all_channels(), name="général")
+
+		# Set message example
+		async for message in polybot.main_channel.history(limit=1):
+			polybot.message_example = message
 
 		# Launch activity loop
 		asyncio.create_task(polybot.activity_loop())

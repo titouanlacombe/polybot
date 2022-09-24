@@ -59,6 +59,7 @@ function create_call(command) {
 		case 'message':
 			data['args'].push(document.getElementById('message_text').value);
 			data['args'].push(document.getElementById('as_user').value);
+			data['args'].push(document.getElementById('as_channel').value);
 			break;
 
 		case 'status':
