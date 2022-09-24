@@ -11,6 +11,23 @@ from .DiscordProggressBar import DiscordProgressBar
 log = logging.getLogger(__name__)
 random.seed()
 
+image_gen_help = """
+Usage:
+Prompt mode: \"Prompt\"
+YAML mode: \"\"\"
+text: 'Prompt'
+option: value
+\"\"\"
+
+Available options:
+- text: input prompt text
+- image_url: input image url (not implemented)
+- num_inference_steps: higher quality but slower (default: 15)
+- guidance_scale: how much should the result be guided by the prompt at the cost of quality (default: 7.5)
+- width: result image width (default: 512)
+- height: result image height (default: 512)
+""".strip()
+
 def preprocess_text(text: str):
 	# Replace accents
 	text = unidecode.unidecode(text)
@@ -110,19 +127,21 @@ class PolyBot:
 
 		if App.in_dev() or App.in_sta():
 			log.warning(f"Dry run, would send {kwargs}")
-			return
+			return content, False
 
 		log.info(f"Sending {kwargs}")
 
 		if kwargs.get("reply_to") is not None:
-			return await kwargs.pop("reply_to").reply(**kwargs)
+			await kwargs.pop("reply_to").reply(**kwargs)
 
 		if kwargs.get("channel") is None:
 			if self.main_channel is None:
 				raise Exception("Can't talk: no channel specified and no main channel set")
 			kwargs["channel"] = self.main_channel
-			return await kwargs.pop("channel").send(**kwargs)
+			await kwargs.pop("channel").send(**kwargs)
 		
+		return content, True
+
 	async def status(self):
 		return {
 			"ready": self.ready,
@@ -140,15 +159,17 @@ class PolyBot:
 		for trigger in self.triggers:
 			if trigger.triggered(message, processed):
 				response = trigger.get_response(message)
-				await self.send(response, reply_to=message)
 
 				# Only one trigger per message
-				return response
+				return await self.send(response, reply_to=message)
 
 		log.info(f"No trigger found for message")
 		return None
 
 	async def handle_image_gen(self, message: discord.Message):
+		if message.content == "help":
+			return await self.send(image_gen_help, reply_to=message)
+
 		image_gen_kwargs = {
 			"request_id": message.id,
 		}
@@ -170,12 +191,11 @@ class PolyBot:
 
 		if resp.get("error", None) is not None:
 			log.warning(f"Error occured in image-gen service: {resp}")
-			await self.send(resp['error'], reply_to=message)
-			return
+			return await self.send(resp['error'], reply_to=message)
 
 		file_obj = BytesIO(base64.b64decode(resp['image'].encode("ascii")))
 
-		await self.send(file=discord.File(file_obj, "image.png"), reply_to=message)
+		return await self.send(file=discord.File(file_obj, "image.png"), reply_to=message)
 
 	async def pbar_create(self, request_id: int, total: int, title: str):
 		request = self.get_request(request_id)
@@ -221,14 +241,12 @@ class PolyBot:
 		if message.channel.name == "image-gen":
 			log.debug(f"Message posted in image-gen channel, handling...")
 			self.requests[message.id]['type'] = "image-gen"
-			await self.handle_image_gen(message)
-			return "Image generated"
+			return "Image generated", await self.handle_image_gen(message)
 
 		# Let message go through triggers
 		trig = await self.handle_triggers(message)
 		if trig is not None:
-			self.requests[message.id]['type'] = "trigger"
-			return f"Triggered '{trig}'"
+			return "Triggered", trig
 
 		return "No response"
 
@@ -237,8 +255,9 @@ class PolyBot:
 			"type": "unknown",
 			"message": message,
 		}
-		await self._handle_message(message)
+		res = await self._handle_message(message)
 		del self.requests[message.id]
+		return res
 
 	# Function used to test bot response to a message
 	async def message(self, text="", author="None", channel="general"):
