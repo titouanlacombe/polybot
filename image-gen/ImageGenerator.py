@@ -19,6 +19,11 @@ def constrain(dict, key, min, max, default):
 	if dict[key] > max:
 		raise Exception(f"Config '{key}' > {max}")
 
+def estimate_eta(image_size: int, num_inference_steps: int):
+	base_size = 512 * 512
+	base_time = 10 # seconds per inference step on 512x512 image
+	return base_time * (image_size / base_size) * num_inference_steps
+
 # TODO Ordered by priority:
 # ROCm: dualboot linux
 # ROCm: https://www.reddit.com/r/StableDiffusion/comments/ww436j/howto_stable_diffusion_on_an_amd_gpu/
@@ -59,6 +64,7 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 		op = text2img
 	elif "image_url" in kwargs:
 		# TODO support image2image
+		raise Exception("Image2image not implemented")
 		input = kwargs.pop("image_url")
 		steps = 1
 		op = lambda *args, **kwargs: Image.new("RGB", (512, 512))
@@ -67,7 +73,7 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 	if request_id is not None:
 		# Call polybot to create a progress bar
 		call_rpc(polybot_api_host, "pbar_create", request_id, steps,
-			f"Generating image from '{input}'"
+			f"Generating image from '{input}', ETA: {int(estimate_eta(kwargs['width'] * kwargs['height'], steps))} s"
 		)
 
 	# Generate image
