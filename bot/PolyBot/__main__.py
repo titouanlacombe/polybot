@@ -71,8 +71,8 @@ async def main():
 
 		resp = json.dumps(resp).encode()
 		log.info(f"Sending rpc response: {resp}")
-		response.write(len(resp).to_bytes(4, "big"))
 		response.write(resp)
+		response.close()
 
 	server = await asyncio.start_server(
 		request,
