@@ -1,5 +1,4 @@
 import asyncio, discord, logging, aiohttp, unidecode, re, base64, json, random
-from copy import deepcopy
 from io import BytesIO
 from datetime import datetime
 from discord.ext.commands import Bot
