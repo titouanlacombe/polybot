@@ -17,8 +17,9 @@ def register_events(polybot: PolyBot):
 		log.info(f"Setting status to {status}")		
 		await polybot.change_presence(status=status)
 
-		# Set main channel
+		# Set channels
 		polybot.main_channel = discord.utils.get(bot.get_all_channels(), name="général")
+		polybot.preprod_channel = discord.utils.get(bot.get_all_channels(), name="polybot-preprod")
 
 		# Set message example
 		async for message in polybot.main_channel.history(limit=1):

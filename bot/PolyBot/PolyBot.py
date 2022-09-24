@@ -50,6 +50,7 @@ class PolyBot:
 		self.bot: Bot = bot
 
 		self.main_channel: discord.channel.TextChannel = None
+		self.preprod_channel: discord.channel.TextChannel = None
 		self.message_example: discord.Message = None
 		self.http_session = aiohttp.ClientSession()
 		self.ignore_self = ignore_self
@@ -121,9 +122,10 @@ class PolyBot:
 		if kwargs.get("reply_to") is not None and kwargs.get("channel") is not None:
 			raise Exception("Can't reply and send to a channel at the same time")
 
-		if App.in_pre() and kwargs.get("channel") is not None:
+		if App.in_pre():
+			kwargs.pop("reply_to", None)
 			log.warning(f"Replacing channel to preprod channel (original: {kwargs['channel'].name})")
-			kwargs["channel"] = discord.utils.get(self.bot.get_all_channels(), name="polybot-preprod")
+			kwargs["channel"] = self.preprod_channel
 
 		if App.in_dev() or App.in_sta():
 			log.warning(f"Dry run, would send {kwargs}")
@@ -133,13 +135,13 @@ class PolyBot:
 
 		if kwargs.get("reply_to") is not None:
 			await kwargs.pop("reply_to").reply(**kwargs)
-
-		if kwargs.get("channel") is None:
-			if self.main_channel is None:
-				raise Exception("Can't talk: no channel specified and no main channel set")
-			kwargs["channel"] = self.main_channel
+		elif kwargs.get("channel") is not None:
 			await kwargs.pop("channel").send(**kwargs)
-		
+		else:
+			if self.main_channel is None:
+				raise Exception("No target specified and main channel not set")
+			await self.main_channel.send(**kwargs)
+
 		return content, True
 
 	async def status(self):
