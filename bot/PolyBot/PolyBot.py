@@ -19,8 +19,10 @@ def preprocess_text(text: str):
 	text = re.sub(r" +", " ", text)
 	return text
 
+# Warning: only works when proccessing one message at a time (because we modify the message in place)
 def create_message(dummy: discord.Message, text, author, channel):
 	dummy.content = text
+	dummy.id = random.randint(0, 2**64)
 	dummy.author.name = author
 	dummy.channel.name = channel
 	return dummy
