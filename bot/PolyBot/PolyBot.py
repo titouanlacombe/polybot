@@ -124,7 +124,7 @@ class PolyBot:
 
 		if App.in_pre():
 			kwargs.pop("reply_to", None)
-			log.warning(f"Replacing channel to preprod channel (original: {kwargs['channel'].name})")
+			log.warning(f"Replacing channel to preprod channel (original: {kwargs.get('channel')})")
 			kwargs["channel"] = self.preprod_channel
 
 		if App.in_dev() or App.in_sta():
