@@ -9,9 +9,15 @@ from Microservices import call_rpc, polybot_api_host
 
 log = logging.getLogger(__name__)
 
-def set_default(dict, key, value):
+def constrain(dict, key, min, max, default):
 	if key not in dict:
-		dict[key] = value
+		dict[key] = default
+
+	if dict[key] < min:
+		raise Exception(f"Config '{key}' < {min}")
+
+	if dict[key] > max:
+		raise Exception(f"Config '{key}' > {max}")
 
 # TODO Ordered by priority:
 # ROCm: dualboot linux
@@ -42,10 +48,10 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 	pipeline = app_conf["pipeline"]
 
 	log.info(f"Parsing config: {kwargs}")
-	set_default(kwargs, "num_inference_steps", 15)
-	set_default(kwargs, "guidance_scale", 7.5)
-	set_default(kwargs, "width", 512)
-	set_default(kwargs, "height", 512)
+	constrain(kwargs, "num_inference_steps", 1, 50, 15)
+	constrain(kwargs, "guidance_scale", 0, 10, 7.5)
+	constrain(kwargs, "width", 8, 512, 512)
+	constrain(kwargs, "height", 8, 512, 512)
 
 	if "text" in kwargs:
 		input = kwargs.pop("text")
