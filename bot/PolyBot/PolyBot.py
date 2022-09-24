@@ -1,4 +1,4 @@
-import asyncio, discord, logging, aiohttp, unidecode, re, base64, json, random
+import asyncio, discord, logging, aiohttp, unidecode, re, base64, random, yaml
 from io import BytesIO
 from datetime import datetime
 from discord.ext.commands import Bot
@@ -159,8 +159,9 @@ class PolyBot:
 
 		if len(message.content) > 0:
 			try:
-				image_gen_kwargs.update(json.loads(message.content))
-			except Exception:
+				image_gen_kwargs.update(yaml.safe_load(message.content))
+			except Exception as e:
+				log.info(f"Failed to parse message content as YAML ({e}), assuming it's text")
 				image_gen_kwargs["text"] = message.content
 
 		resp: dict = await self.call_service(App.image_gen_host, "generate", **image_gen_kwargs)
