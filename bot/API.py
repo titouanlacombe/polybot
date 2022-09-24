@@ -14,7 +14,7 @@ def socket_send(host: str, port: int, data: str, buffer=1024*4):
 		s.connect((host, port))
 
 		# Send data length, then data
-		s.sendall(len(data).to_bytes(4, "big"))
+		s.send(len(data).to_bytes(4, "big"))
 		s.sendall(data.encode())
 
 		# Read response until EOF
