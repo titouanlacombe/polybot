@@ -36,7 +36,7 @@ def register_events(polybot: PolyBot):
 		polybot.ready = False
 		
 	@bot.event
-	async def on_resume():
+	async def on_resumed():
 		log.info("Resumed connexion")
 		polybot.ready = True
 
