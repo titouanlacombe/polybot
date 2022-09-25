@@ -53,6 +53,7 @@ class PolyBot:
 		self.preprod_channel: discord.channel.TextChannel = None
 		self.message_example: discord.Message = None
 		self.http_session = aiohttp.ClientSession()
+		self.timeout = aiohttp.ClientTimeout(total=900) # 15 minutes
 		self.ignore_self = ignore_self
 
 		self.ready = False
@@ -80,7 +81,7 @@ class PolyBot:
 			"command": command,
 			"args": args,
 			"kwargs": kwargs
-		}) as resp:
+		}, timeout=self.timeout) as resp:
 			response: dict = await resp.json()
 			log.debug(f"Response: {response}")
 
