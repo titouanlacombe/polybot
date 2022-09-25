@@ -144,6 +144,15 @@ class PolyBot:
 
 		return content, True
 
+	async def rpc_send(self, content=None, **kwargs):
+		if kwargs.get("reply_to") is not None:
+			kwargs["reply_to"] = self.get_request(kwargs["reply_to"])["message"]
+
+		if kwargs.get("channel") is not None:
+			kwargs["channel"] = discord.utils.get(self.bot.get_all_channels(), name=kwargs["channel"])
+
+		return await self.send(content, **kwargs)
+
 	async def status(self):
 		return {
 			"ready": self.ready,

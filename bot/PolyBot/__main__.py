@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 Sentry.init()
 
 poly_rpc_targets = [
-	PolyBot.send.__name__,
+	PolyBot.rpc_send.__name__,
 	PolyBot.message.__name__,
 	PolyBot.pause.__name__,
 	PolyBot.unpause.__name__,
