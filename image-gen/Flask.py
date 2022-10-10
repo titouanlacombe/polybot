@@ -31,7 +31,8 @@ def rpc():
 			"result": rpc_methods[data['command']](*data.get("args", []), **data.get("kwargs", {})),
 		}
 	
-	except HTTPException:
+	except HTTPException as e:
+		log.exception(e)
 		raise
 	
 	except Exception as e:

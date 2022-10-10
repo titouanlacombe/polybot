@@ -1,5 +1,4 @@
-import logging, base64
-from threading import Thread
+import logging, base64, threading
 from io import BytesIO
 from werkzeug.exceptions import ServiceUnavailable
 from PIL import Image
@@ -8,6 +7,7 @@ from Config import precision_scope
 from Microservices import call_rpc, polybot_api_host
 
 log = logging.getLogger(__name__)
+jobs_sem = threading.Semaphore(1)
 
 def constrain(dict, key, min, max, default):
 	if key not in dict:
@@ -25,7 +25,6 @@ def estimate_eta(image_size: int, num_inference_steps: int):
 	return base_time * (image_size / base_size) * num_inference_steps
 
 # TODO Ordered by priority:
-# ROCm: dualboot linux
 # ROCm: https://www.reddit.com/r/StableDiffusion/comments/ww436j/howto_stable_diffusion_on_an_amd_gpu/
 # ROCm backup: https://www.gabriel.urdhr.fr/2022/08/28/trying-to-run-stable-diffusion-on-amd-ryzen-5-5600g/
 def text2img(pipeline, text: str, **kwargs) -> Image.Image:
@@ -45,11 +44,14 @@ def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 # API function
 def generate_image(app_conf: dict, **kwargs) -> bytes:
 	# Recover pipeline
-	loader_thread: Thread = app_conf.get("pipeline_loader_thread")
+	loader_thread: threading.Thread = app_conf.get("pipeline_loader_thread")
 	if loader_thread is None:
 		raise Exception("Pipeline loader thread not started")
 	if loader_thread.is_alive():
 		raise ServiceUnavailable("Pipeline loading not finished", retry_after=60*2)
+	if not jobs_sem.acquire(blocking=False):
+		raise Exception("Too many jobs currently running", retry_after=60*2)
+		
 	pipeline = app_conf["pipeline"]
 
 	log.info(f"Parsing config: {kwargs}")
