@@ -2,8 +2,6 @@ import os
 
 env = os.getenv("ENV")
 ver = os.getenv("VER")
-api_port = os.getenv("API_PORT")
-polybot_port = os.getenv("POLYBOT_PORT")
 
 def in_dev():
 	return env.startswith("dev")
@@ -28,3 +26,7 @@ elif in_pre():
 	env_color = "#d98b25" # Orange
 elif in_pro():
 	env_color = "#de1616" # Red
+
+image_gen_host = f"image-gen:{os.getenv('IMAGE_GEN_PORT')}"
+polybot_host = f"localhost:{os.getenv('POLYBOT_PORT')}"
+polybot_api_host = f"localhost:{os.getenv('POLYBOT_API_PORT')}"

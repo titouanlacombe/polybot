@@ -1,5 +1,4 @@
-import asyncio
-import logging, discord
+import asyncio, logging, discord
 from discord.ext.commands import Bot, Context
 from .PolyBot import PolyBot
 
@@ -18,8 +17,13 @@ def register_events(polybot: PolyBot):
 		log.info(f"Setting status to {status}")		
 		await polybot.change_presence(status=status)
 
-		# Set main channel
+		# Set channels
 		polybot.main_channel = discord.utils.get(bot.get_all_channels(), name="général")
+		polybot.preprod_channel = discord.utils.get(bot.get_all_channels(), name="polybot-preprod")
+
+		# Set message example
+		async for message in polybot.main_channel.history(limit=1):
+			polybot.message_example = message
 
 		# Launch activity loop
 		asyncio.create_task(polybot.activity_loop())
@@ -32,7 +36,7 @@ def register_events(polybot: PolyBot):
 		polybot.ready = False
 		
 	@bot.event
-	async def on_resume():
+	async def on_resumed():
 		log.info("Resumed connexion")
 		polybot.ready = True
 
@@ -53,5 +57,5 @@ def register_events(polybot: PolyBot):
 	@bot.event
 	async def on_command_error(ctx: Context, error):
 		log.exception(f"Error while executing command", exc_info=error)
-		await polybot.send("Error: " + str(error), ctx.channel)
+		await polybot.send("Error: " + str(error), reply_to=ctx.message)
 

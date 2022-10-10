@@ -6,6 +6,13 @@ services:
       - ../bot:/home/app/src
       - ../../data:/home/app/data
 
+  image-gen:
+    ports:
+      - 5010:${IMAGE_GEN_PORT}
+    volumes:
+      - ../image-gen:/home/app/src
+      - ../../data:/home/app/data
+
   nginx:
     ports:
       - 80:80

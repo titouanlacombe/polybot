@@ -12,11 +12,20 @@ def socket_send(host: str, port: int, data: str, buffer=1024*4):
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	try:
 		s.connect((host, port))
-		# Send data length
-		s.sendall(len(data).to_bytes(4, "big"))
-		# Send data
+
+		# Send data length, then data
+		s.send(len(data).to_bytes(4, "big"))
 		s.sendall(data.encode())
-		return s.recv(buffer).decode()
+
+		# Read response until EOF
+		resp = b""
+		while True:
+			data = s.recv(buffer)
+			if not data:
+				break
+			resp += data
+
+		return resp.decode()
 	finally:
 		s.close()
 
@@ -31,25 +40,19 @@ def ping():
 @app.route('/rpc', methods=['POST'])
 def rpc():
 	data: dict = flask.request.json
-	log.info(f"Received RPC: {data}")
+	log.info(f"RPC query: {data}")
 
 	try:
 		# Call polybot rpc
-		result = json.loads(
-			socket_send("localhost", int(App.polybot_port), json.dumps(data))
-		)
-		code = 200
+		host, port = App.polybot_host.split(":")
+		res = socket_send(host, int(port), json.dumps(data))
+		log.info(f"RPC response: {res}")
+		res = json.loads(res)
 	except Exception as exc:
 		log.exception(exc)
 		sentry_sdk.capture_exception(exc)
-		result = str(exc)
-		code = 500
+		res = {
+			"error": str(exc)
+		}
 
-	# Patch
-	if result is None:
-		result = json.dumps(None)
-
-	rep = flask.make_response(result)
-	rep.status_code = code
-	rep.headers['Content-Type'] = 'application/json'
-	return rep
+	return flask.jsonify(res)

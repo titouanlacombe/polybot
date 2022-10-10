@@ -12,17 +12,20 @@ from .BotPresences import presences
 from .BotTriggers import triggers
 import Utils.Sentry as Sentry
 
-basicConfig(logs_dir, "polybot", logging.DEBUG)
+basicConfig(logs_dir, "polybot", logging.INFO)
 log = logging.getLogger(__name__)
 
 Sentry.init()
 
 poly_rpc_targets = [
-	PolyBot.send.__name__,
+	PolyBot.rpc_send.__name__,
 	PolyBot.message.__name__,
 	PolyBot.pause.__name__,
 	PolyBot.unpause.__name__,
 	PolyBot.status.__name__,
+	PolyBot.pbar_create.__name__,
+	PolyBot.pbar_update.__name__,
+	PolyBot.pbar_finish.__name__,
 ]
 
 async def main():
@@ -55,26 +58,26 @@ async def main():
 
 			if command not in poly_rpc_targets:
 				raise Exception(f"Unknown RPC command '{command}'")
-			result = await getattr(polybot, command)(*args, **kwargs)
-
-			resp = json.dumps({
-				"result": result,
-			})
-			log.info(f"Sending rpc response: {resp}")
-			response.write(resp.encode())
-			
+				
+			resp = {
+				"result": await getattr(polybot, command)(*args, **kwargs),
+			}
 		except Exception as e:
 			log.exception("Exception during request")
 			sentry_sdk.capture_exception(e)
-			resp = json.dumps({
+			resp = {
 				"error": str(e)
-			})
-			response.write(resp.encode())
+			}
+
+		resp = json.dumps(resp).encode()
+		log.info(f"Sending rpc response: {resp}")
+		response.write(resp)
+		response.close()
 
 	server = await asyncio.start_server(
 		request,
 		"0.0.0.0",
-		App.polybot_port
+		os.environ["POLYBOT_PORT"],
 	)
 	
 	# Start the discord client

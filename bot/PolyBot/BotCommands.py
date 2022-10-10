@@ -1,3 +1,4 @@
+import logging
 import math, random
 from datetime import datetime, date, time
 from discord.ext.commands import Context
@@ -8,6 +9,24 @@ import Config.Users as Users
 from .PolyBot import PolyBot
 
 random.seed()
+log = logging.getLogger(__name__)
+
+image_gen_help = f"""
+Usage:
+Prompt mode: \"{App.command_prefix}imagen Prompt\"
+YAML mode: \"\"\"{App.command_prefix}imagen
+text: 'Prompt'
+option: value
+\"\"\"
+
+Available options:
+- text: input prompt text
+- image_url: input image url (not implemented)
+- num_inference_steps: higher quality but slower (default: 15)
+- guidance_scale: how much should the result be guided by the prompt at the cost of quality (default: 7.5)
+- width: result image width (default: 512)
+- height: result image height (default: 512)
+""".strip()
 
 def time_sub(t1, t2):
 	return datetime.combine(date.min, t1) - datetime.combine(date.min, t2)
@@ -29,7 +48,7 @@ def register_commands(polybot: PolyBot):
 			"Pti worldle ?\nhttps://worldle.teuteuf.fr/",
 			"Pti framed ?\nhttps://framed.wtf/",
 		])
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Vous vous sentez mal ? regardez l'argent que vous gagnez pas seconde !",
@@ -53,7 +72,7 @@ def register_commands(polybot: PolyBot):
 		gain = (work_time.seconds / 3600) * hourly_rate
 
 		message = f"Vous avez gagné %.2f€ depuis le début de la journée\nhttps://tenor.com/view/wealth-gif-24406365" % gain
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Vous avez faim ? regardez cette magnifique nourriture !",
@@ -70,7 +89,7 @@ def register_commands(polybot: PolyBot):
 			"https://tenor.com/view/sushiroll-shrimp-californiaroll-crunchyroll-nom-gif-4834623",
 			"https://tenor.com/view/beef-meat-food-gif-15154168",
 		])
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Pong",
@@ -82,14 +101,14 @@ def register_commands(polybot: PolyBot):
 			lat = 0
 
 		message = f"{math.floor(lat * 1000)} ms"
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Vous avez envie d'en finir ? attendez au moins jusqu'à la fin du timer !",
 	)
 	async def timetosuffer(ctx: Context):
 		message = gettimetosuffer(endofformation)
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Donne le status du bot",
@@ -97,14 +116,14 @@ def register_commands(polybot: PolyBot):
 	async def info(ctx: Context):
 		status = await polybot.status()
 		message = f"Je suis PolyBot v{App.ver} {App.env} actif depuis {status['up_since']}\n"
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Affiche le nombre de triggers actifs",
 	)
 	async def triggers(ctx: Context):
 		message = f"Il y a {len(polybot.triggers)} triggers"
-		await polybot.send(message, ctx.channel)
+		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
 		brief="Met le bot en pause",
@@ -144,4 +163,15 @@ def register_commands(polybot: PolyBot):
 			"https://www.youtube.com/watch?v=tYseHTv9Xx0",
 			"https://www.youtube.com/watch?v=NBw2I3obQTY",
 		])
-		await polybot.send(resp, ctx.channel)
+		await polybot.send(resp, reply_to=ctx.message)
+
+	@bot.command(
+		brief="Une idée révolutionaire ? Transforme la en image !",
+	)
+	async def imagen(ctx: Context):
+		ctx.message.content = ctx.message.content.replace(f"{App.command_prefix}imagen", "").strip()
+
+		if ctx.message.content == "help":
+			return await polybot.send(image_gen_help, reply_to=ctx.message)
+
+		return await polybot.handle_image_gen(ctx.message)

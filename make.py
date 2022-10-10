@@ -1,5 +1,6 @@
 from PIL import Image
 from makepie import *
+
 makepie_load()
 
 # Setup filesystem
@@ -9,19 +10,19 @@ logs = data / "logs"
 static = root / "bot" / "static"
 static_resources = static / "resources"
 resources = root / "resources"
+context_f = root / "context.env"
 
-# Setup vars
-_ver = root.name
-_env = Environment(root.parent.name)
-app_name = root.parent.parent.name
-compose_project_name = f"{app_name}-{_env.short}-{_ver.replace('.', '_')}"
+# Add context to env
+env(**env2dict(context_f))
+_env = Environment(env("ENV"))
 
 # Setup env
 env(
-	COMPOSE_PROJECT_NAME=compose_project_name,
+	COMPOSE_PROJECT_NAME=f"{env('APP_NAME')}-{_env.short}-{env('VER').replace('.', '_')}",
 	TZ="Europe/Paris",
-	ENV=str(_env),
-	VER=str(_ver),
+	POLYBOT_PORT="8080",
+	POLYBOT_API_PORT="5000",
+	IMAGE_GEN_PORT="5001",
 )
 
 def create_data():
@@ -47,6 +48,7 @@ def prebuild():
 
 def build():
 	prebuild()
+	env(COMPOSE_DOCKER_CLI_BUILD="1", DOCKER_BUILDKIT="1")
 	compose("build")
 
 def up():
@@ -60,6 +62,6 @@ def attach(target):
 
 @default()
 def build_up():
-	log(f"{app_name}-{_env}@{_ver}")
+	log(f"{env('APP_NAME')}-{_env.short}@{env('VER')}")
 	build()
 	up()

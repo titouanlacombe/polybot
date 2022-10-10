@@ -12,6 +12,22 @@ services:
       - TZ=${TZ}
       - SENTRY_DSN=${SENTRY_DSN}
       - BOT_TOKEN=${BOT_TOKEN}
+      - POLYBOT_PORT=${POLYBOT_PORT}
+      - POLYBOT_API_PORT=${POLYBOT_API_PORT}
+      - IMAGE_GEN_PORT=${IMAGE_GEN_PORT}
+    volumes:
+      - ../../data:/home/app/data
+
+  image-gen:
+    restart: always
+    build:
+      context: ../
+      dockerfile: ./docker/image-gen/Dockerfile
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+      - POLYBOT_PORT=${POLYBOT_PORT}
+      - POLYBOT_API_PORT=${POLYBOT_API_PORT}
+      - IMAGE_GEN_PORT=${IMAGE_GEN_PORT}
     volumes:
       - ../../data:/home/app/data
 
