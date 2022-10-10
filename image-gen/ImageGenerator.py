@@ -1,4 +1,5 @@
 import logging, base64, threading
+from pathlib import Path
 from io import BytesIO
 from werkzeug.exceptions import ServiceUnavailable
 from PIL import Image
@@ -8,6 +9,8 @@ from Microservices import call_rpc, polybot_api_host
 
 log = logging.getLogger(__name__)
 jobs_sem = threading.Semaphore(1)
+archive_dir = Path("../data/generated_images")
+archive_dir.mkdir(parents=True, exist_ok=True)
 
 def constrain(dict, key, min, max, default):
 	if key not in dict:
@@ -37,7 +40,7 @@ def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 	log.info("Image generated")
 
 	# Save image for archives
-	image.save(f"../data/generated_images/{text}.png")
+	image.save(archive_dir / f"{text}.png")
 
 	return image
 
@@ -51,7 +54,7 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 		raise ServiceUnavailable("Pipeline loading not finished", retry_after=60*2)
 	if not jobs_sem.acquire(blocking=False):
 		raise Exception("Too many jobs currently running", retry_after=60*2)
-		
+
 	pipeline = app_conf["pipeline"]
 
 	log.info(f"Parsing config: {kwargs}")
