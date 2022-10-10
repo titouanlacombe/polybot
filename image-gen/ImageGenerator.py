@@ -44,17 +44,7 @@ def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 
 	return image
 
-# API function
-def generate_image(app_conf: dict, **kwargs) -> bytes:
-	# Recover pipeline
-	loader_thread: threading.Thread = app_conf.get("pipeline_loader_thread")
-	if loader_thread is None:
-		raise Exception("Pipeline loader thread not started")
-	if loader_thread.is_alive():
-		raise ServiceUnavailable("Pipeline loading not finished", retry_after=60*2)
-	if not jobs_sem.acquire(blocking=False):
-		raise Exception("Too many jobs currently running", retry_after=60*2)
-
+def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	pipeline = app_conf["pipeline"]
 
 	log.info(f"Parsing config: {kwargs}")
@@ -91,3 +81,21 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 		# TODO check if i need to specify ascii
 		"image": base64.b64encode(im_file.getvalue()).decode("ascii"),
 	}
+
+# API function
+def generate_image(app_conf: dict, **kwargs) -> bytes:
+	# Pre conditions
+	loader_thread: threading.Thread = app_conf.get("pipeline_loader_thread")
+	if loader_thread is None:
+		raise Exception("Pipeline loader thread not started")
+	if loader_thread.is_alive():
+		raise ServiceUnavailable("Pipeline loading not finished", retry_after=60*2)
+
+	if not jobs_sem.acquire(blocking=False):
+		raise ServiceUnavailable("Too many jobs currently running", retry_after=60*2)
+
+	try:
+		return _generate_image(app_conf, **kwargs)
+	finally:
+		jobs_sem.release()
+	
