@@ -37,8 +37,8 @@ def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 	image: Image.Image = pipe_out.images[0]
 	log.info("Image generated")
 
-	# Save tmp image for debugging
-	image.save("../data/tmp.png")
+	# Save image for archives
+	image.save(f"../data/generated_images/{text}.png")
 
 	return image
 

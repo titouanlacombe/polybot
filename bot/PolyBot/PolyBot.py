@@ -11,23 +11,6 @@ from .DiscordProggressBar import DiscordProgressBar
 log = logging.getLogger(__name__)
 random.seed()
 
-image_gen_help = """
-Usage:
-Prompt mode: \"Prompt\"
-YAML mode: \"\"\"
-text: 'Prompt'
-option: value
-\"\"\"
-
-Available options:
-- text: input prompt text
-- image_url: input image url (not implemented)
-- num_inference_steps: higher quality but slower (default: 15)
-- guidance_scale: how much should the result be guided by the prompt at the cost of quality (default: 7.5)
-- width: result image width (default: 512)
-- height: result image height (default: 512)
-""".strip()
-
 def preprocess_text(text: str):
 	# Replace accents
 	text = unidecode.unidecode(text)
@@ -179,9 +162,6 @@ class PolyBot:
 		return None
 
 	async def handle_image_gen(self, message: discord.Message):
-		if message.content == "help":
-			return await self.send(image_gen_help, reply_to=message)
-
 		image_gen_kwargs = {
 			"request_id": message.id,
 		}
@@ -248,12 +228,6 @@ class PolyBot:
 			self.requests[message.id]['type'] = "command"
 			await self.bot.process_commands(message)
 			return "Command handled"
-
-		# Check if the message is posted in the image-gen channel
-		if message.channel.name == "image-gen":
-			log.debug(f"Message posted in image-gen channel, handling...")
-			self.requests[message.id]['type'] = "image-gen"
-			return "Image generated", await self.handle_image_gen(message)
 
 		# Let message go through triggers
 		trig = await self.handle_triggers(message)

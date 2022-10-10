@@ -1,3 +1,4 @@
+import logging
 import math, random
 from datetime import datetime, date, time
 from discord.ext.commands import Context
@@ -8,6 +9,24 @@ import Config.Users as Users
 from .PolyBot import PolyBot
 
 random.seed()
+log = logging.getLogger(__name__)
+
+image_gen_help = f"""
+Usage:
+Prompt mode: \"{App.command_prefix}imagen Prompt\"
+YAML mode: \"\"\"{App.command_prefix}imagen
+text: 'Prompt'
+option: value
+\"\"\"
+
+Available options:
+- text: input prompt text
+- image_url: input image url (not implemented)
+- num_inference_steps: higher quality but slower (default: 15)
+- guidance_scale: how much should the result be guided by the prompt at the cost of quality (default: 7.5)
+- width: result image width (default: 512)
+- height: result image height (default: 512)
+""".strip()
 
 def time_sub(t1, t2):
 	return datetime.combine(date.min, t1) - datetime.combine(date.min, t2)
@@ -145,3 +164,14 @@ def register_commands(polybot: PolyBot):
 			"https://www.youtube.com/watch?v=NBw2I3obQTY",
 		])
 		await polybot.send(resp, reply_to=ctx.message)
+
+	@bot.command(
+		brief="Une idée révolutionaire ? Transforme la en image !",
+	)
+	async def imagen(ctx: Context):
+		ctx.message.content = ctx.message.content.replace(f"{App.command_prefix}imagen", "").strip()
+
+		if ctx.message.content == "help":
+			return await polybot.send(image_gen_help, reply_to=ctx.message)
+
+		return await polybot.handle_image_gen(ctx.message)
