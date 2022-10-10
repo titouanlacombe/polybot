@@ -48,6 +48,7 @@ def prebuild():
 
 def build():
 	prebuild()
+	env(COMPOSE_DOCKER_CLI_BUILD="1", DOCKER_BUILDKIT="1")
 	compose("build")
 
 def up():
