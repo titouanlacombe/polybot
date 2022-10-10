@@ -65,6 +65,9 @@ class PolyBot:
 			"args": args,
 			"kwargs": kwargs
 		}, timeout=self.timeout) as resp:
+			if not (resp.status >= 200 and resp.status < 300):
+				raise Exception(f"Service call failed with status {resp.status}: {await resp.text()}")
+			
 			response: dict = await resp.json()
 			log.debug(f"Response: {response}")
 
