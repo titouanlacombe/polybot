@@ -22,7 +22,7 @@ services:
     restart: always
     build:
       context: ../
-      dockerfile: ./docker/image-gen/Dockerfile.${GPU_ARCH}
+      dockerfile: ./docker/image-gen/Dockerfile
     environment:
       - HF_TOKEN=${HF_TOKEN}
       - POLYBOT_PORT=${POLYBOT_PORT}
