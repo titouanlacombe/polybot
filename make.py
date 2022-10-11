@@ -35,7 +35,7 @@ def get_arch():
 	if re.search(r"GPU\s+Name:\s+.*", out.decode("utf-8")):
 		return "cuda"
 
-	return "cpu"
+	return None
 
 def create_data():
 	data.mkdir(exist_ok=True)
@@ -58,14 +58,7 @@ def prebuild():
 	logo.thumbnail((64, 64), Image.LANCZOS)
 	logo.save(static / "favicon.ico", "PNG", optimize=True, quality=95, progressive=True)
 
-	arch = get_arch()
-	if arch == "rocm":
-		image = "rocm/pytorch"
-	elif arch == "cuda":
-		image = "cuda/pytorch"
-	else:
-		image = "bitnami/pytorch"
-	env(IMAGE_GEN_IMAGE=image)
+	env(GPU_ARCH=get_arch() or "cpu")
 
 def build():
 	prebuild()
