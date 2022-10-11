@@ -188,7 +188,7 @@ class PolyBot:
 			log.warning(f"Error occured in image-gen service: {resp}")
 			return await self.send(resp['error'], reply_to=message)
 
-		file_obj = BytesIO(base64.b64decode(resp['image'].encode("ascii")))
+		file_obj = BytesIO(base64.b64decode(resp['image'].encode()))
 
 		return await self.send(file=discord.File(file_obj, "image.png"), reply_to=message)
 

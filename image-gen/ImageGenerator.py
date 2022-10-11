@@ -39,9 +39,6 @@ def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 	image: Image.Image = pipe_out.images[0]
 	log.info("Image generated")
 
-	# Save image for archives
-	image.save(archive_dir / f"{text}.png")
-
 	return image
 
 def _generate_image(app_conf: dict, **kwargs) -> bytes:
@@ -52,6 +49,7 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	constrain(kwargs, "guidance_scale", 0, 10, 7.5)
 	constrain(kwargs, "width", 8, 512, 512)
 	constrain(kwargs, "height", 8, 512, 512)
+	request_id = kwargs.pop("request_id", None)
 
 	if "text" in kwargs:
 		input = kwargs.pop("text")
@@ -64,22 +62,32 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 		steps = 1
 		op = lambda *args, **kwargs: Image.new("RGB", (512, 512))
 
-	request_id = kwargs.pop("request_id", None)
+	# Create progress bar
 	if request_id is not None:
-		# Call polybot to create a progress bar
 		call_rpc(polybot_api_host, "pbar_create", request_id, steps,
 			f"Generating image from '{input}', ETA: {int(estimate_eta(kwargs['width'] * kwargs['height'], steps))} s"
 		)
 
-	# Generate image
-	image = op(pipeline, input, **kwargs)
+	try:
+		# Generate image
+		image = op(pipeline, input, **kwargs)
 
-	# Encode image to PNG and create response
-	im_file = BytesIO()
-	image.save(im_file, format="PNG")
+		# Encode image to PNG and create response
+		im_file = BytesIO()
+		image.save(im_file, format="PNG")
+
+		# Save image bytes to archive
+		safe_name = "".join(c for c in input if c.isalnum() or c in " _-")
+		with open(archive_dir / f"{safe_name}.png", "wb") as f:
+			f.write(im_file.getvalue())
+	
+	finally:
+		# Delete progress bar
+		if request_id is not None:
+			call_rpc(polybot_api_host, "pbar_delete", request_id)
+
 	return {
-		# TODO check if i need to specify ascii
-		"image": base64.b64encode(im_file.getvalue()).decode("ascii"),
+		"image": base64.b64encode(im_file.getvalue()).decode(),
 	}
 
 # API function
