@@ -7,6 +7,7 @@ from .TimeToSuffer import gettimetosuffer, endofformation
 import Config.App as App
 import Config.Users as Users
 from .PolyBot import PolyBot
+from .PolyQuiz import do_quiz
 
 random.seed()
 log = logging.getLogger(__name__)
@@ -175,3 +176,9 @@ def register_commands(polybot: PolyBot):
 			await polybot.send(image_gen_help, reply_to=ctx.message)
 
 		await polybot.handle_image_gen(ctx.message)
+
+	@bot.command(
+		brief="Envie de GAME ?",
+	)
+	async def culture(ctx: Context):
+		await do_quiz(polybot, ctx)

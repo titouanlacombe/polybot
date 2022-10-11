@@ -18,14 +18,16 @@ class DiscordProgressBar:
 
 	async def update(self, current: int):
 		self.current = current
-		await self.message.edit(content=self.render())
+		if self.message is not None:
+			await self.message.edit(content=self.render())
 
 	async def increment(self):
 		self.current += 1
 		await self.update(self.current)
 
 	async def finish(self):
-		await self.message.delete()
+		if self.message is not None:
+			await self.message.delete()
 	
 	def render(self):
 		percent = self.current / self.total
