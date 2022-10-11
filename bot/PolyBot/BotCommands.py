@@ -172,6 +172,6 @@ def register_commands(polybot: PolyBot):
 		ctx.message.content = ctx.message.content.replace(f"{App.command_prefix}imagen", "").strip()
 
 		if ctx.message.content == "help":
-			return await polybot.send(image_gen_help, reply_to=ctx.message)
+			await polybot.send(image_gen_help, reply_to=ctx.message)
 
-		return await polybot.handle_image_gen(ctx.message)
+		await polybot.handle_image_gen(ctx.message)

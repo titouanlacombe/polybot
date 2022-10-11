@@ -42,7 +42,7 @@ def register_events(polybot: PolyBot):
 
 	@bot.event
 	async def on_message(message: discord.Message):
-		log.info(f"Received message: {message.content}")
+		log.info(f"Received message: \"{message.content}\"")
 		
 		if App.in_dev():
 			log.info(f"Ignoring message, app in dev")

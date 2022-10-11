@@ -116,20 +116,20 @@ class PolyBot:
 
 		if App.in_dev() or App.in_sta():
 			log.warning(f"Dry run, would send {kwargs}")
-			return content, False
+			return None, False
 
 		log.info(f"Sending {kwargs}")
 
 		if kwargs.get("reply_to") is not None:
-			await kwargs.pop("reply_to").reply(**kwargs)
+			message = await kwargs.pop("reply_to").reply(**kwargs)
 		elif kwargs.get("channel") is not None:
-			await kwargs.pop("channel").send(**kwargs)
+			message = await kwargs.pop("channel").send(**kwargs)
 		else:
 			if self.main_channel is None:
 				raise Exception("No target specified and main channel not set")
-			await self.main_channel.send(**kwargs)
+			message = await self.main_channel.send(**kwargs)
 
-		return content, True
+		return message, True
 
 	async def rpc_send(self, content=None, **kwargs):
 		if kwargs.get("reply_to") is not None:
@@ -138,7 +138,8 @@ class PolyBot:
 		if kwargs.get("channel") is not None:
 			kwargs["channel"] = discord.utils.get(self.bot.get_all_channels(), name=kwargs["channel"])
 
-		return await self.send(content, **kwargs)
+		(message, dry_run) = await self.send(content, **kwargs)
+		return (message.id, dry_run)
 
 	async def status(self):
 		return {
@@ -184,19 +185,15 @@ class PolyBot:
 
 		resp: dict = await self.call_service(App.image_gen_host, "generate", **image_gen_kwargs)
 
-		if resp.get("error", None) is not None:
-			log.warning(f"Error occured in image-gen service: {resp}")
-			return await self.send(resp['error'], reply_to=message)
-
-		file_obj = BytesIO(base64.b64decode(resp['image'].encode("ascii")))
-
+		file_obj = BytesIO(base64.b64decode(resp['image'].encode()))
 		return await self.send(file=discord.File(file_obj, "image.png"), reply_to=message)
 
 	async def pbar_create(self, request_id: int, total: int, title: str):
 		request = self.get_request(request_id)
 
 		async def send_callback(txt):
-			await self.send(txt, reply_to=request['message'])
+			(message, dry_run) = await self.send(txt, reply_to=request['message'])
+			return message
 
 		bar = DiscordProgressBar(
 			total=total,
@@ -218,7 +215,7 @@ class PolyBot:
 		await bar.finish()
 
 	async def _handle_message(self, message: discord.Message):
-		log.info(f"Handling message: '{message.content}'")
+		log.debug(f"Handling message: \"{message.content}\"")
 
 		# Ignore bot messages
 		if self.ignore_self and message.author.display_name == self.bot.user.display_name:
