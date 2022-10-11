@@ -1,29 +1,3 @@
 FROM bitnami/pytorch:latest
 
-# Create user
 USER root
-RUN useradd app -ms /bin/bash --uid 1000
-WORKDIR /home/app
-
-# Install linux packages
-RUN apt update && apt install -y --no-install-recommends \
-	bash \
-	curl \
-	# Gunicorn reload
-	inotify-tools \
-	# Clear apt cache
-	&& apt clean \
-	&& rm -rf /var/lib/apt/lists/*
-
-# Python reqs
-COPY ./docker/image-gen/requirements.txt ./
-RUN python3 -m pip install --no-cache-dir -r ./requirements.txt
-
-# Sources
-COPY ./image-gen ./src
-RUN chown app:app -R /home/app
-WORKDIR /home/app/src
-
-# Entrypoint
-USER app
-CMD ["./entrypoint.sh"]

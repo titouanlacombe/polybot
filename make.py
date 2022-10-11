@@ -59,6 +59,13 @@ def prebuild():
 	logo.save(static / "favicon.ico", "PNG", optimize=True, quality=95, progressive=True)
 
 	env(GPU_ARCH=get_arch() or "cpu")
+	base_file = root/"docker"/"image-gen"/"Dockerfile"
+	wfile(
+		base_file,
+		rfile(f"{base_file}.{env('GPU_ARCH')}")
+		+ "\n\n"
+		+ rfile(f"{base_file}.common")
+	)
 
 def build():
 	prebuild()
