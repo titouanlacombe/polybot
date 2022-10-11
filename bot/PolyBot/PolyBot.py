@@ -218,7 +218,7 @@ class PolyBot:
 		await bar.finish()
 
 	async def _handle_message(self, message: discord.Message):
-		log.info(f"Handling message: '{message.content}'")
+		log.debug(f"Handling message: \"{message.content}\"")
 
 		# Ignore bot messages
 		if self.ignore_self and message.author.display_name == self.bot.user.display_name:
