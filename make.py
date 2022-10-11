@@ -1,3 +1,4 @@
+import re
 from PIL import Image
 from makepie import *
 
@@ -25,6 +26,17 @@ env(
 	IMAGE_GEN_PORT="5001",
 )
 
+def get_arch():
+	(_, out, err) = sh("rocminfo", throws=False)
+	if re.search(r"Device Type:\s+GPU", out.decode("utf-8")):
+		return "rocm"
+
+	(_, out, err) = sh("nvidia-smi", throws=False)
+	if re.search(r"GPU\s+Name:\s+.*", out.decode("utf-8")):
+		return "cuda"
+
+	return "cpu"
+
 def create_data():
 	data.mkdir(exist_ok=True)
 	logs.mkdir(exist_ok=True)
@@ -45,6 +57,15 @@ def prebuild():
 	logo.save(static_resources / "polybot.png", "PNG", optimize=True, quality=85, progressive=True)
 	logo.thumbnail((64, 64), Image.LANCZOS)
 	logo.save(static / "favicon.ico", "PNG", optimize=True, quality=95, progressive=True)
+
+	arch = get_arch()
+	if arch == "rocm":
+		image = "rocm/pytorch"
+	elif arch == "cuda":
+		image = "cuda/pytorch"
+	else:
+		image = "bitnami/pytorch"
+	env(IMAGE_GEN_IMAGE=image)
 
 def build():
 	prebuild()

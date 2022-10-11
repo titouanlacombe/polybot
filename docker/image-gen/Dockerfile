@@ -1,4 +1,6 @@
-FROM bitnami/pytorch:latest
+ARG image=bitnami/pytorch:latest
+
+FROM ${image}
 
 # Create user
 USER root

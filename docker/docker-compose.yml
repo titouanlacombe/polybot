@@ -23,6 +23,8 @@ services:
     build:
       context: ../
       dockerfile: ./docker/image-gen/Dockerfile
+      args:
+        - image=${IMAGE_GEN_IMAGE}
     environment:
       - HF_TOKEN=${HF_TOKEN}
       - POLYBOT_PORT=${POLYBOT_PORT}
