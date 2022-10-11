@@ -196,7 +196,7 @@ class PolyBot:
 		request = self.get_request(request_id)
 
 		async def send_callback(txt):
-			await self.send(txt, reply_to=request['message'])
+			return await self.send(txt, reply_to=request['message'])
 
 		bar = DiscordProgressBar(
 			total=total,

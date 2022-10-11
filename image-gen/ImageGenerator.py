@@ -84,7 +84,7 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	finally:
 		# Delete progress bar
 		if request_id is not None:
-			call_rpc(polybot_api_host, "pbar_delete", request_id)
+			call_rpc(polybot_api_host, "pbar_finish", request_id)
 
 	return {
 		"image": base64.b64encode(im_file.getvalue()).decode(),

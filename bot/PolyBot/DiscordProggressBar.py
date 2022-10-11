@@ -1,6 +1,7 @@
 import datetime
 import discord
 
+# Send callback need to return the discord.Message object
 class DiscordProgressBar:
 	def __init__(self, send_callback, total: int, title=None):
 		self.send_f = send_callback
