@@ -27,11 +27,11 @@ env(
 )
 
 def get_arch():
-	(_, out, err) = sh("rocminfo", throws=False)
+	(_, out, err) = sh("rocminfo", throws=False, quiet=True)
 	if re.search(r"Device Type:\s+GPU", out.decode("utf-8")):
 		return "rocm"
 
-	(_, out, err) = sh("nvidia-smi", throws=False)
+	(_, out, err) = sh("nvidia-smi", throws=False, quiet=True)
 	if re.search(r"GPU\s+Name:\s+.*", out.decode("utf-8")):
 		return "cuda"
 
