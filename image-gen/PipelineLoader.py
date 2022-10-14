@@ -43,6 +43,7 @@ def load_pipeline(results: dict):
 	pipeline.safety_checker = lambda images, **kwargs: (images, False)
 
 	if device.type != "cpu":
+		log.info(f"Moving pipeline to {device.type}")
 		pipeline.to(device)
 
 	results["pipeline"] = pipeline
