@@ -37,6 +37,10 @@ def get_arch():
 
 	return None
 
+def arch_cache():
+	if env("GPU_ARCH") is None:
+		env(GPU_ARCH=get_arch() or "cpu")
+
 def create_data():
 	data.mkdir(exist_ok=True)
 	logs.mkdir(exist_ok=True)
@@ -48,7 +52,14 @@ def makever(ver: str):
 	sh(f"git push origin {ver}")
 
 def compose(cmd):
-	sh(f"docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.{_env.short}.yml {cmd}")
+	files = ["./docker/docker-compose.yml"]
+	files.append(f"./docker/docker-compose.{_env.short}.yml")
+	
+	arch_cache()
+	if env("GPU_ARCH") != "cpu":
+		files.append(f"./docker/docker-compose.{env('GPU_ARCH')}.yml")
+
+	sh(f"docker-compose -f {' -f '.join(files)} {cmd}")
 
 def prebuild():
 	create_data()
@@ -58,7 +69,7 @@ def prebuild():
 	logo.thumbnail((64, 64), Image.LANCZOS)
 	logo.save(static / "favicon.ico", "PNG", optimize=True, quality=95, progressive=True)
 
-	env(GPU_ARCH=get_arch() or "cpu")
+	arch_cache()
 	base_file = root/"docker"/"image-gen"/"Dockerfile"
 	wfile(
 		base_file,
