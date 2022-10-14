@@ -52,7 +52,7 @@ function create_call(command) {
 	};
 
 	switch (data['command']) {
-		case 'send':
+		case 'rpc_send':
 			data['args'].push(document.getElementById('send_text').value);
 			break;
 
