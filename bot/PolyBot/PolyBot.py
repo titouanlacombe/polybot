@@ -139,7 +139,7 @@ class PolyBot:
 			kwargs["channel"] = discord.utils.get(self.bot.get_all_channels(), name=kwargs["channel"])
 
 		(message, dry_run) = await self.send(content, **kwargs)
-		return (message.id, dry_run)
+		return (None if message is None else message.id, dry_run)
 
 	async def status(self):
 		return {
