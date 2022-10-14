@@ -10,7 +10,7 @@ from PipelineLoader import load_pipeline
 def close(signum, frame):
 	app.logger.info("Stopping worker")
 	
-	if app.config["pipeline"] is not None:
+	if app.config.get("pipeline") is not None:
 		del app.config["pipeline"]
 
 	if device.type != "cpu":
