@@ -1,5 +1,3 @@
-# Create user
-RUN useradd app -ms /bin/bash --uid 1000
 WORKDIR /home/app
 
 # Install linux packages
