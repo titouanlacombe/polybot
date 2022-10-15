@@ -33,7 +33,7 @@ class DiscordProgressBar:
 		percent = self.current / self.total
 		bar = "#" * int(percent * 20)
 		bar = bar.ljust(20, "-")
-		return f"** {self.title} **\n{self.current}/{self.total} | [{bar}] {percent * 100:.2f}% | Elapsed: {int(self.elapsed())} s | ETA: {self.eta()} s"
+		return f"** {self.title} **\n{self.current}/{self.total} | [{bar}] {percent * 100:.2f}% | Elapsed: {int(self.elapsed())} s | ETA: {int(self.eta())} s"
 
 	def eta(self):
 		if self.current == 0:
