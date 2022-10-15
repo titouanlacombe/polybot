@@ -173,8 +173,6 @@ def register_commands(polybot: PolyBot):
 		brief="Une idée révolutionaire ? Transforme la en image !",
 	)
 	async def imagen(ctx: Context):
-		polybot.requests[ctx.message.id]["type"] = "imagen"
-
 		content = ctx.message.content.replace(f"{App.command_prefix}imagen", "").strip()
 		if content == "help":
 			await polybot.send(image_gen_help, reply_to=ctx.message)
@@ -199,17 +197,20 @@ def register_commands(polybot: PolyBot):
 			if request["type"] == "imagen" and request["message"].author.id == ctx.message.author.id:
 				raise Exception("You already have a job in queue")
 		
-		q_mess: discord.Message = await polybot.send("Your job has been queued", reply_to=ctx.message)
+		# Add job to queue
+		polybot.requests[ctx.message.id]["type"] = "imagen"
+		q_mess = await polybot.send("Your job has been queued", reply_to=ctx.message)
 
 		# Wait for semaphore
 		async with imagen_sem:
-			await q_mess.delete()
+			if q_mess is not None:
+				await q_mess.delete()
 			
 			# Call image generator
 			resp: dict = await polybot.call_service(App.image_gen_host, "generate", **image_gen_kwargs)
 
 		file_obj = BytesIO(base64.b64decode(resp['image'].encode()))
-		return await polybot.send(file=discord.File(file_obj, "image.png"), reply_to=ctx.message)
+		await polybot.send(file=discord.File(file_obj, "image.png"), reply_to=ctx.message)
 
 	@bot.command(
 		brief="Envie de GAME ?",

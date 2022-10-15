@@ -66,13 +66,14 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 		await polybot.send(f"Correct ! {message.author.mention} wins !", channel=ctx.channel)
 
 	time_left = 10
-	(message, _) = await polybot.send(question.format(time_left=time_left), channel=ctx.channel)
+	message = await polybot.send(question.format(time_left=time_left), channel=ctx.channel)
 
 	while time_left > 0:
 		await asyncio.sleep(1)
 		time_left -= 1
 		# TODO polybot.edit(message, content="", **kwargs) and use here and in pbar
-		await message.edit(content=question.format(time_left=time_left))
+		if message is not None:
+			await message.edit(content=question.format(time_left=time_left))
 
 	# Unsubscribe
 	polybot.bot.remove_listener(on_message)

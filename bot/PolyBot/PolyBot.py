@@ -114,7 +114,7 @@ class PolyBot:
 
 		if App.in_dev() or App.in_sta():
 			log.warning(f"Dry run, would send {kwargs}")
-			return None, False
+			return None
 
 		log.info(f"Sending {kwargs}")
 
@@ -127,7 +127,7 @@ class PolyBot:
 				raise Exception("No target specified and main channel not set")
 			message = await self.main_channel.send(**kwargs)
 
-		return message, True
+		return message
 
 	async def rpc_send(self, content=None, **kwargs):
 		if kwargs.get("reply_to") is not None:
@@ -136,8 +136,8 @@ class PolyBot:
 		if kwargs.get("channel") is not None:
 			kwargs["channel"] = discord.utils.get(self.bot.get_all_channels(), name=kwargs["channel"])
 
-		(message, dry_run) = await self.send(content, **kwargs)
-		return (None if message is None else message.id, dry_run)
+		message = await self.send(content, **kwargs)
+		return None if message is None else message.id
 
 	async def status(self):
 		return {
@@ -167,8 +167,7 @@ class PolyBot:
 		request = self.get_request(request_id)
 
 		async def send_callback(txt):
-			(message, dry_run) = await self.send(txt, reply_to=request['message'])
-			return message
+			return await self.send(txt, reply_to=request['message'])
 
 		bar = DiscordProgressBar(
 			total=total,
@@ -222,6 +221,9 @@ class PolyBot:
 
 	# Function used to test bot response to a message
 	async def message(self, text="", author="None", channel="general"):
+		if self.message_example is None:
+			raise Exception("No message example found (polybot not loaded)")
+
 		return await self.handle_message(create_message(self.message_example, text, author, channel))
 
 	async def activity_loop(self):
