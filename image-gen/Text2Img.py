@@ -68,7 +68,7 @@ def text2img(
 		if accepts_eta:
 			extra_step_kwargs["eta"] = eta
 
-		for i, t in enumerate(pipeline.progress_bar(pipeline.scheduler.timesteps)):
+		for i, t in enumerate(pipeline.scheduler.timesteps):
 			# expand the latents if we are doing classifier free guidance
 			latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
 			if isinstance(pipeline.scheduler, LMSDiscreteScheduler):
@@ -91,7 +91,7 @@ def text2img(
 				latents = pipeline.scheduler.step(noise_pred, t, latents, **extra_step_kwargs).prev_sample
 
 			# call the step callback
-			step_callback(i, latents)
+			step_callback(i+1, latents)
 
 		# scale and decode the image latents with vae
 		latents = 1 / 0.18215 * latents
@@ -100,14 +100,4 @@ def text2img(
 		image = (image / 2 + 0.5).clamp(0, 1)
 		image = image.cpu().permute(0, 2, 3, 1).numpy()
 
-		# run safety checker
-		safety_cheker_input = pipeline.feature_extractor(pipeline.numpy_to_pil(image), return_tensors="pt").to(pipeline.device)
-		image, has_nsfw_concept = pipeline.safety_checker(images=image, clip_input=safety_cheker_input.pixel_values)
-
-		if output_type == "pil":
-			image = pipeline.numpy_to_pil(image)
-
-		if not return_dict:
-			return (image, has_nsfw_concept)
-
-		return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
+		return pipeline.numpy_to_pil(image)[0]

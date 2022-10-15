@@ -26,7 +26,7 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	# Parsing operation
 	if "prompt" in kwargs:
 		name = kwargs["prompt"]
-		pbar_steps = kwargs["num_inference_steps"]
+		pbar_steps = kwargs["num_inference_steps"] + 1
 		op = text2img
 	elif "image_url" in kwargs:
 		# TODO support image2image
@@ -46,7 +46,7 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 		call_rpc(polybot_api_host, "pbar_create", request_id, pbar_steps, f"Generating image '{name}'")
 
 	try:
-		log.info(f"Generating image '{name}', kwargs: {kwargs}")
+		log.info(f"Generating image '{name}'")
 		t = time.time()
 
 		with torch.inference_mode(), precision_scope:
