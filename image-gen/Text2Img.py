@@ -2,7 +2,6 @@ import inspect, torch
 from typing import List, Optional, Union
 from PIL import Image
 from diffusers.schedulers import LMSDiscreteScheduler
-from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 
 # Fork of StableDiffusion __call__ method
 def text2img(
