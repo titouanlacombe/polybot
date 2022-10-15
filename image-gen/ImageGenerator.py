@@ -30,7 +30,7 @@ def estimate_eta(image_size: int, num_inference_steps: int):
 def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 	log.info(f"Generating image from '{text}', kwargs: {kwargs}")
 
-	with torch.no_grad():
+	with torch.inference_mode():
 		with precision_scope:
 			# For info on stable diff args: https://huggingface.co/blog/stable_diffusion
 			pipe_out = pipeline(text, **kwargs)
