@@ -24,8 +24,8 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	kwargs["pipeline"] = app_conf["pipeline"]
 
 	# Parsing operation
-	if "text" in kwargs:
-		name = kwargs["text"]
+	if "prompt" in kwargs:
+		name = kwargs["prompt"]
 		pbar_steps = kwargs["num_inference_steps"]
 		op = text2img
 	elif "image_url" in kwargs:
