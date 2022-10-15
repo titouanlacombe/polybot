@@ -26,7 +26,7 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	# Parsing operation
 	if "prompt" in kwargs:
 		name = kwargs["prompt"]
-		pbar_steps = kwargs["num_inference_steps"] + 1
+		pbar_steps = kwargs["num_inference_steps"] + 2
 		op = text2img
 	elif "image_url" in kwargs:
 		# TODO support image2image
