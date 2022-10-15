@@ -1,7 +1,7 @@
-import logging, os, time, torch
+import logging, os, time, torch, psutil
 from requests.exceptions import ConnectionError
 from diffusers import StableDiffusionPipeline
-from Config import device
+from Config import device, use_half_model
 
 log = logging.getLogger(__name__)
 
@@ -15,9 +15,8 @@ def load_pipeline(results: dict):
 			pipeline = StableDiffusionPipeline.from_pretrained(
 				"CompVis/stable-diffusion-v1-4",
 				
-				# CPU does not support half precision optimizations
-				revision = "fp16" if device.type == "cuda" else None,
-				torch_dtype = torch.float16 if device.type == "cuda" else None,
+				revision = "fp16" if use_half_model else None,
+				torch_dtype = torch.float16 if use_half_model else None,
 
 				use_auth_token=os.getenv("HF_TOKEN"),
 				cache_dir="../data/hf_cache/models",
@@ -42,9 +41,13 @@ def load_pipeline(results: dict):
 	pipeline.feature_extractor = feature_extractor_dummy
 	pipeline.safety_checker = lambda images, **kwargs: (images, False)
 
+	mem = psutil.Process(os.getpid()).memory_info().rss
+	log.info(f"Process mem usage: {mem / 1024 ** 3:.2f} GB")
+
 	if device.type != "cpu":
 		log.info(f"Moving pipeline to {device.type}")
-		pipeline.to(device)
+		# pipeline.to(device)
+		log.info(f"Device memory reserved: {torch.cuda.memory_reserved() / 1024 ** 3:.2f} GB")
 
 	results["pipeline"] = pipeline
 	
