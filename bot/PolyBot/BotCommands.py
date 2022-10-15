@@ -1,8 +1,9 @@
-import logging
-import math, random
+import asyncio, logging, base64, yaml, math, random, discord
+from io import BytesIO
 from datetime import datetime, date, time
 from discord.ext.commands import Context
 
+from .Message2Images import message2images
 from .TimeToSuffer import gettimetosuffer, endofformation
 import Config.App as App
 import Config.Users as Users
@@ -28,6 +29,8 @@ Available options:
 - width: result image width (default: 512)
 - height: result image height (default: 512)
 """.strip()
+
+imagen_sem = asyncio.Semaphore(1)
 
 def time_sub(t1, t2):
 	return datetime.combine(date.min, t1) - datetime.combine(date.min, t2)
@@ -170,12 +173,43 @@ def register_commands(polybot: PolyBot):
 		brief="Une idée révolutionaire ? Transforme la en image !",
 	)
 	async def imagen(ctx: Context):
-		ctx.message.content = ctx.message.content.replace(f"{App.command_prefix}imagen", "").strip()
+		polybot.requests[ctx.message.id]["type"] = "imagen"
 
-		if ctx.message.content == "help":
+		content = ctx.message.content.replace(f"{App.command_prefix}imagen", "").strip()
+		if content == "help":
 			await polybot.send(image_gen_help, reply_to=ctx.message)
 
-		await polybot.handle_image_gen(ctx.message)
+		image_gen_kwargs = {"request_id": ctx.message.id}
+		
+		images = message2images(ctx.message)
+		if len(images) > 0:
+			if len(images) > 1:
+				raise Exception("Too many images in message")
+			image_gen_kwargs["image_url"] = images[0]
+
+		if len(content) > 0:
+			try:
+				image_gen_kwargs.update(yaml.safe_load(content))
+			except Exception as e:
+				log.info(f"Failed to parse message content as YAML ({e}), assuming it's text")
+				image_gen_kwargs["text"] = content
+
+		# Check user has no job in queue
+		for request in polybot.requests.values():
+			if request["type"] == "imagen" and request["message"].author.id == ctx.message.author.id:
+				raise Exception("You already have a job in queue")
+		
+		q_mess: discord.Message = await polybot.send("Your job has been queued", reply_to=ctx.message)
+
+		# Wait for semaphore
+		async with imagen_sem:
+			await q_mess.delete()
+			
+			# Call image generator
+			resp: dict = await polybot.call_service(App.image_gen_host, "generate", **image_gen_kwargs)
+
+		file_obj = BytesIO(base64.b64decode(resp['image'].encode()))
+		return await polybot.send(file=discord.File(file_obj, "image.png"), reply_to=ctx.message)
 
 	@bot.command(
 		brief="Envie de GAME ?",

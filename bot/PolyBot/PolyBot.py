@@ -1,11 +1,9 @@
-import asyncio, discord, logging, aiohttp, unidecode, re, base64, random, yaml
-from io import BytesIO
+import asyncio, discord, logging, aiohttp, unidecode, re, random
 from datetime import datetime
 from discord.ext.commands import Bot
 
 import Config.App as App
 from .Trigger import Trigger
-from .Message2Images import message2images
 from .DiscordProggressBar import DiscordProgressBar
 
 log = logging.getLogger(__name__)
@@ -164,29 +162,6 @@ class PolyBot:
 
 		log.info(f"No trigger found for message")
 		return None
-
-	async def handle_image_gen(self, message: discord.Message):
-		image_gen_kwargs = {
-			"request_id": message.id,
-		}
-		
-		images = message2images(message)
-		if len(images) > 0:
-			if len(images) > 1:
-				raise Exception("Too many images in message")
-			image_gen_kwargs["image_url"] = images[0]
-
-		if len(message.content) > 0:
-			try:
-				image_gen_kwargs.update(yaml.safe_load(message.content))
-			except Exception as e:
-				log.info(f"Failed to parse message content as YAML ({e}), assuming it's text")
-				image_gen_kwargs["text"] = message.content
-
-		resp: dict = await self.call_service(App.image_gen_host, "generate", **image_gen_kwargs)
-
-		file_obj = BytesIO(base64.b64decode(resp['image'].encode()))
-		return await self.send(file=discord.File(file_obj, "image.png"), reply_to=message)
 
 	async def pbar_create(self, request_id: int, total: int, title: str):
 		request = self.get_request(request_id)
