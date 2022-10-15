@@ -29,7 +29,6 @@ def load_pipeline(results: dict):
 			log.info("Retrying in 2 seconds")
 			time.sleep(2)
 
-	# TODO https://www.photoroom.com/tech/stable-diffusion-25-percent-faster-and-save-seconds/
 	# Remove VAE encoder as it's only needed for training (https://huggingface.co/blog/stable_diffusion)
 	del pipeline.vae.encoder
 
