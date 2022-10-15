@@ -27,9 +27,6 @@ def estimate_eta(image_size: int, num_inference_steps: int):
 	base_time = 10 # seconds per inference step on 512x512 image
 	return base_time * (image_size / base_size) * num_inference_steps
 
-# TODO Ordered by priority:
-# ROCm: https://www.reddit.com/r/StableDiffusion/comments/ww436j/howto_stable_diffusion_on_an_amd_gpu/
-# ROCm backup: https://www.gabriel.urdhr.fr/2022/08/28/trying-to-run-stable-diffusion-on-amd-ryzen-5-5600g/
 def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 	log.info(f"Generating image from '{text}', kwargs: {kwargs}")
 

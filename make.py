@@ -29,7 +29,9 @@ env(
 def get_arch():
 	(_, out, err) = sh("rocminfo", throws=False, quiet=True).results()
 	if re.search(r"Device Type:\s+GPU", out.decode("utf-8")):
-		return "rocm"
+		# RX 5500 (gfx1012) is not officially supported by rocm (half working) and pytorch won't work
+		if not re.search(r"Name:\s+gfx1012", out.decode("utf-8")):
+			return "rocm"
 
 	(_, out, err) = sh("nvidia-smi", throws=False, quiet=True).results()
 	if re.search(r"GPU\s+Name:\s+.*", out.decode("utf-8")):
