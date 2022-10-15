@@ -14,7 +14,7 @@ def register_events(polybot: PolyBot):
 		log.info(f"Logged on as '{bot.user}'")
 
 		status = discord.Status.online if App.in_pro() else discord.Status.invisible
-		log.info(f"Setting status to {status}")		
+		log.info(f"Setting status to {status}")
 		await polybot.change_presence(status=status)
 
 		# Set channels
@@ -22,8 +22,11 @@ def register_events(polybot: PolyBot):
 		polybot.preprod_channel = discord.utils.get(bot.get_all_channels(), name="polybot-preprod")
 
 		# Set message example
-		async for message in polybot.main_channel.history(limit=1):
-			polybot.message_example = message
+		log.info(f"Searching for message example")
+		async for message in polybot.main_channel.history(limit=10):
+			if not message.author.bot:
+				polybot.message_example = message
+				break
 
 		# Launch activity loop
 		asyncio.create_task(polybot.activity_loop())
