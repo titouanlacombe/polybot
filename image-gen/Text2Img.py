@@ -15,8 +15,6 @@ def text2img(
 		eta: Optional[float] = 0.0,
 		generator: Optional[torch.Generator] = None,
 		latents: Optional[torch.FloatTensor] = None,
-		output_type: Optional[str] = "pil",
-		return_dict: bool = True,
 	) -> Image.Image:
 		# get prompt text embeddings
 		text_input = pipeline.tokenizer(
