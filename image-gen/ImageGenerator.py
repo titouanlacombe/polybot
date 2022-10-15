@@ -6,6 +6,7 @@ from PIL import Image
 
 from Config import precision_scope
 from Utils import constrain, null_func
+from Text2Img import text2img
 from Microservices import call_rpc, polybot_api_host
 
 log = logging.getLogger(__name__)
@@ -13,10 +14,6 @@ job_sem = threading.Semaphore(1)
 
 archive_dir = Path("../data/generated_images")
 archive_dir.mkdir(parents=True, exist_ok=True)
-
-def text2img(pipeline, step_callback, **kwargs) -> Image.Image:
-	# For info on stable diff args: https://huggingface.co/blog/stable_diffusion
-	return pipeline(**kwargs).images[0]
 
 def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	log.info(f"Parsing config: {kwargs}")
@@ -42,7 +39,7 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 
 	# Parsing pbar params
 	request_id = kwargs.pop("request_id", None)
-	kwargs["step_callback"] = null_func if request_id is None else lambda step: call_rpc(polybot_api_host, "pbar_update", request_id, step)
+	kwargs["step_callback"] = null_func if request_id is None else lambda step, latents: call_rpc(polybot_api_host, "pbar_update", request_id, step)
 
 	# Create pbar
 	if request_id is not None:
