@@ -1,6 +1,6 @@
 import os
 
-bind = f"0.0.0.0:{os.environ['IMAGE_GEN_PORT']}"
+bind = f"0.0.0.0:{os.getenv('IMAGE_GEN_PORT', 8000)}"
 reload = True
 
 # Keep those workers because stable diffusion use all of the RAM
