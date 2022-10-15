@@ -72,6 +72,7 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 		await asyncio.sleep(1)
 		time_left -= 1
 		# TODO polybot.edit(message, content="", **kwargs) and use here and in pbar
+		# TODO refactor some code to not always await side stuff
 		if message is not None:
 			await message.edit(content=question.format(time_left=time_left))
 
