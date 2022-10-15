@@ -11,7 +11,7 @@ if App.in_pro() or App.in_pre():
 	preload_app=True
 else:
 	workers=1
-	threads=1
+	threads=10
 	reload=True
 
 max_requests=100
