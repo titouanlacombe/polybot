@@ -1,4 +1,4 @@
-import logging, base64, threading
+import logging, base64, threading, torch
 from pathlib import Path
 from io import BytesIO
 from werkzeug.exceptions import ServiceUnavailable
@@ -33,9 +33,11 @@ def estimate_eta(image_size: int, num_inference_steps: int):
 def text2img(pipeline, text: str, **kwargs) -> Image.Image:
 	log.info(f"Generating image from '{text}', kwargs: {kwargs}")
 
-	with precision_scope:
-		# For info on stable diff args: https://huggingface.co/blog/stable_diffusion
-		pipe_out = pipeline(text, **kwargs)
+	with torch.no_grad():
+		with precision_scope:
+			# For info on stable diff args: https://huggingface.co/blog/stable_diffusion
+			pipe_out = pipeline(text, **kwargs)
+
 	image: Image.Image = pipe_out.images[0]
 	log.info("Image generated")
 
