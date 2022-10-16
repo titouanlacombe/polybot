@@ -65,7 +65,8 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 
 	# Save image bytes to archive
 	safe_name = "".join(c for c in name if c.isalnum() or c in " _-")
-	safe_name = safe_name[:64] + "..."
+	if len(safe_name) > 64:
+		safe_name = safe_name[:64] + "..."
 	with open(archive_dir / f"{safe_name}.png", "wb") as f:
 		f.write(im_file.getvalue())
 
