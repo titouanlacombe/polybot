@@ -1,3 +1,7 @@
+FROM python:3.10.4-slim-buster
+
+# Create user
+RUN useradd app -ms /bin/bash
 WORKDIR /home/app
 
 # Install linux packages
@@ -10,12 +14,12 @@ RUN apt update && apt install -y --no-install-recommends \
 	&& apt clean \
 	&& rm -rf /var/lib/apt/lists/*
 
-# Python reqs
-COPY ./docker/image-gen/requirements.txt ./
+# Python requirements
+COPY ./requirements.txt ./requirements.txt
 RUN python3 -m pip install --no-cache-dir -r ./requirements.txt
 
 # Sources
-COPY ./image-gen ./src
+COPY ./src ./src
 RUN chown app:app -R /home/app
 WORKDIR /home/app/src
 

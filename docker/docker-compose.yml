@@ -4,8 +4,8 @@ services:
   bot:
     restart: always
     build:
-      context: ../
-      dockerfile: ./docker/bot/Dockerfile
+      context: ../bot
+      dockerfile: ./Dockerfile
     environment:
       - ENV=${ENV}
       - VER=${VER}
@@ -21,8 +21,8 @@ services:
   image-gen:
     restart: always
     build:
-      context: ../
-      dockerfile: ./docker/image-gen/Dockerfile
+      context: ../image-gen
+      dockerfile: ./Dockerfile
     environment:
       - HF_TOKEN=${HF_TOKEN}
       - POLYBOT_PORT=${POLYBOT_PORT}
