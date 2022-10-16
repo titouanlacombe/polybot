@@ -39,7 +39,7 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 
 	winned = False
 	responded = []
-	async def process_anwser(message: discord.Message):
+	async def process_answer(message: discord.Message):
 		nonlocal winned, responded
 
 		if not message.content.isdigit():
@@ -62,7 +62,7 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 		await polybot.send(f"Correct ! {message.author.mention} wins !", channel=ctx.channel)
 
 	# Subscribe to new messages to select winner
-	polybot.bot.listen("on_message")(process_anwser)
+	polybot.bot.listen("on_message")(process_answer)
 
 	try:
 		time_left = 10
@@ -77,7 +77,7 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 
 	finally:
 		# Unsubscribe
-		polybot.bot.remove_listener(process_anwser, "on_message")
+		polybot.bot.remove_listener(process_answer, "on_message")
 
 	log.info("Quiz ended")
 
