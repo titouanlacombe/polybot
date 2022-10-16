@@ -70,7 +70,8 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 		await asyncio.sleep(1)
 		time_left -= 1
 		if message is not None:
-			await polybot.edit(message, question.format(time_left=time_left))
+			# Don't wait for message edit
+			asyncio.create_task(polybot.edit(message, question.format(time_left=time_left)))
 
 	# Unsubscribe
 	polybot.bot.remove_listener(on_message)
