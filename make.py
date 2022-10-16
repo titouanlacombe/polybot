@@ -89,7 +89,7 @@ def prebuild():
 	if len(list((dir/"weights").glob("*.pth"))) == 0:
 		with cd(dir):
 			sh("wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P weights -nv")
-			sh("python setup.py develop")
+			sh("python3 setup.py develop")
 
 def build():
 	prebuild()
