@@ -76,7 +76,7 @@ async def main():
 
 	# Create the socket server & start the discord client
 	server: asyncio.AbstractServer
-	(server, _) = asyncio.gather(
+	(server, _) = await asyncio.gather(
 		asyncio.start_server(
 			process_request,
 			"0.0.0.0",

@@ -33,7 +33,7 @@ def register_events(polybot: PolyBot):
 		asyncio.create_task(polybot.activity_loop())
 
 		# Gather api requests
-		asyncio.gather(
+		await asyncio.gather(
 			set_status(polybot, discord.Status.online),
 			set_message_example(polybot),
 		)
