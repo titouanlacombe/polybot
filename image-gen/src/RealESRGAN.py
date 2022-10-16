@@ -12,10 +12,12 @@ def load_RealESRGAN(config: dict):
 		return
 
 	log.info("Downloading Real-ESRGAN")
-	os.system(f"wget {url} -O {outpath}.zip")
+	if os.system(f"wget {url} -O {outpath}.zip") != 0:
+		raise Exception("Failed to download Real-ESRGAN")
 	
 	log.info("Exctracting Real-ESRGAN")
-	os.system(f"unzip {outpath}.zip -d {outpath}")
+	if os.system(f"unzip {outpath}.zip -d {outpath}") != 0:
+		raise Exception("Failed to extract Real-ESRGAN")
 	os.system(f"rm {outpath}.zip")
 
 	log.info("Real-ESRGAN loaded")

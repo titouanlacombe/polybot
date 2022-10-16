@@ -4,6 +4,9 @@ WORKDIR /home/app
 RUN apt update && apt install -y --no-install-recommends \
 	bash \
 	curl \
+	# Real-Esrgan loading
+	wget \
+	unzip \
 	# Gunicorn reload
 	inotify-tools \
 	# Clear apt cache
