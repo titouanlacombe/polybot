@@ -9,7 +9,6 @@ logging.basicConfig(
 from Flask import app
 from Config import device
 from StableDiffusion import load_SD
-from RealESRGAN import load_RealESRGAN
 
 def close(signum, frame):
 	app.logger.info(f"Received signal {signum}, exiting")
@@ -41,8 +40,5 @@ threading.Thread(target=load_SD, args=(app.config,), daemon=True).start()
 event_loop = asyncio.new_event_loop()
 app.config["event_loop"] = event_loop
 threading.Thread(target=event_loop.run_forever, daemon=True).start()
-
-# Load Real-ESRGAN
-threading.Thread(target=load_RealESRGAN, args=(app.config,), daemon=True).start()
 
 app.logger.info("Worker started")
