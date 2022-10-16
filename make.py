@@ -8,7 +8,7 @@ makepie_load()
 root = Path(".").resolve()
 data = root.parent / "data"
 logs = data / "logs"
-static = root / "bot" / "static"
+static = root / "bot" / "src" / "static"
 static_resources = static / "resources"
 resources = root / "resources"
 context_f = root / "context.env"
@@ -72,7 +72,7 @@ def prebuild():
 	logo.save(static / "favicon.ico", "PNG", optimize=True, quality=95, progressive=True)
 
 	arch_cache()
-	base_file = root/"docker"/"image-gen"/"Dockerfile"
+	base_file = root/"image-gen"/"Dockerfile"
 	wfile(
 		base_file,
 		rfile(f"{base_file}.{env('GPU_ARCH')}")
@@ -82,7 +82,7 @@ def prebuild():
 
 def build():
 	prebuild()
-	env(COMPOSE_DOCKER_CLI_BUILD="1", DOCKER_BUILDKIT="1")
+	# env(COMPOSE_DOCKER_CLI_BUILD="1", DOCKER_BUILDKIT="1")
 	compose("build")
 
 def up():
