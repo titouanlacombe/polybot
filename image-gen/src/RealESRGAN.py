@@ -4,6 +4,7 @@ log = logging.getLogger(__name__)
 
 url = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-ubuntu.zip"
 outpath = "../data/RealESRGAN"
+exec = "realesrgan-ncnn-vulkan"
 
 def load_RealESRGAN(config: dict):
 	if os.path.exists(outpath):
@@ -12,13 +13,16 @@ def load_RealESRGAN(config: dict):
 		return
 
 	log.info("Downloading Real-ESRGAN")
-	if os.system(f"wget {url} -O {outpath}.zip") != 0:
+	if os.system(f"wget {url} -O {outpath}.zip -nv") != 0:
 		raise Exception("Failed to download Real-ESRGAN")
 	
 	log.info("Exctracting Real-ESRGAN")
 	if os.system(f"unzip {outpath}.zip -d {outpath}") != 0:
 		raise Exception("Failed to extract Real-ESRGAN")
 	os.system(f"rm {outpath}.zip")
+
+	# Adding user execution rights
+	os.system(f"chmod u+x {outpath}/{exec}")
 
 	log.info("Real-ESRGAN loaded")
 	config["RealESRGAN"] = outpath
@@ -28,7 +32,7 @@ def _RealESRGAN(config: dict, input: str, output: str, scale: int = 4):
 		raise Exception("Real-ESRGAN not loaded")
 
 	log.info("Executing Real-ESRGAN")
-	os.system(f"{config['RealESRGAN']}/realesrgan-ncnn-vulkan -i {input} -o {output} -s {scale}")
+	os.system(f"{config['RealESRGAN']}/{exec} -i {input} -o {output} -s {scale}")
 
 # Wrapper
 def RealESRGAN(config: dict, input: bytes, scale: int = 4) -> bytes:
