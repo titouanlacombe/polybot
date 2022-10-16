@@ -3,14 +3,14 @@ version: '3.7'
 services:
   bot:
     volumes:
-      - ../bot:/home/app/src
+      - ../bot/src:/home/app/src
       - ../../data:/home/app/data
 
   image-gen:
     ports:
       - 5010:${IMAGE_GEN_PORT}
     volumes:
-      - ../image-gen:/home/app/src
+      - ../image-gen/src:/home/app/src
       - ../../data:/home/app/data
 
   nginx:

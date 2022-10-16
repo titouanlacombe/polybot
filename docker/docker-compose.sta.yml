@@ -3,7 +3,12 @@ version: '3.7'
 services:
   bot:
     volumes:
-      - ../bot:/home/app/src
+      - ../bot/src:/home/app/src
+      - ../../data:/home/app/data
+
+  image-gen:
+    volumes:
+      - ../image-gen/src:/home/app/src
       - ../../data:/home/app/data
 
   nginx:
