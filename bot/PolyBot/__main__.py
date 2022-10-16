@@ -47,7 +47,7 @@ async def main():
 	register_commands(polybot)
 	register_events(polybot)
 
-	async def request(request: asyncio.StreamReader, response: asyncio.StreamWriter):
+	async def process_request(request: asyncio.StreamReader, response: asyncio.StreamWriter):
 		try:
 			message_len = int.from_bytes(await request.readexactly(4), "big")
 			message = await request.readexactly(message_len)
@@ -74,16 +74,18 @@ async def main():
 		response.write(resp)
 		response.close()
 
-	server = await asyncio.start_server(
-		request,
-		"0.0.0.0",
-		os.environ["POLYBOT_PORT"],
+	# Create the socket server & start the discord client
+	server: asyncio.AbstractServer
+	(server, _) = asyncio.gather(
+		asyncio.start_server(
+			process_request,
+			"0.0.0.0",
+			os.environ["POLYBOT_PORT"],
+		),
+		bot.start(os.getenv("BOT_TOKEN")),
 	)
-	
-	# Start the discord client
-	await bot.start(os.getenv("BOT_TOKEN"))
 
-	# Start asyncio server
+	# Start socket server
 	await server.serve_forever()
 
 asyncio.run(main())
