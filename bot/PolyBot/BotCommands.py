@@ -200,12 +200,19 @@ def register_commands(polybot: PolyBot):
 		
 		# Add job to queue
 		polybot.requests[ctx.message.id]["type"] = "imagen"
-		q_mess = await polybot.send("Your job has been queued", reply_to=ctx.message)
+
+		task = None
+		if imagen_sem.locked():
+			task = asyncio.create_task(polybot.send("Your job has been queued", reply_to=ctx.message))
 
 		# Wait for semaphore
 		async with imagen_sem:
-			if q_mess is not None:
-				await q_mess.delete()
+			# Recover task result
+			if task:
+				q_mess = await task
+				if q_mess:
+					# Don't wait for delete
+					asyncio.create_task(q_mess.delete())
 			
 			# Call image generator
 			resp: dict = await polybot.call_service(App.image_gen_host, "generate", **image_gen_kwargs)
