@@ -8,7 +8,8 @@ logging.basicConfig(
 
 from Flask import app
 from Config import device
-from PipelineLoader import load_pipeline
+from StableDiffusion import load_SD
+from RealESRGAN import load_RealESRGAN
 
 def close(signum, frame):
 	app.logger.info(f"Received signal {signum}, exiting")
@@ -34,14 +35,14 @@ def log_segfault(signum, frame):
 signal.signal(signal.SIGSEGV, log_segfault)
 
 # Start a daemon thread to load the pipeline
-thread = threading.Thread(target=load_pipeline, args=(app.config,), daemon=True)
-thread.start()
-app.config["pipeline_loader_thread"] = thread
+threading.Thread(target=load_SD, args=(app.config,), daemon=True).start()
 
 # Start a event loop daemon thread
 event_loop = asyncio.new_event_loop()
-thread = threading.Thread(target=event_loop.run_forever, daemon=True)
-thread.start()
 app.config["event_loop"] = event_loop
+threading.Thread(target=event_loop.run_forever, daemon=True).start()
+
+# Load Real-ESRGAN
+threading.Thread(target=load_RealESRGAN, args=(app.config,), daemon=True).start()
 
 app.logger.info("Worker started")

@@ -5,7 +5,7 @@ from Config import device, use_half_model
 
 log = logging.getLogger(__name__)
 
-def load_pipeline(results: dict):
+def load_SD(config: dict):
 	start = time.time()
 	
 	log.info("Caching and loading pretrained pipeline")
@@ -48,7 +48,7 @@ def load_pipeline(results: dict):
 		# pipeline.to(device)
 		log.info(f"Device memory reserved: {torch.cuda.memory_reserved() / 1024 ** 3:.2f} GB")
 
-	results["pipeline"] = pipeline
+	config["pipeline"] = pipeline
 	
 	t = time.time() - start
 	log.info(f"Pipeline loaded in {t:.2f} s")

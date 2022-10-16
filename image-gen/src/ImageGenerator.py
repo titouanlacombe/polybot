@@ -8,6 +8,7 @@ from Config import precision_scope
 from Utils import constrain, null_func
 from Text2Img import text2img
 from Microservices import call_rpc, call_rpc_no_wait, polybot_api_host
+from RealESRGAN import RealESRGAN
 
 log = logging.getLogger(__name__)
 job_sem = threading.Semaphore(1)
@@ -61,28 +62,29 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 		if request_id is not None:
 			call_rpc_no_wait(app_conf["event_loop"], polybot_api_host, "pbar_finish", request_id)
 
-	# Encode image to PNG and create response
-	im_file = BytesIO()
-	image.save(im_file, format="PNG")
+	# Encode image to PNG bytes
+	img_f = BytesIO()
+	image.save(img_f, format="PNG")
+	image_bytes = img_f.getvalue()
+
+	# Experimental: upscale using Real-ESRGAN
+	image_bytes = RealESRGAN(app_conf, image_bytes, 4)
 
 	# Save image bytes to archive
 	safe_name = "".join(c for c in name if c.isalnum() or c in " _-")
 	if len(safe_name) > 64:
 		safe_name = safe_name[:64] + "..."
 	with open(archive_dir / f"{safe_name}.png", "wb") as f:
-		f.write(im_file.getvalue())
+		f.write(image_bytes)
 
 	return {
-		"image": base64.b64encode(im_file.getvalue()).decode(),
+		"image": base64.b64encode(image_bytes).decode(),
 	}
 
 # API function
 def generate_image(app_conf: dict, **kwargs) -> bytes:
 	# Pre conditions
-	loader_thread: threading.Thread = app_conf.get("pipeline_loader_thread")
-	if loader_thread is None:
-		raise Exception("Pipeline loader thread not started")
-	if loader_thread.is_alive():
+	if app_conf.get("pipeline") is None:
 		raise ServiceUnavailable("Pipeline loading not finished", retry_after=60*2)
 
 	if not job_sem.acquire(blocking=False):
