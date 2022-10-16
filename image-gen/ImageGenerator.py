@@ -7,7 +7,7 @@ from PIL import Image
 from Config import precision_scope
 from Utils import constrain, null_func
 from Text2Img import text2img
-from Microservices import call_rpc, polybot_api_host
+from Microservices import call_rpc, call_rpc_no_wait, polybot_api_host
 
 log = logging.getLogger(__name__)
 job_sem = threading.Semaphore(1)
@@ -38,8 +38,10 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 		raise Exception("No input specified")
 
 	# Parsing pbar params
+	def update_pbar(step, latents):
+		call_rpc_no_wait(app_conf["event_loop"], polybot_api_host, "pbar_update", request_id, step)
 	request_id = kwargs.pop("request_id", None)
-	kwargs["step_callback"] = null_func if request_id is None else lambda step, latents: call_rpc(polybot_api_host, "pbar_update", request_id, step)
+	kwargs["step_callback"] = update_pbar if request_id else null_func
 
 	# Create pbar
 	if request_id is not None:
@@ -57,7 +59,7 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	finally:
 		# Delete progress bar
 		if request_id is not None:
-			call_rpc(polybot_api_host, "pbar_finish", request_id)
+			call_rpc_no_wait(app_conf["event_loop"], polybot_api_host, "pbar_finish", request_id)
 
 	# Encode image to PNG and create response
 	im_file = BytesIO()

@@ -27,5 +27,9 @@ async def async_call_rpc(host: str, command: str, *args, **kwargs):
 def call_rpc(host: str, command: str, *args, **kwargs):
 	return asyncio.run(async_call_rpc(host, command, *args, **kwargs))
 
+# Call rpc without waiting for response
+def call_rpc_no_wait(event_loop: asyncio.AbstractEventLoop, host: str, command: str, *args, **kwargs):
+	asyncio.run_coroutine_threadsafe(async_call_rpc(host, command, *args, **kwargs), event_loop)
+
 polybot_host = f"bot:{os.environ['POLYBOT_PORT']}"
 polybot_api_host = f"bot:{os.environ['POLYBOT_API_PORT']}"

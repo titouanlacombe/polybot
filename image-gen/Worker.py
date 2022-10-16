@@ -10,7 +10,7 @@ from Config import device
 from PipelineLoader import load_pipeline
 
 def close(signum, frame):
-	app.logger.info("Stopping worker")
+	app.logger.info(f"Received signal {signum}, exiting")
 	
 	if app.config.get("pipeline") is not None:
 		del app.config["pipeline"]
@@ -22,6 +22,15 @@ def close(signum, frame):
 	exit(0)
 
 signal.signal(signal.SIGTERM, close)
+signal.signal(signal.SIGINT, close)
+signal.signal(signal.SIGQUIT, close)
+signal.signal(signal.SIGABRT, close)
+
+def log_segfault(signum, frame):
+	logging.error("Segmentation fault")
+	exit(1)
+
+signal.signal(signal.SIGSEGV, log_segfault)
 
 # Start a daemon thread to load the pipeline
 thread = threading.Thread(target=load_pipeline, args=(app.config,), daemon=True)
