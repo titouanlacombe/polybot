@@ -32,7 +32,8 @@ def _RealESRGAN(config: dict, input: str, output: str, scale: int = 4):
 		raise Exception("Real-ESRGAN not loaded")
 
 	log.info("Executing Real-ESRGAN")
-	os.system(f"{config['RealESRGAN']}/{exec} -i {input} -o {output} -s {scale}")
+	if os.system(f"{config['RealESRGAN']}/{exec} -i {input} -o {output} -s {scale}") != 0:
+		raise Exception("Failed to execute Real-ESRGAN")
 
 # Wrapper
 def RealESRGAN(config: dict, input: bytes, scale: int = 4) -> bytes:
