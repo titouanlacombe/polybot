@@ -16,7 +16,7 @@ def in_pro():
 	return env.startswith("pro")
 
 command_prefix = "/"
-activity_update_interval = 180 # seconds
+activity_update_interval = 15*60 # seconds
 
 # env_color
 env_color = "#1a9122" # Green
