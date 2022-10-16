@@ -2,7 +2,7 @@ import logging, signal, threading, torch, asyncio
 logging.basicConfig(
 	filename="../data/logs/image-gen.log",
 	level=logging.INFO,
-	format="[%(asctime)s] %(levelname)s-%(name)s: %(message)s"
+	format="[%(asctime)s] %(levelname)s:%(name)s: %(message)s"
 )
 
 from Flask import app
