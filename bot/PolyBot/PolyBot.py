@@ -95,26 +95,27 @@ class PolyBot:
 		else:
 			log.warning(f"Dry run, would set presence: {kwargs}")
 
-	async def send(self, content=None, **kwargs):
-		kwargs["content"] = content
-
+	def check_ready(self):
 		if not self.ready:
 			raise Exception("Bot is not connected, can't talk")
-
 		if self.paused:
 			raise Exception("Bot is paused, no talking")
-		
+
+	async def send(self, content=None, **kwargs):
+		self.check_ready()
+		kwargs["content"] = content
+
 		if kwargs.get("reply_to") is not None and kwargs.get("channel") is not None:
 			raise Exception("Can't reply and send to a channel at the same time")
+
+		if App.in_dev() or App.in_sta():
+			log.warning(f"Dry run, would send {kwargs}")
+			return None
 
 		if App.in_pre():
 			kwargs.pop("reply_to", None)
 			log.warning(f"Replacing channel to preprod channel (original: {kwargs.get('channel')})")
 			kwargs["channel"] = self.preprod_channel
-
-		if App.in_dev() or App.in_sta():
-			log.warning(f"Dry run, would send {kwargs}")
-			return None
 
 		log.info(f"Sending {kwargs}")
 
@@ -128,6 +129,21 @@ class PolyBot:
 			message = await self.main_channel.send(**kwargs)
 
 		return message
+
+	async def edit(self, message: discord.Message, content=None, **kwargs):
+		self.check_ready()
+		kwargs["content"] = content
+
+		if App.in_dev() or App.in_sta():
+			log.warning(f"Dry run, would edit {message.id} to {kwargs}")
+			return None
+
+		if App.in_pre():
+			if message.channel != self.preprod_channel:
+				raise Exception("In preprod: can't edit message in prod channel")
+
+		log.info(f"Editing {message.id} to {kwargs}")
+		return await message.edit(**kwargs)
 
 	async def rpc_send(self, content=None, **kwargs):
 		if kwargs.get("reply_to") is not None:
@@ -166,13 +182,10 @@ class PolyBot:
 	async def pbar_create(self, request_id: int, total: int, title: str):
 		request = self.get_request(request_id)
 
-		async def send_callback(txt):
-			return await self.send(txt, reply_to=request['message'])
-
 		bar = DiscordProgressBar(
 			total=total,
 			title=title,
-			send_callback=send_callback
+			sender=self
 		)
 		request['progress_bar'] = bar
 

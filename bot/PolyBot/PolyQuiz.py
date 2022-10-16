@@ -1,8 +1,6 @@
-import asyncio, discord
-import base64
-import logging
+import asyncio, discord, base64, logging, random
 from discord.ext.commands import Context
-import random
+
 from .PolyBot import PolyBot
 
 api_url = "https://opentdb.com/api.php"
@@ -71,9 +69,8 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 	while time_left > 0:
 		await asyncio.sleep(1)
 		time_left -= 1
-		# TODO polybot.edit(message, content="", **kwargs) and use here and in pbar (pass polybot as params (send+edit interface))
 		if message is not None:
-			await message.edit(content=question.format(time_left=time_left))
+			await polybot.edit(message, question.format(time_left=time_left))
 
 	# Unsubscribe
 	polybot.bot.remove_listener(on_message)

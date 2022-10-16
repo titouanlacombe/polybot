@@ -1,10 +1,10 @@
 import datetime
 import discord
 
-# Send callback need to return the discord.Message object
+# Sender implement methods send and edit
 class DiscordProgressBar:
-	def __init__(self, send_callback, total: int, title=None):
-		self.send_f = send_callback
+	def __init__(self, sender, total: int, title=None):
+		self.sender = sender
 		self.title = title
 		self.total = total
 
@@ -14,12 +14,12 @@ class DiscordProgressBar:
 
 	async def start(self):
 		self.start_time = datetime.datetime.now()
-		self.message = await self.send_f(self.render())
+		self.message = await self.sender.send(self.render())
 
 	async def update(self, current: int):
 		self.current = current
 		if self.message is not None:
-			await self.message.edit(content=self.render())
+			await self.sender.edit(self.message, self.render())
 
 	async def increment(self):
 		self.current += 1
