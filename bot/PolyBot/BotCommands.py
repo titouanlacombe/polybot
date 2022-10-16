@@ -176,6 +176,7 @@ def register_commands(polybot: PolyBot):
 		content = ctx.message.content.replace(f"{App.command_prefix}imagen", "").strip()
 		if content == "help":
 			await polybot.send(image_gen_help, reply_to=ctx.message)
+			return
 
 		image_gen_kwargs = {"request_id": ctx.message.id}
 		
