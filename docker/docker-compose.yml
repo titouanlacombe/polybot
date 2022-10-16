@@ -28,6 +28,7 @@ services:
       - POLYBOT_PORT=${POLYBOT_PORT}
       - POLYBOT_API_PORT=${POLYBOT_API_PORT}
       - IMAGE_GEN_PORT=${IMAGE_GEN_PORT}
+      - TZ=${TZ}
     volumes:
       - ../../data:/home/app/data
 
