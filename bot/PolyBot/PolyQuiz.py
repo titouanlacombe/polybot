@@ -39,11 +39,9 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 
 	winned = False
 	responded = []
-
-	# Subscribe to new messages to select winner
-	@polybot.bot.listen()
-	async def on_message(message: discord.Message):
+	async def process_anwser(message: discord.Message):
 		nonlocal winned, responded
+
 		if not message.content.isdigit():
 			return
 
@@ -63,20 +61,25 @@ async def do_quiz(polybot: PolyBot, ctx: Context, **kwargs):
 		log.info("Winned")
 		await polybot.send(f"Correct ! {message.author.mention} wins !", channel=ctx.channel)
 
-	time_left = 10
-	message = await polybot.send(question.format(time_left=time_left), channel=ctx.channel)
+	# Subscribe to new messages to select winner
+	polybot.bot.listen("on_message")(process_anwser)
 
-	while time_left > 0:
-		await asyncio.sleep(1)
-		time_left -= 1
-		if message is not None:
-			# Don't wait for message edit
-			asyncio.create_task(polybot.edit(message, question.format(time_left=time_left)))
+	try:
+		time_left = 10
+		message = await polybot.send(question.format(time_left=time_left), channel=ctx.channel)
 
-	# Unsubscribe
-	polybot.bot.remove_listener(on_message)
+		while time_left > 0 and not winned:
+			await asyncio.sleep(1)
+			time_left -= 1
+			if message is not None:
+				# Don't wait for message edit
+				asyncio.create_task(polybot.edit(message, question.format(time_left=time_left)))
 
-	log.info("Expired")
+	finally:
+		# Unsubscribe
+		polybot.bot.remove_listener(process_anwser, "on_message")
+
+	log.info("Quiz ended")
 
 	if not winned:
 		log.info("Nobody winned")
