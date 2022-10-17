@@ -30,7 +30,9 @@ def pipeline(**kwargs):
 		image: Image.Image = text2img(**kwargs)
 
 	# Upscale using Real-ESRGAN
-	upscaled_bytes = RealESRGAN(image.tobytes("png", quality=100), 2)
+	mem_file = BytesIO()
+	image.save(mem_file, format="PNG", quality=100)
+	upscaled_bytes = RealESRGAN(mem_file.getvalue(), 2)
 	image = Image.open(BytesIO(upscaled_bytes))
 
 	# Save image to archives
