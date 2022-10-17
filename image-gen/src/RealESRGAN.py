@@ -4,9 +4,14 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 esrgan_src = Path("../Real-ESRGAN")
+
 esrgan_data = Path("../data") / "real-esrgan"
+esrgan_data.mkdir(parents=True, exist_ok=True)
 inputs = esrgan_data / "inputs"
+inputs.mkdir(parents=True, exist_ok=True)
 outputs = esrgan_data / "outputs"
+outputs.mkdir(parents=True, exist_ok=True)
+
 model_cache = esrgan_data / "RealESRGAN_x4plus_cache.pth"
 model_url = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
 
