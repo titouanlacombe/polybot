@@ -21,6 +21,9 @@ COPY ./src ./src
 RUN chown app:app -R /home/app
 WORKDIR /home/app/src
 
+# Install Real-ESRGAN
+RUN cd ./Real-ESRGAN && python3 setup.py develop
+
 # Entrypoint
 USER app
 CMD ["./entrypoint.sh"]

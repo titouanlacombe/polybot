@@ -80,16 +80,10 @@ def prebuild():
 		+ rfile(f"{base_file}.common")
 	)
 
-	# Clone real-esgran
-	dir = data/"Real-ESRGAN"
+	# Clone Real-ESRGAN
+	dir = root/"image-gen"/"src"/"Real-ESRGAN"
 	if not dir.exists():
 		sh(f"git clone https://github.com/xinntao/Real-ESRGAN.git {dir}")
-
-	# If no model in wheights, download it
-	if len(list((dir/"weights").glob("*.pth"))) == 0:
-		with cd(dir):
-			sh("wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P weights -nv")
-			sh("python3 setup.py develop")
 
 def build():
 	prebuild()

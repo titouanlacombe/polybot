@@ -9,6 +9,7 @@ logging.basicConfig(
 from Flask import app
 from Config import device
 from StableDiffusion import load_SD
+from RealESRGAN import load_RealESRGAN
 
 def close(signum, frame):
 	app.logger.info(f"Received signal {signum}, exiting")
@@ -33,8 +34,9 @@ def log_segfault(signum, frame):
 
 signal.signal(signal.SIGSEGV, log_segfault)
 
-# Start a daemon thread to load the pipeline
+# Start a daemon threads to load modules
 threading.Thread(target=load_SD, args=(app.config,), daemon=True).start()
+threading.Thread(target=load_RealESRGAN, args=(app.config,), daemon=True).start()
 
 # Start a event loop daemon thread
 event_loop = asyncio.new_event_loop()
