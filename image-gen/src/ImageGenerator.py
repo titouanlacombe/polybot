@@ -68,7 +68,7 @@ def _generate_image(app_conf: dict, **kwargs) -> bytes:
 	image_bytes = img_f.getvalue()
 
 	# Experimental: upscale using Real-ESRGAN
-	image_bytes = RealESRGAN(image_bytes, 4)
+	image_bytes = RealESRGAN(app_conf, image_bytes, 4)
 
 	# Save image bytes to archives
 	safe_name = "".join(c for c in name if c.isalnum() or c in " _-")
