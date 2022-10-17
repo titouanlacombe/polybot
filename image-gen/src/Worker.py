@@ -36,7 +36,7 @@ signal.signal(signal.SIGSEGV, log_segfault)
 
 # Start a daemon threads to load modules
 threading.Thread(target=load_SD, args=(app.config,), daemon=True).start()
-threading.Thread(target=load_RealESRGAN, args=(app.config,), daemon=True).start()
+threading.Thread(target=load_RealESRGAN, daemon=True).start()
 
 # Start a event loop daemon thread
 event_loop = asyncio.new_event_loop()
