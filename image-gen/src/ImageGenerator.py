@@ -22,7 +22,7 @@ def get_safe_name(text: str) -> str:
 		safe_name = safe_name[:64] + "..."
 	return safe_name
 
-def pipeline(app_conf, **kwargs):
+def pipeline(**kwargs):
 	log.info(f"Generating image")
 	t = time.time()
 
@@ -30,7 +30,7 @@ def pipeline(app_conf, **kwargs):
 		image: Image.Image = text2img(**kwargs)
 
 	# Upscale using Real-ESRGAN
-	upscaled_bytes = RealESRGAN(app_conf, image.tobytes("png", quality=100), 2)
+	upscaled_bytes = RealESRGAN(image.tobytes("png", quality=100), 2)
 	image = Image.open(BytesIO(upscaled_bytes))
 
 	# Save image to archives
@@ -41,26 +41,26 @@ def pipeline(app_conf, **kwargs):
 
 	return path
 
-def pbar_wrapper(app_conf: dict, op, *args, **kwargs) -> bytes:
-	# Parsing pbar params
+def pbar_wrapper(event_loop, op, **kwargs):
+	# Update progress bar callback
 	request_id = kwargs.pop("request_id", None)
 	def update_pbar(step, latents):
-		call_rpc_no_wait(app_conf["event_loop"], polybot_api_host, "pbar_update", request_id, step)
+		call_rpc_no_wait(event_loop, polybot_api_host, "pbar_update", request_id, step)
 	kwargs["step_callback"] = update_pbar if request_id else null_func
 
-	# Create pbar
+	# Create progress bar
 	if request_id is not None:
 		call_rpc(polybot_api_host, "pbar_create", request_id, kwargs["num_inference_steps"], f"Generating image")
 
 	try:
-		return op(*args, **kwargs)
+		return op(**kwargs)
 	finally:
-		# Delete progress bar
+		# Finish progress bar
 		if request_id is not None:
-			call_rpc_no_wait(app_conf["event_loop"], polybot_api_host, "pbar_finish", request_id)
+			call_rpc_no_wait(event_loop, polybot_api_host, "pbar_finish", request_id)
 
 # API function
-def generate_image(app_conf: dict, **kwargs) -> bytes:
+def generate_image(app_conf: dict, **kwargs):
 	if app_conf.get("pipeline") is None:
 		raise ServiceUnavailable("Pipeline loading not finished", retry_after=60*2)
 
@@ -74,6 +74,6 @@ def generate_image(app_conf: dict, **kwargs) -> bytes:
 		raise ServiceUnavailable("Too many jobs currently running", retry_after=60*2)
 
 	try:
-		return pbar_wrapper(app_conf, pipeline, **kwargs)
+		return pbar_wrapper(app_conf["event_loop"], pipeline, **kwargs)
 	finally:
 		job_sem.release()
