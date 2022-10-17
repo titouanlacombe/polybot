@@ -5,6 +5,7 @@ log = logging.getLogger(__name__)
 
 dir = Path("../Real-ESRGAN")
 model_url = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
+model_cache = "../data/realesrgan_cache/model.pth"
 inputs = dir / "inputs"
 outputs = dir / "outputs"
 __loaded = False
@@ -16,7 +17,9 @@ def load_RealESRGAN():
 	# If model is not downloaded, download it
 	if not (dir / "models" / "RealESRGAN_x4plus.pth").exists():
 		log.info("Downloading Real-ESRGAN model")
-		subprocess.run(f"cd {dir} && wget {model_url} -P weights -nv", shell=True, check=True)
+		subprocess.run(f"cd {dir} && wget {model_url} -P weights -nv --show-progress", shell=True, check=True)
+		# Cache model
+		subprocess.run(f"cp {dir}/models/RealESRGAN_x4plus.pth {model_cache}", shell=True, check=True)
 
 	__loaded = True
 	log.info("Real-ESRGAN loaded")
