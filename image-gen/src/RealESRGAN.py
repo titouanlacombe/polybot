@@ -13,12 +13,10 @@ def load_RealESRGAN():
 	global __loaded
 	log.info("Loading Real-ESRGAN")
 
-	if __loaded:
-		log.info("Real-ESRGAN already loaded")
-		return
-
-	log.info("Downloading Real-ESRGAN model")
-	subprocess.run(f"cd {dir} && wget {model_url} -P weights -nv", shell=True, check=True)
+	# If model is not downloaded, download it
+	if not (dir / "models" / "RealESRGAN_x4plus.pth").exists():
+		log.info("Downloading Real-ESRGAN model")
+		subprocess.run(f"cd {dir} && wget {model_url} -P weights -nv", shell=True, check=True)
 
 	__loaded = True
 	log.info("Real-ESRGAN loaded")
