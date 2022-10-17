@@ -16,14 +16,15 @@ RUN apt update && apt install -y --no-install-recommends \
 COPY ./requirements.txt ./
 RUN python3 -m pip install --no-cache-dir -r ./requirements.txt
 
-# Sources
+# App Sources
 COPY ./src ./src
-RUN chown app:app -R /home/app
 
-# Install Real-ESRGAN
+# Real-ESRGAN Sources
+COPY ./Real-ESRGAN ./Real-ESRGAN
 RUN cd ./Real-ESRGAN && python3 setup.py develop
 
 # Entrypoint
+RUN chown app:app -R /home/app
 WORKDIR /home/app/src
 USER app
 CMD ["./entrypoint.sh"]
