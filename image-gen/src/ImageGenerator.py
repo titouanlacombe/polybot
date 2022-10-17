@@ -52,7 +52,7 @@ def pbar_wrapper(event_loop, op, **kwargs):
 
 	# Create progress bar
 	if request_id is not None:
-		call_rpc(polybot_api_host, "pbar_create", request_id, kwargs["num_inference_steps"], f"Generating image")
+		call_rpc(polybot_api_host, "pbar_create", request_id, kwargs["num_inference_steps"]+2, f"Generating image")
 
 	try:
 		return op(**kwargs)
