@@ -20,7 +20,7 @@ def load_RealESRGAN():
 	if not model_cache.exists():
 		log.info("Downloading Real-ESRGAN model")
 		model_cache.parent.mkdir(parents=True, exist_ok=True)
-		subprocess.run(f"curl {model_url} > {model_cache}", shell=True, check=True)
+		subprocess.run(f"curl -L {model_url} > {model_cache}", shell=True, check=True)
 
 	__loaded = True
 	log.info("Real-ESRGAN loaded")
