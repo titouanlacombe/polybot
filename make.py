@@ -81,7 +81,7 @@ def prebuild():
 	)
 
 	# Clone Real-ESRGAN
-	dir = root/"image-gen"/"src"/"Real-ESRGAN"
+	dir = root/"image-gen"/"Real-ESRGAN"
 	if not dir.exists():
 		sh(f"git clone https://github.com/xinntao/Real-ESRGAN.git {dir}")
 

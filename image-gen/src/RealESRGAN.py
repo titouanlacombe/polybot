@@ -3,7 +3,7 @@ from pathlib import Path
 
 log = logging.getLogger(__name__)
 
-dir = Path("./Real-ESRGAN")
+dir = Path("../Real-ESRGAN")
 model_url = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
 inputs = dir / "inputs"
 outputs = dir / "outputs"
