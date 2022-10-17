@@ -145,6 +145,20 @@ class PolyBot:
 		log.info(f"Editing {message.id} to {kwargs}")
 		return await message.edit(**kwargs)
 
+	async def delete(self, message: discord.Message):
+		self.check_ready()
+
+		if App.in_dev() or App.in_sta():
+			log.warning(f"Dry run, would delete {message.id}")
+			return None
+
+		if App.in_pre():
+			if message.channel != self.preprod_channel:
+				raise Exception("In preprod: can't delete message in prod channel")
+
+		log.info(f"Deleting {message.id}")
+		return await message.delete()
+
 	async def rpc_send(self, content=None, **kwargs):
 		if kwargs.get("reply_to") is not None:
 			kwargs["reply_to"] = self.get_request(kwargs["reply_to"])["message"]

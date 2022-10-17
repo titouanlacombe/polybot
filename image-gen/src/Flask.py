@@ -1,4 +1,4 @@
-import logging, flask
+import base64, logging, flask
 from werkzeug.exceptions import HTTPException
 
 from ImageGenerator import generate_image
@@ -7,9 +7,17 @@ log = logging.getLogger(__name__)
 
 app = flask.Flask("ImageGenerator")
 
+# Wrap generate_image() for networking purposes
+def generate(**kwargs):
+	path = generate_image(app.config, **kwargs)
+	with open(path, "rb") as f:
+		return {
+			"image": base64.b64encode(f.read()).decode()
+		}
+
 rpc_methods = {
 	"ping": lambda: "pong",
-	"generate": lambda **kwargs: generate_image(app.config, **kwargs),
+	"generate": generate,
 }
 
 @app.route('/')

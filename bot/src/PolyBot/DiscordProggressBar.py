@@ -1,16 +1,21 @@
 import datetime
-import discord
 
-# Sender implement methods send and edit
+# Sender implement methods send, edit and delete
 class DiscordProgressBar:
 	def __init__(self, sender, total: int, title=None):
 		self.sender = sender
-		self.title = title
 		self.total = total
+		self.title = title
 
 		self.current = 0
-		self.message: discord.Message = None
+		self.message = None
 		self.start_time = None
+
+		# Bar style
+		self.bar_length = 10
+		self.full_char = "#"
+		self.empty_char = "-"
+		self.format = "** {title} **\n{current}/{total} | [{bar}] {percent}% | Elapsed: {elapsed}s | ETA: {eta}s"
 
 	async def start(self):
 		self.start_time = datetime.datetime.now()
@@ -22,19 +27,27 @@ class DiscordProgressBar:
 			await self.sender.edit(self.message, self.render())
 
 	async def increment(self):
-		self.current += 1
-		await self.update(self.current)
+		await self.update(self.current + 1)
 
 	async def finish(self):
 		if self.message is not None:
-			await self.message.delete()
+			await self.sender.delete(self.message)
 	
 	def render(self):
 		percent = self.current / self.total
-		bar = "#" * int(percent * 20)
-		bar = bar.ljust(20, "-")
+		bar = self.full_char * int(percent * self.bar_length)
+		bar = bar.ljust(self.bar_length, self.empty_char)
 		eta = self.eta()
-		return f"** {self.title} **\n{self.current}/{self.total} | [{bar}] {percent * 100:.2f}% | Elapsed: {int(self.elapsed())} s | ETA: {int(eta) if eta else '∞'} s"
+		eta = int(eta) if eta is not None else "N/A"
+		return self.format.format(
+			title=self.title,
+			current=self.current,
+			total=self.total,
+			bar=bar,
+			percent=int(percent * 100),
+			elapsed=int(self.elapsed()),
+			eta=eta
+		)
 
 	def eta(self):
 		if self.current == 0:
