@@ -3,11 +3,13 @@ from pathlib import Path
 
 log = logging.getLogger(__name__)
 
-dir = Path("../Real-ESRGAN")
+esrgan_src = Path("../Real-ESRGAN")
+esrgan_data = Path("../data") / "real-esrgan"
+inputs = esrgan_data / "inputs"
+outputs = esrgan_data / "outputs"
+model_cache = esrgan_data / "RealESRGAN_x4plus_cache.pth"
 model_url = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
-model_cache = "../data/realesrgan_cache/model.pth"
-inputs = dir / "inputs"
-outputs = dir / "outputs"
+
 __loaded = False
 
 def load_RealESRGAN():
@@ -15,18 +17,17 @@ def load_RealESRGAN():
 	log.info("Loading Real-ESRGAN")
 
 	# If model is not downloaded, download it
-	if not (dir / "models" / "RealESRGAN_x4plus.pth").exists():
+	if not model_cache.exists():
 		log.info("Downloading Real-ESRGAN model")
-		subprocess.run(f"cd {dir} && wget {model_url} -P weights -nv --show-progress", shell=True, check=True)
-		# Cache model
-		subprocess.run(f"cp {dir}/models/RealESRGAN_x4plus.pth {model_cache}", shell=True, check=True)
+		model_cache.parent.mkdir(parents=True, exist_ok=True)
+		subprocess.run(f"curl {model_url} > {model_cache}", shell=True, check=True)
 
 	__loaded = True
 	log.info("Real-ESRGAN loaded")
 
-def _RealESRGAN(input: str, scale: int = 4):
+def _RealESRGAN(inputs: str, scale: int = 4):
 	log.info("Executing Real-ESRGAN")
-	subprocess.run(f"python3 {dir}/inference_realesrgan.py -s {scale} --fp32 --ext png -i {input} -o {outputs}", shell=True, check=True)
+	subprocess.run(f"python3 {esrgan_src}/inference_realesrgan.py -s {scale} --fp32 --ext png -i {inputs} -o {outputs} --model_path {model_cache}", shell=True, check=True)
 
 # Wrapper
 def RealESRGAN(input_b: bytes, scale: int = 4) -> bytes:
@@ -38,7 +39,8 @@ def RealESRGAN(input_b: bytes, scale: int = 4) -> bytes:
 
 	try:
 		input.write_bytes(input_b)
-		_RealESRGAN(input, scale)
+
+		_RealESRGAN(inputs, scale)
 
 		with open(output, "rb") as f:
 			return f.read()
