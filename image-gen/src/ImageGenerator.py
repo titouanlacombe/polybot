@@ -59,7 +59,7 @@ def pbar_wrapper(event_loop, op, **kwargs):
 	finally:
 		# Finish progress bar
 		if request_id is not None:
-			call_rpc(event_loop, polybot_api_host, "pbar_finish", request_id)
+			call_rpc(polybot_api_host, "pbar_finish", request_id)
 
 # API function
 def generate_image(app_conf: dict, **kwargs):

@@ -12,7 +12,7 @@ class DiscordProgressBar:
 		self.start_time = None
 
 		# Bar style
-		self.bar_length = 10
+		self.bar_length = 20
 		self.full_char = "#"
 		self.empty_char = "-"
 		self.format = "** {title} **\n{current}/{total} | [{bar}] {percent}% | Elapsed: {elapsed}s | ETA: {eta}s"
