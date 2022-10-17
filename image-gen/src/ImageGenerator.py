@@ -55,11 +55,13 @@ def pbar_wrapper(event_loop, op, **kwargs):
 		call_rpc(polybot_api_host, "pbar_create", request_id, kwargs["num_inference_steps"], f"Generating image")
 
 	try:
-		return op(**kwargs)
+		res = op(**kwargs)
 	finally:
 		# Finish progress bar
 		if request_id is not None:
 			call_rpc_no_wait(event_loop, polybot_api_host, "pbar_finish", request_id)
+
+	return res
 
 # API function
 def generate_image(app_conf: dict, **kwargs):
