@@ -54,12 +54,12 @@ def makever(ver: str):
 	sh(f"git push origin {ver}")
 
 def compose(cmd):
-	files = ["./docker/docker-compose.yml"]
-	files.append(f"./docker/docker-compose.{_env.short}.yml")
+	files = ["./docker-compose.yml"]
+	files.append(f"./docker-compose.{_env.short}.yml")
 	
 	arch_cache()
 	if env("GPU_ARCH") != "cpu":
-		files.append(f"./docker/docker-compose.{env('GPU_ARCH')}.yml")
+		files.append(f"./docker-compose.{env('GPU_ARCH')}.yml")
 
 	sh(f"docker-compose -f {' -f '.join(files)} {cmd}")
 
