@@ -1,7 +1,7 @@
 pull docker compose out
 test
 
-separate services into their own repos [
+separate services into their own repos
     change stable diffusion to workers pulling SQL DB to get jobs and return results
 
     services:
@@ -14,7 +14,7 @@ separate services into their own repos [
     - jobs: user_id, input, output
 
     how to make SQL "data" collumns (no sorting)
-]
+
 
 polybot remove some envs
 
