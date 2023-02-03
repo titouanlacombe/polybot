@@ -16,7 +16,7 @@ separate services into their own repos {
     how to make SQL "data" collumns (no sorting)
 }
 
-polybot remove some envs
+time to suffer until weekend
 
 buy RTX 3060 ti (7.5 it/s) ?
 
