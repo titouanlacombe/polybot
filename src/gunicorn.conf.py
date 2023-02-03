@@ -5,14 +5,13 @@ import Config.App as App
 
 bind=f"0.0.0.0:{os.environ['POLYBOT_API_PORT']}"
 wsgi_app="API:app"
+threads=10
 
 if App.in_pro() or App.in_pre():
 	workers=2
-	threads=10
 	preload_app=True
 else:
 	workers=1
-	threads=10
 	reload=True
 
 max_requests=100
