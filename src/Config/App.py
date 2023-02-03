@@ -27,6 +27,6 @@ elif in_pre():
 elif in_pro():
 	env_color = "#de1616" # Red
 
-image_gen_host = os.getenv('IMAGE_GEN_HOST')
+image_gen_host = "localhost:5001"
 polybot_host = f"localhost:{os.getenv('POLYBOT_PORT')}"
 polybot_api_host = f"localhost:{os.getenv('POLYBOT_API_PORT')}"
