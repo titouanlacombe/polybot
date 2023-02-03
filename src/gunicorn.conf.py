@@ -4,6 +4,7 @@ from Config.Filesystem import logs_dir
 import Config.App as App
 
 bind=f"0.0.0.0:{os.environ['POLYBOT_API_PORT']}"
+wsgi_app="API:app"
 
 if App.in_pro() or App.in_pre():
 	workers=2
