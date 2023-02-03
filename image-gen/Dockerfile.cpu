@@ -1,6 +1,0 @@
-FROM bitnami/pytorch:latest
-
-USER root
-
-# Create app user
-RUN useradd app -ms /bin/bash --uid 1000

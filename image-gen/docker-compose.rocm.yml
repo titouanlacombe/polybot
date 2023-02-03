@@ -1,7 +1,0 @@
-version: '3.7'
-
-services:
-  image-gen:
-    devices:
-      - /dev/dri:/dev/dri
-      - /dev/kfd:/dev/kfd
