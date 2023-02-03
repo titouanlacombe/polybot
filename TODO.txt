@@ -1,3 +1,5 @@
+use https://docs.python.org/3/library/xmlrpc.html to make a simple api for polybot
+
 separate services into their own repos {
     change stable diffusion to workers pulling SQL DB to get jobs and return results
 
