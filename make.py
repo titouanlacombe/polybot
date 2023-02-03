@@ -35,6 +35,7 @@ def compose(cmd):
 
 def prebuild():
 	data.mkdir(exist_ok=True)
+	logs.mkdir(exist_ok=True)
 	static.mkdir(exist_ok=True)
 
 	# Create different sized images
