@@ -33,6 +33,10 @@ def socket_send(host: str, port: int, data: str, buffer=1024*4):
 def home():
 	return flask.render_template("web-remote.jinja", env_color=App.env_color)
 
+@app.route('/resources/<path:path>')
+def resources(path):
+	return flask.send_from_directory("../data/resources", path)
+
 @app.route('/ping')
 def ping():
 	return "pong"
