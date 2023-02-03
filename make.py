@@ -35,6 +35,7 @@ def compose(cmd):
 
 def prebuild():
 	data.mkdir(exist_ok=True)
+	static.mkdir(exist_ok=True)
 
 	# Create different sized images
 	logo = Image.open(resources / "polybot.png")
