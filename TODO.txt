@@ -1,6 +1,3 @@
-pull docker compose out
-test
-
 separate services into their own repos {
     change stable diffusion to workers pulling SQL DB to get jobs and return results
 
