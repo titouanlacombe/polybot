@@ -4,7 +4,7 @@ services:
   bot:
     volumes:
       - ./src:/home/app/src
-      - ../../data:/home/app/data
+      - ../data:/home/app/data
 
   nginx:
     ports:

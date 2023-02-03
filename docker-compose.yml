@@ -16,7 +16,7 @@ services:
       - POLYBOT_API_PORT=${POLYBOT_API_PORT}
       - IMAGE_GEN_PORT=${IMAGE_GEN_PORT}
     volumes:
-      - ../../data:/home/app/data
+      - ../data:/home/app/data
 
   nginx:
     restart: always
