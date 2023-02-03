@@ -26,4 +26,4 @@ WORKDIR /home/app/src
 
 # Entrypoint
 USER app
-CMD ["./entrypoint.sh"]
+CMD ["supervisord"]
