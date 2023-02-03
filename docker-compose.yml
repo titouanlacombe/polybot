@@ -5,6 +5,7 @@ services:
     restart: always
     build:
       dockerfile: ./Dockerfile
+      context: .
     environment:
       - ENV=${ENV}
       - VER=${VER}
