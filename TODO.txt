@@ -1,7 +1,3 @@
-more robust user management (no usernames use ids)
-
-time to suffer until weekend
-
 separate services into their own repos {
     change stable diffusion to workers pulling SQL DB to get jobs and return results
 
@@ -22,3 +18,6 @@ add GPT-3 api call (try to generate the next message (with author))
 make simple async rpc server/client library
 
 buy RTX 3060 ti (7.5 it/s) ?
+
+TO TEST:
+more robust user management (no usernames use ids)

@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time, date
 import random
 
 # 14h UTC is 16h in Paris
-endofformation = datetime(2023, 6, 30, 14, 30, 0)
-# endofyear = datetime(2022, 6, 24, 14, 30, 0)
+endofday = time(14, 30, 0)
+endofformation = datetime.combine(date(2023, 9, 30), endofday)
 
 def gettimetosuffer(endofsuffering):
 	# Le 30 Juin 2023 a 16h30

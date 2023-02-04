@@ -1,10 +1,10 @@
 import asyncio, logging, base64, yaml, math, random, discord
 from io import BytesIO
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
 from discord.ext.commands import Context
 
 from .Message2Images import message2images
-from .TimeToSuffer import gettimetosuffer, endofformation
+from .TimeToSuffer import gettimetosuffer, endofformation, endofday
 import Config.App as App
 import Config.Users as Users
 from .PolyBot import PolyBot
@@ -108,11 +108,28 @@ def register_commands(polybot: PolyBot):
 		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(
-		brief="Vous avez envie d'en finir ? attendez au moins jusqu'à la fin du timer !",
+		brief="Vous avez envie d'en finir ? attendez la fin de polytech !",
 	)
 	async def timetosuffer(ctx: Context):
-		message = gettimetosuffer(endofformation)
-		await polybot.send(message, reply_to=ctx.message)
+		await polybot.send(gettimetosuffer(endofformation), reply_to=ctx.message)
+
+	@bot.command(
+		brief="Vous avez envie d'en finir ? attendez la fin de la semaine !",
+	)
+	async def timetosuffer_we(ctx: Context):
+		friday = datetime.now().date()
+		day_delta = timedelta(days=1)
+
+		# Set to this week's friday
+		while friday.weekday() != 4:
+			if friday.weekday() > 4:
+				friday -= day_delta
+			else:
+				friday += day_delta
+
+		endofweek = datetime.combine(friday, endofday)
+
+		await polybot.send(gettimetosuffer(endofweek), reply_to=ctx.message)
 
 	@bot.command(
 		brief="Donne le status du bot",
