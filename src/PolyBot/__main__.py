@@ -53,14 +53,14 @@ async def main():
 			message = await request.readexactly(message_len)
 			data: dict = json.loads(message.decode())
 
-			(command, args, kwargs) = (data["command"], data.get("args", []), data.get("kwargs", {}))
-			log.info(f"Received rpc command: {command}({args}, {kwargs})")
+			(procedure, args, kwargs) = (data["procedure"], data.get("args", []), data.get("kwargs", {}))
+			log.info(f"Received rpc procedure: {procedure}({args}, {kwargs})")
 
-			if command not in poly_rpc_targets:
-				raise Exception(f"Unknown RPC command '{command}'")
+			if procedure not in poly_rpc_targets:
+				raise Exception(f"Unknown RPC procedure '{procedure}'")
 				
 			resp = {
-				"result": await getattr(polybot, command)(*args, **kwargs),
+				"result": await getattr(polybot, procedure)(*args, **kwargs),
 			}
 		except Exception as e:
 			log.exception("Exception during request")

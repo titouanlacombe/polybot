@@ -45,13 +45,13 @@ async function call_app(data) {
 	return result['result'];
 }
 
-function create_call(command) {
+function create_call(procedure) {
 	data = {
-		command: command,
+		procedure: procedure,
 		args: [],
 	};
 
-	switch (data['command']) {
+	switch (data['procedure']) {
 		case 'rpc_send':
 			data['args'].push(document.getElementById('send_text').value);
 			break;
@@ -69,7 +69,7 @@ function create_call(command) {
 		case 'unpause':
 			break;
 		default:
-			throw new Error('Unknown command: ' + data['command'] + "'");
+			throw new Error('Unknown procedure: ' + data['procedure'] + "'");
 	}
 
 	return data;
@@ -82,6 +82,8 @@ async function update_loop() {
 }
 
 async function update_status() {
+	document.getElementById('bot_status').innerHTML = "Loading...";
+
 	let response = await call_app(create_call('status'));
 
 	status_html = '';

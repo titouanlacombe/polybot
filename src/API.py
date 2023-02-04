@@ -46,8 +46,8 @@ def rpc():
 	data: dict = flask.request.json
 	log.info(f"RPC query: {data}")
 
+	# Call polybot rpc
 	try:
-		# Call polybot rpc
 		host, port = App.polybot_host.split(":")
 		res = socket_send(host, int(port), json.dumps(data))
 		log.info(f"RPC response: {res}")
