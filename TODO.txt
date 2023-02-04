@@ -2,20 +2,28 @@ separate services into their own repos {
     change stable diffusion to workers pulling SQL DB to get jobs and return results
 
     services:
-    - polybot: you know, keep api (behind DNS) for mobile application project
-    - workers: docker image have env var (num threads) to ovverride default
-    - api: flask? api with simple SQL DB to manage jobs, authentification ? nginx proxy.
+    - polybot: you know, keep api (behind DNS) for mobile application project, better RPC without flask proxy?
+	- api: flask? api with simple SQL DB to manage jobs, authentification ? nginx proxy. {
+		- phpmyadmin: (optional, search for better alternatives)
+		- nginx: proxy to api & serving static files
+		- api: flask app with SQL DB
+		- db: mysql or mariadb or postgresql (search for better alternatives)
+	}
+    - workers: docker image with api host env
+
+	polybot and api will be on the same server (polybot in private network)
 
     api db:
     - users: name, passwd_hash
     - jobs: user_id, input, output
 
-    how to make SQL "data" collumns (no sorting)
+    how to make SQL non sorting collumns?
 }
 
 add GPT-3 api call (try to generate the next message (with author))
 
 make simple async rpc server/client library
+use that python library to implement that between polybot and api
 
 buy RTX 3060 ti (7.5 it/s) ?
 
