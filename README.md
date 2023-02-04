@@ -1,5 +1,7 @@
 # PolyBot
 
+<img src="resources/polybot.png" alt="drawing" width="300"/>
+
 ## Services
 
 https://docs.google.com/drawings/d/1uNF-A8a_BRvgIJ-wW_RjLT-dGl5MtDIHePFvDeXnbRo/edit?usp=sharing
