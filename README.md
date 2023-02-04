@@ -1,4 +1,4 @@
-# PolyBot
+# Polybot
 
 <img src="resources/polybot.png" alt="drawing" width="300"/>
 
