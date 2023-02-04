@@ -93,7 +93,7 @@ class PolyBot:
 			log.info(f"Setting presence: {kwargs}")
 			await self.bot.change_presence(**kwargs)
 		else:
-			log.warning(f"Dry run, would set presence: {kwargs}")
+			log.info(f"Dry run, would set presence: {kwargs}")
 
 	def check_ready(self):
 		if not self.ready:
@@ -109,12 +109,12 @@ class PolyBot:
 			raise Exception("Can't reply and send to a channel at the same time")
 
 		if App.in_dev() or App.in_sta():
-			log.warning(f"Dry run, would send {kwargs}")
+			log.info(f"Dry run, would send {kwargs}")
 			return None
 
 		if App.in_pre():
 			kwargs.pop("reply_to", None)
-			log.warning(f"Replacing channel to preprod channel (original: {kwargs.get('channel')})")
+			log.info(f"Replacing channel to preprod channel (original: {kwargs.get('channel')})")
 			kwargs["channel"] = self.preprod_channel
 
 		log.info(f"Sending {kwargs}")
@@ -135,7 +135,7 @@ class PolyBot:
 		kwargs["content"] = content
 
 		if App.in_dev() or App.in_sta():
-			log.warning(f"Dry run, would edit {message.id} to {kwargs}")
+			log.info(f"Dry run, would edit {message.id} to {kwargs}")
 			return None
 
 		if App.in_pre():
@@ -149,7 +149,7 @@ class PolyBot:
 		self.check_ready()
 
 		if App.in_dev() or App.in_sta():
-			log.warning(f"Dry run, would delete {message.id}")
+			log.info(f"Dry run, would delete {message.id}")
 			return None
 
 		if App.in_pre():
