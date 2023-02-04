@@ -133,7 +133,7 @@ def register_commands(polybot: PolyBot):
 		brief="Met le bot en pause",
 	)
 	async def pause(ctx: Context):
-		if ctx.author.display_name not in Users.admins:
+		if ctx.author.id not in Users.admins:
 			raise Exception("You don't have admin rights")
 		await polybot.pause()
 
@@ -141,7 +141,7 @@ def register_commands(polybot: PolyBot):
 		brief="Reprend le bot",
 	)
 	async def unpause(ctx: Context):
-		if ctx.author.display_name not in Users.admins:
+		if ctx.author.id not in Users.admins:
 			raise Exception("You don't have admin rights")
 		await polybot.unpause()
 

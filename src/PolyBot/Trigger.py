@@ -35,7 +35,7 @@ class Trigger:
 			return False
 
 		# If special users whitelist is set, check if the user is in it
-		if self.special_users and message.author.display_name not in self.special_users:
+		if self.special_users and message.author.id not in self.special_users:
 			log.debug(f"User whitelist failed")
 			return False
 

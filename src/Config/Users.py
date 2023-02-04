@@ -1,12 +1,12 @@
 # Discord users
-titouan = "Titouan Lacombe"
-guillaume = "GuiguiSins"
-quentin = "Quentin"
-karim = "Karim"
-ghassan = "Ghassan"
-nathan = "Nathan"
-polybot = "poly-bot"
-dev_user = "DEV"
+titouan = 264497065009217536
+guillaume = 744882333894574152
+quentin = 191906089602646016
+karim = 425755058634752010
+ghassan = 694640645675155626
+nathan = 212167859672055808
+polybot = 984822377017921577
+dev_user = 0
 
 admins = [
 	titouan,

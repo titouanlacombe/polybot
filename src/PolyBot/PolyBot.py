@@ -20,8 +20,8 @@ def preprocess_text(text: str):
 # Warning: only works when proccessing one message at a time (because we modify the message in place)
 def create_message(dummy: discord.Message, text, author, channel):
 	dummy.content = text
-	dummy.id = random.randint(0, 2**64)
-	dummy.author.name = author
+	dummy.id = random.randint(1, 2**64)
+	dummy.author.id = author
 	dummy.channel.name = channel
 	return dummy
 
@@ -219,7 +219,7 @@ class PolyBot:
 		log.debug(f"Handling message: \"{message.content}\"")
 
 		# Ignore bot messages
-		if self.ignore_self and message.author.display_name == self.bot.user.display_name:
+		if self.ignore_self and message.author == self.bot.user:
 			log.debug(f"Ignoring message, author is polybot")
 			return "Ignored"
 
@@ -247,7 +247,7 @@ class PolyBot:
 		return res
 
 	# Function used to test bot response to a message
-	async def message(self, text="", author="None", channel="general"):
+	async def message(self, text="", author=1, channel="general"):
 		if self.message_example is None:
 			raise Exception("No message example found (polybot not loaded)")
 
