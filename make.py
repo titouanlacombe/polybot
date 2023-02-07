@@ -20,10 +20,6 @@ env(
 	COMPOSE_PROJECT_NAME=f"{env('APP_NAME')}-{_env.short}-{env('VER').replace('.', '_')}",
 )
 
-def ver(_ver: str):
-	sh(f"git tag -a {_ver} -m 'Version {_ver}'")
-	sh(f"git push origin {_ver}")
-
 def compose(cmd):
 	files = ["./docker-compose.yml"]
 	files.append(f"./docker-compose.{_env.short}.yml")
