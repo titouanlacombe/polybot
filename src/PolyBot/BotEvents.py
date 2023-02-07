@@ -7,7 +7,7 @@ import Config.App as App
 log = logging.getLogger(__name__)
 
 async def set_status(polybot: PolyBot, status: discord.Status):
-	status = discord.Status.online if App.in_pro() else discord.Status.invisible
+	status = discord.Status.online if App.in_pro else discord.Status.invisible
 	log.info(f"Setting status to {status}")
 	await polybot.bot.change_presence(status=status)
 
@@ -57,7 +57,7 @@ def register_events(polybot: PolyBot):
 	async def on_message(message: discord.Message):
 		log.info(f"Received message: \"{message.content}\"")
 		
-		if App.in_dev():
+		if App.in_dev:
 			log.info(f"Ignoring message, app in dev")
 			return
 

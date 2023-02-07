@@ -18,8 +18,6 @@ _env = Environment(env("ENV"))
 # Setup env
 env(
 	COMPOSE_PROJECT_NAME=f"{env('APP_NAME')}-{_env.short}-{env('VER').replace('.', '_')}",
-	POLYBOT_PORT="8080",
-	POLYBOT_API_PORT="5000",
 )
 
 def ver(_ver: str):

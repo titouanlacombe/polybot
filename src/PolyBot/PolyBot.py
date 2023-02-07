@@ -89,7 +89,7 @@ class PolyBot:
 
 	# change presence wrapper
 	async def change_presence(self, **kwargs):
-		if App.in_pro():
+		if App.in_pro:
 			log.info(f"Setting presence: {kwargs}")
 			await self.bot.change_presence(**kwargs)
 		else:
@@ -108,11 +108,11 @@ class PolyBot:
 		if kwargs.get("reply_to") is not None and kwargs.get("channel") is not None:
 			raise Exception("Can't reply and send to a channel at the same time")
 
-		if App.in_dev() or App.in_sta():
+		if App.in_dev or App.in_sta:
 			log.info(f"Dry run, would send {kwargs}")
 			return None
 
-		if App.in_pre():
+		if App.in_pre:
 			kwargs.pop("reply_to", None)
 			log.info(f"Replacing channel to preprod channel (original: {kwargs.get('channel')})")
 			kwargs["channel"] = self.preprod_channel
@@ -134,11 +134,11 @@ class PolyBot:
 		self.check_ready()
 		kwargs["content"] = content
 
-		if App.in_dev() or App.in_sta():
+		if App.in_dev or App.in_sta:
 			log.info(f"Dry run, would edit {message.id} to {kwargs}")
 			return None
 
-		if App.in_pre():
+		if App.in_pre:
 			if message.channel != self.preprod_channel:
 				raise Exception("In preprod: can't edit message in prod channel")
 
@@ -148,11 +148,11 @@ class PolyBot:
 	async def delete(self, message: discord.Message):
 		self.check_ready()
 
-		if App.in_dev() or App.in_sta():
+		if App.in_dev or App.in_sta:
 			log.info(f"Dry run, would delete {message.id}")
 			return None
 
-		if App.in_pre():
+		if App.in_pre:
 			if message.channel != self.preprod_channel:
 				raise Exception("In preprod: can't delete message in prod channel")
 

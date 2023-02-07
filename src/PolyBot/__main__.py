@@ -79,10 +79,9 @@ async def main():
 	(server, _) = await asyncio.gather(
 		asyncio.start_server(
 			process_request,
-			"0.0.0.0",
-			os.environ["POLYBOT_PORT"],
+			App.polybot_host, App.polybot_port,
 		),
-		bot.start(os.getenv("BOT_TOKEN")),
+		bot.start(App.bot_token),
 	)
 
 	# Start socket server

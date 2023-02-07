@@ -5,14 +5,11 @@ services:
     restart: always
     build: .
     environment:
+      - BOT_TOKEN=${BOT_TOKEN}
       - ENV=${ENV}
       - VER=${VER}
       - TZ=${TZ}
       - SENTRY_DSN=${SENTRY_DSN}
-      - BOT_TOKEN=${BOT_TOKEN}
-      - POLYBOT_PORT=${POLYBOT_PORT}
-      - POLYBOT_API_PORT=${POLYBOT_API_PORT}
-      - IMAGE_GEN_PORT=${IMAGE_GEN_PORT}
     volumes:
       - ../data:/home/app/data
 

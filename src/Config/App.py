@@ -1,32 +1,22 @@
 import os
 
 env = os.getenv("ENV")
+in_dev = env.startswith("dev")
+in_sta = env.startswith("sta")
+in_pre = env.startswith("pre")
+in_pro = env.startswith("pro")
+
 ver = os.getenv("VER")
+bot_token = os.getenv("BOT_TOKEN")
 
-def in_dev():
-	return env.startswith("dev")
+(polybot_host, polybot_port) = ("0.0.0.0", 5000)
+(api_host, api_port) = ("0.0.0.0", 5001)
+imagen_url = "" # TODO
 
-def in_sta():
-	return env.startswith("sta")
-
-def in_pre():
-	return env.startswith("pre")
-
-def in_pro():
-	return env.startswith("pro")
+env_color = "#1a9122" # Green
+if in_sta: env_color = "#1a6a91" # Blue
+elif in_pre: env_color = "#d98b25" # Orange
+elif in_pro: env_color = "#de1616" # Red
 
 command_prefix = "/"
 activity_update_interval = 15*60 # seconds
-
-# env_color
-env_color = "#1a9122" # Green
-if in_sta():
-	env_color = "#1a6a91" # Blue
-elif in_pre():
-	env_color = "#d98b25" # Orange
-elif in_pro():
-	env_color = "#de1616" # Red
-
-image_gen_host = "localhost:5001"
-polybot_host = f"localhost:{os.getenv('POLYBOT_PORT')}"
-polybot_api_host = f"localhost:{os.getenv('POLYBOT_API_PORT')}"

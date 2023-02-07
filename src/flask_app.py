@@ -48,8 +48,7 @@ def rpc():
 
 	# Call polybot rpc
 	try:
-		host, port = App.polybot_host.split(":")
-		res = socket_send(host, int(port), json.dumps(data))
+		res = socket_send(App.polybot_host, App.polybot_port, json.dumps(data))
 		log.info(f"RPC response: {res}")
 		res = json.loads(res)
 	except Exception as exc:

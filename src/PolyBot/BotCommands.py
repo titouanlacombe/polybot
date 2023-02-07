@@ -232,7 +232,7 @@ def register_commands(polybot: PolyBot):
 					asyncio.create_task(q_mess.delete())
 			
 			# Call image generator
-			resp: dict = await polybot.call_service(App.image_gen_host, "generate", **image_gen_kwargs)
+			resp: dict = await polybot.call_service(App.imagen_url, "generate", **image_gen_kwargs)
 
 		file_obj = BytesIO(base64.b64decode(resp['image'].encode()))
 		await polybot.send(file=discord.File(file_obj, "image.png"), reply_to=ctx.message)
