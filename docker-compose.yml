@@ -9,7 +9,6 @@ services:
       - ENV=${ENV}
       - VER=${VER}
       - TZ=${TZ}
-      - SENTRY_DSN=${SENTRY_DSN}
     volumes:
       - ../data:/home/app/data
 
