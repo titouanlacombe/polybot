@@ -17,7 +17,7 @@ RUN apt update && apt install -y --no-install-recommends \
 # Python requirements
 RUN python3 -m pip install --no-cache-dir pipenv
 COPY ./Pipfile.lock ./Pipfile ./
-RUN pipenv sync --clear --system
+RUN pipenv sync --clear --system --verbose
 
 # Sources
 COPY ./src ./src
