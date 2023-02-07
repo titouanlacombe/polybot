@@ -1,4 +1,3 @@
-from Utils.Logging import getFormat
 from Config.Filesystem import logs_dir
 import Config.App as App
 
@@ -19,15 +18,14 @@ capture_output=True
 
 access_log_format = "%(r)s responded %(s)s in %(M)s ms"
 
-fmt, datefmt = getFormat()
 logconfig_dict = {
 	'version': 1,
 	'disable_existing_loggers': True,
 
 	'formatters': {
 		'standard': {
-			'format': fmt,
-			'datefmt': datefmt,
+			'format': "[{asctime}] {levelname}:{name}: {message}",
+			'datefmt': "%Y-%m-%d %H:%M:%S",
 			'style': '{'
 		},
 	},
@@ -35,7 +33,9 @@ logconfig_dict = {
 		'console': {
 			'level': 'INFO',
 			'formatter': 'standard',
-			'class': 'logging.FileHandler',
+			'class': 'logging.handlers.RotatingFileHandler',
+			'maxBytes': 1024 * 1024 * 10,  # 10 MB
+			'backupCount': 5,
 			'filename': str(logs_dir / 'api.log'),
 		},
 	},
