@@ -5,7 +5,7 @@ def get_dict_conf(
 	level='INFO',
 	maxBytes=1024 * 1024 * 10,
 	backupCount=5,
-	format='[%(asctime)s] %(levelname)s:%(name)s: %(message)s',
+	format='[{asctime}] {levelname}:{name}: {message}',
 	datefmt='%Y-%m-%d %H:%M:%S',
 ):
 	return {

@@ -1,4 +1,4 @@
-import asyncio, logging, json, discord, sentry_sdk
+import asyncio, logging, logging.config, json, discord, sentry_sdk
 import importlib
 from discord.ext.commands import Bot
 from sentry_sdk.integrations.flask import FlaskIntegration
