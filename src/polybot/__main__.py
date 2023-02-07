@@ -3,8 +3,8 @@ import importlib
 from discord.ext.commands import Bot
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-import Config.App as App
-import Config.Logging as Logging
+import config.App as App
+import config.Logging as Logging
 from .PolyBot import PolyBot
 from .BotCommands import register_commands
 from .BotEvents import register_events
@@ -47,7 +47,7 @@ async def main():
 	bot = Bot(command_prefix=App.command_prefix, intents=intents)
 
 	try:
-		secret_triggers_mod = importlib.import_module(".SecretTriggers", package="PolyBot")
+		secret_triggers_mod = importlib.import_module(".SecretTriggers", package="polybot")
 		triggers.extend(secret_triggers_mod.triggers)
 	except ModuleNotFoundError:
 		log.warning("No secret triggers found")

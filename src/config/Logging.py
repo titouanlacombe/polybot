@@ -1,4 +1,4 @@
-import Config.Filesystem as Filesystem
+import config.Filesystem as Filesystem
 
 def get_dict_conf(
 	file_path,

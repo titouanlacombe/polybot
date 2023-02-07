@@ -2,7 +2,7 @@ import random
 random.seed()
 
 from .Trigger import Trigger
-from Config.Users import *
+from config.Users import *
 
 def prof_de_c(message):
 	return random.choice([

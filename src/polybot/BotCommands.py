@@ -5,8 +5,8 @@ from discord.ext.commands import Context
 
 from .Message2Images import message2images
 from .TimeToSuffer import gettimetosuffer, endofformation, endofday
-import Config.App as App
-import Config.Users as Users
+import config.App as App
+import config.Users as Users
 from .PolyBot import PolyBot
 from .PolyQuiz import do_quiz
 
@@ -136,7 +136,7 @@ def register_commands(polybot: PolyBot):
 	)
 	async def info(ctx: Context):
 		status = await polybot.status()
-		message = f"Je suis PolyBot v{App.ver} {App.env} actif depuis {status['up_since']}\n"
+		message = f"Je suis polybot v{App.ver} {App.env} actif depuis {status['up_since']}\n"
 		await polybot.send(message, reply_to=ctx.message)
 
 	@bot.command(

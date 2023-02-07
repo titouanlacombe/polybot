@@ -2,7 +2,7 @@ import asyncio, logging, discord, datetime
 from discord.ext.commands import Bot, Context
 from .PolyBot import PolyBot
 
-import Config.App as App
+import config.App as App
 
 log = logging.getLogger(__name__)
 

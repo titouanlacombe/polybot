@@ -1,5 +1,5 @@
-import Config.App as App
-import Config.Logging as Logging
+import config.App as App
+import config.Logging as Logging
 
 bind=f"{App.api_host}:{App.api_port}"
 wsgi_app="flask_app:app"

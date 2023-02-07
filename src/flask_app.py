@@ -1,6 +1,6 @@
 import json, logging, flask, socket
 
-import Config.App as App
+import config.App as App
 
 log = logging.getLogger(__name__)
 

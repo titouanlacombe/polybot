@@ -2,7 +2,7 @@ import asyncio, discord, logging, aiohttp, unidecode, re, random
 from datetime import datetime
 from discord.ext.commands import Bot
 
-import Config.App as App
+import config.App as App
 from .Trigger import Trigger
 from .DiscordProggressBar import DiscordProgressBar
 
