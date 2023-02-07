@@ -1,22 +1,10 @@
-import json, logging, flask, socket, sentry_sdk
+import json, logging, flask, socket
+
 import Config.App as App
-from sentry_sdk.integrations.flask import FlaskIntegration
 
 log = logging.getLogger(__name__)
 
 app = flask.Flask(__name__)
-
-sentry_sdk.init(
-	dsn=App.sentry_dsn,
-	integrations=FlaskIntegration(),
-
-	# Set traces_sample_rate to 1.0 to capture 100%
-	# of transactions for performance monitoring.
-	# We recommend adjusting this value in production.
-	traces_sample_rate=1.0,
-	environment=App.env,
-	release=App.ver,
-)
 
 def socket_send(host: str, port: int, data: str, buffer=1024*4):
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -63,7 +51,6 @@ def rpc():
 		res = json.loads(res)
 	except Exception as exc:
 		log.exception(exc)
-		sentry_sdk.capture_exception(exc)
 		res = {
 			"error": str(exc)
 		}

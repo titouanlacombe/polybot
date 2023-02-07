@@ -1,21 +1,31 @@
-import asyncio, logging, os, json, discord, sentry_sdk
+import asyncio, logging, json, discord, sentry_sdk
 import importlib
 from discord.ext.commands import Bot
+from sentry_sdk.integrations.flask import FlaskIntegration
 
-from Config.Filesystem import logs_dir
 import Config.App as App
-from Utils.Logging import basicConfig
+import Config.Logging as Logging
 from .PolyBot import PolyBot
 from .BotCommands import register_commands
 from .BotEvents import register_events
 from .BotPresences import presences
 from .BotTriggers import triggers
-import Utils.Sentry as Sentry
 
-basicConfig(logs_dir, "polybot", logging.INFO)
+logging.config.dictConfig(Logging.get_dict_conf('polybot'))
+
 log = logging.getLogger(__name__)
 
-Sentry.init()
+sentry_sdk.init(
+	dsn=App.sentry_dsn,
+	integrations=FlaskIntegration(),
+
+	# Set traces_sample_rate to 1.0 to capture 100%
+	# of transactions for performance monitoring.
+	# We recommend adjusting this value in production.
+	traces_sample_rate=1.0,
+	environment=App.env,
+	release=App.ver,
+)
 
 poly_rpc_targets = [
 	PolyBot.rpc_send.__name__,
@@ -87,4 +97,8 @@ async def main():
 	# Start socket server
 	await server.serve_forever()
 
-asyncio.run(main())
+try:
+	asyncio.run(main())
+except Exception as e:
+	log.exception("Exception during main")
+	sentry_sdk.capture_exception(e)
