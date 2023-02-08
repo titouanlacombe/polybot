@@ -11,7 +11,6 @@ bot_token = os.getenv("BOT_TOKEN")
 
 (polybot_host, polybot_port) = ("0.0.0.0", 5000)
 (api_host, api_port) = ("0.0.0.0", 5001)
-imagen_url = "" # TODO
 
 env_color = "#1a9122" # Green
 if in_sta: env_color = "#1a6a91" # Blue

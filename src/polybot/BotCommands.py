@@ -232,6 +232,7 @@ def register_commands(polybot: PolyBot):
 					asyncio.create_task(q_mess.delete())
 			
 			# Call image generator
+			raise Exception("Image generator is not implemented")
 			resp: dict = await polybot.call_service(App.imagen_url, "generate", **image_gen_kwargs)
 
 		file_obj = BytesIO(base64.b64decode(resp['image'].encode()))
