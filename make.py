@@ -38,6 +38,7 @@ def prebuild():
 	logo.save(app_resources / "favicon.ico", "PNG", optimize=True, quality=95, progressive=False)
 
 def build():
+	prebuild()
 	compose("build")
 
 def up():
