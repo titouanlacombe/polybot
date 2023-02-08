@@ -1,13 +1,11 @@
-import asyncio, discord, logging, logging.config, aiohttp, unidecode, re, random
+import asyncio, discord, logging, aiohttp, unidecode, re, random
 from datetime import datetime
 from discord.ext.commands import Bot
 
 import config.App as App
-import config.Logging as Logging
 from .Trigger import Trigger
 from .DiscordProggressBar import DiscordProgressBar
 
-logging.config.dictConfig(Logging.get_dict_conf('polybot'))
 log = logging.getLogger(__name__)
 random.seed()
 
