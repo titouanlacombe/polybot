@@ -18,4 +18,4 @@ capture_output=True
 
 access_log_format = "%(r)s responded %(s)s in %(M)s ms"
 
-logconfig_dict = Logging.get_dict_conf('api')
+logconfig_dict = Logging.get_gunicorn_dict_conf('api')

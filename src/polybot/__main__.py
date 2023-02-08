@@ -1,17 +1,20 @@
-import asyncio, logging, logging.config, json, discord, sentry_sdk
+# Setting up logging before anything else
+import logging, logging.config
+import config.Logging as Logging
+logging.config.dictConfig(Logging.get_dict_conf('polybot'))
+
+import asyncio, json, discord, sentry_sdk
 import importlib
 from discord.ext.commands import Bot
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 import config.App as App
-import config.Logging as Logging
 from .PolyBot import PolyBot
 from .BotCommands import register_commands
 from .BotEvents import register_events
 from .BotPresences import presences
 from .BotTriggers import triggers
 
-logging.config.dictConfig(Logging.get_dict_conf('polybot'))
 
 log = logging.getLogger(__name__)
 

@@ -1,4 +1,5 @@
 import config.Filesystem as Filesystem
+from copy import deepcopy
 
 def get_dict_conf(
 	file_path,
@@ -10,7 +11,6 @@ def get_dict_conf(
 ):
 	return {
 		'version': 1,
-		'disable_existing_loggers': True,
 
 		'formatters': {
 			'standard': {
@@ -30,10 +30,16 @@ def get_dict_conf(
 			},
 		},
 		'loggers': {
-			'gunicorn': {
+			'': {
 				'handlers': ['console'],
 				'level': level,
 				'propagate': False
 			},
 		}, 
 	}
+
+def get_gunicorn_dict_conf(filename, **kwargs):
+	conf = deepcopy(get_dict_conf(filename, **kwargs))
+	conf['disable_existing_loggers'] = True
+	conf['loggers']['gunicorn'] = conf['loggers'].pop('')
+	return conf
