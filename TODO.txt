@@ -12,7 +12,10 @@ microservices {
 add GPT-3 api call (try to generate the next message (with author)) {
    activate when message is posted, and rand < small chance
    create joke entry on message id
-   on each reaction increase score according to rules
+   on each reaction increase or decrease score according to rules
+   also create jokes when someone get successfull message
+   
+   when asking gpt-3 present most & least successfull jokes with score and ask to create new one
 }
 
 
