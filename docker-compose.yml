@@ -17,5 +17,4 @@ services:
 networks:
   polybot:
     name: polybot-${ENV}
-    driver: bridge
     external: true

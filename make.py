@@ -32,6 +32,7 @@ def build():
 	compose("build")
 
 def up():
+	sh(f"docker network create polybot-{_env.short}")
 	compose("up -d")
 
 def down():
