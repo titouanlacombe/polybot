@@ -4,7 +4,7 @@ from copy import deepcopy
 def get_dict_conf(
 	file_path,
 	level='INFO',
-	maxBytes=1024 * 1024 * 10,
+	maxBytes=1024 * 1024 * 1024,
 	backupCount=5,
 	format='[{asctime}] {levelname}:{name}: {message}',
 	datefmt='%Y-%m-%d %H:%M:%S',
