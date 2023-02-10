@@ -11,3 +11,10 @@ services:
       - TZ=${TZ}
     volumes:
       - ../data:/home/app/data
+    networks:
+      - polybot
+
+networks:
+  polybot:
+    name: polybot-${ENV}
+    driver: bridge
