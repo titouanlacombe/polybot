@@ -5,7 +5,3 @@ services:
     volumes:
       - ./src:/home/app/src
       - ../data:/home/app/data
-
-  nginx:
-    ports:
-      - 5001:80

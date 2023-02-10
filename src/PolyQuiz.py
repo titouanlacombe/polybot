@@ -1,7 +1,7 @@
 import asyncio, discord, base64, logging, random
 from discord.ext.commands import Context
 
-from .PolyBot import PolyBot
+from PolyBot import PolyBot
 
 api_url = "https://opentdb.com/api.php"
 log = logging.getLogger(__name__)

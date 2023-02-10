@@ -1,7 +1,7 @@
 import random
 random.seed()
 
-from .Trigger import Trigger
+from Trigger import Trigger
 from config.Users import *
 
 def prof_de_c(message):

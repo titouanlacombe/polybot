@@ -3,12 +3,12 @@ from io import BytesIO
 from datetime import datetime, date, time, timedelta
 from discord.ext.commands import Context
 
-from .Message2Images import message2images
-from .TimeToSuffer import gettimetosuffer, endofformation, endofday
+from Message2Images import message2images
+from TimeToSuffer import gettimetosuffer, endofformation, endofday
 import config.App as App
 import config.Users as Users
-from .PolyBot import PolyBot
-from .PolyQuiz import do_quiz
+from PolyBot import PolyBot
+from PolyQuiz import do_quiz
 
 random.seed()
 log = logging.getLogger(__name__)

@@ -3,8 +3,8 @@ from datetime import datetime
 from discord.ext.commands import Bot
 
 import config.App as App
-from .Trigger import Trigger
-from .DiscordProggressBar import DiscordProgressBar
+from Trigger import Trigger
+from DiscordProggressBar import DiscordProgressBar
 
 log = logging.getLogger(__name__)
 random.seed()

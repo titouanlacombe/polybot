@@ -6,21 +6,20 @@ logging.config.dictConfig(Logging.get_dict_conf('polybot'))
 import asyncio, json, discord, sentry_sdk
 import importlib
 from discord.ext.commands import Bot
-from sentry_sdk.integrations.flask import FlaskIntegration
 
 import config.App as App
-from .PolyBot import PolyBot
-from .BotCommands import register_commands
-from .BotEvents import register_events
-from .BotPresences import presences
-from .BotTriggers import triggers
+from PolyBot import PolyBot
+from BotCommands import register_commands
+from BotEvents import register_events
+from BotPresences import presences
+from BotTriggers import triggers
 
 
 log = logging.getLogger(__name__)
 
 sentry_sdk.init(
 	dsn=App.sentry_dsn,
-	integrations=[FlaskIntegration()],
+	integrations=[],
 
 	# Set traces_sample_rate to 1.0 to capture 100%
 	# of transactions for performance monitoring.

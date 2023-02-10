@@ -1,6 +1,6 @@
 import asyncio, logging, discord, datetime
 from discord.ext.commands import Bot, Context
-from .PolyBot import PolyBot
+from PolyBot import PolyBot
 
 import config.App as App
 

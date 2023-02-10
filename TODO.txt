@@ -1,8 +1,5 @@
 régler le pb de timezone by setting it to Paris or change the date format to be timezone independant
 
-make simple async rpc server/client library
-use that python library to implement that between polybot and api
-
 add time to suffer foreach user (/timetosuffer_me) qui va chercher leur date de fin dans la config
 
 microservices {

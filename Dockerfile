@@ -26,4 +26,4 @@ WORKDIR /home/app/src
 
 # Entrypoint
 USER app
-CMD ["supervisord"]
+CMD ["python3", "main.py"]

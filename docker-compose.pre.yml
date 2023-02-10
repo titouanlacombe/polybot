@@ -1,6 +1,1 @@
 version: '3.7'
-
-services:
-  nginx:
-    ports:
-      - 5002:80
