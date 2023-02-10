@@ -10,7 +10,7 @@ ver = os.getenv("VER")
 bot_token = os.getenv("BOT_TOKEN")
 
 (polybot_host, polybot_port) = ("0.0.0.0", 5000)
-(api_host, api_port) = ("TODO", 5001)
+(api_host, api_port) = ("api", 5001)
 
 command_prefix = "/"
 activity_update_interval = 15*60 # seconds
