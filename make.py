@@ -42,7 +42,7 @@ def attach(target):
 
 @default()
 def start():
-	log(env("COMPOSE_PROJECT_NAME"))
+	log(f"Starting {env('APP_NAME')} {env('VER')} {_env.long}")
 	prebuild()
 	build()
 	up()
