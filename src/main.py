@@ -3,8 +3,7 @@ import logging, logging.config
 import config.Logging as Logging
 logging.config.dictConfig(Logging.get_dict_conf('polybot'))
 
-import asyncio, json, discord, sentry_sdk
-import importlib
+import asyncio, json, discord, sentry_sdk, importlib, signal
 from discord.ext.commands import Bot
 
 import config.App as App
@@ -98,6 +97,14 @@ async def main():
 
 	# Start socket server
 	await server.serve_forever()
+
+# Stop on SIGINT or SIGTERM
+def stop():
+	log.info("Stopping discord client")
+	exit(0)
+
+signal.signal(signal.SIGINT, lambda sig, frame: stop())
+signal.signal(signal.SIGTERM, lambda sig, frame: stop())
 
 try:
 	asyncio.run(main())
