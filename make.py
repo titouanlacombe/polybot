@@ -31,7 +31,9 @@ def build():
 	compose("build")
 
 def up():
-	sh(f"docker network create polybot-{_env.short}")
+	(code, out, err) = sh(f"docker network ls | grep {env('APP_NAME')}-{_env.short}", use_pipes=True).results()
+	if code != 0:
+		sh(f"docker network create {env('APP_NAME')}-{_env.short}")
 	compose("up -d")
 
 def down():
