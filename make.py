@@ -14,14 +14,13 @@ _env = Environment(env("ENV"))
 
 # Setup env
 env(
-	COMPOSE_PROJECT_NAME=f"{env('APP_NAME')}-{_env.short}-{env('VER').replace('.', '_')}",
 )
 
 def compose(cmd):
 	files = ["./docker-compose.yml"]
 	files.append(f"./docker-compose.{_env.short}.yml")
 
-	sh(f"docker-compose -f {' -f '.join(files)} {cmd}")
+	sh(f"docker-compose -f {' -f '.join(files)} -p {env('APP_NAME')}-{_env.short} {cmd}")
 
 def prebuild():
 	data.mkdir(exist_ok=True)
