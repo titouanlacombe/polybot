@@ -1,6 +1,6 @@
 # Polybot
 
-<img src="resources/polybot.png" alt="drawing" width="300"/>
+<img src="https://raw.githubusercontent.com/titouanlacombe/polybot_api/master/src/api/static/api/polybot.png" alt="drawing" width="300"/>
 
 ## Services
 
