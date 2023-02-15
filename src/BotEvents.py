@@ -26,8 +26,10 @@ def register_events(polybot: PolyBot):
 		log.info(f"Logged on as '{bot.user}'")
 
 		# Set channels
-		polybot.main_channel = discord.utils.get(bot.get_all_channels(), name="général")
-		polybot.preprod_channel = discord.utils.get(bot.get_all_channels(), name="polybot-preprod")
+		channels = bot.get_all_channels()
+		polybot.main_channel = discord.utils.get(channels, name="général")
+		polybot.preprod_channel = discord.utils.get(channels, name="polybot-preprod")
+		polybot.releases_channel = discord.utils.get(channels, name="polybot-releases")
 
 		# Launch activity loop
 		asyncio.create_task(polybot.activity_loop())
@@ -36,6 +38,7 @@ def register_events(polybot: PolyBot):
 		await asyncio.gather(
 			set_status(polybot, discord.Status.online),
 			set_message_example(polybot),
+			polybot.send(f"Polybot {App.ver} is online"),
 		)
 
 		polybot.ready = True

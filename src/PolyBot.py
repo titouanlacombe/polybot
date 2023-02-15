@@ -32,6 +32,7 @@ class PolyBot:
 
 		self.main_channel: discord.channel.TextChannel = None
 		self.preprod_channel: discord.channel.TextChannel = None
+		self.releases_channel: discord.channel.TextChannel = None
 		self.message_example: discord.Message = None
 		self.http_session = aiohttp.ClientSession()
 		self.timeout = aiohttp.ClientTimeout(total=900) # 15 minutes
