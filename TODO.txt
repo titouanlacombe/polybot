@@ -1,8 +1,15 @@
-microservices {
-    imagen, polybot, polybot_api
+finish microservices {
+    imagen, polybot_api
 }
 
 add GPT-3 api call (try to generate the next message (with author)) {
+	extract all history into log, fine tune gpt-3 on it? convert emojis to text? remove links? add joke score
+	For English text, 1 token is approximately 4 characters
+	TRAINING: 0.0030 / 1K tokens
+	USAGE: 0.0120 / 1K tokens
+
+	read openai docs
+
 	activate when message is posted, and rand < small chance
 	create joke entry on message id
 	on each reaction increase or decrease score according to rules
