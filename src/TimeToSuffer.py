@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, time, date
 import random
+import config.Users as Users
 
 # 14h UTC is 16h in Paris
 endofday = time(14, 30, 0)
@@ -36,3 +37,21 @@ def gettimetosuffer(endofsuffering):
 			"https://tenor.com/view/cookie-stay-strong-strong-covid-covid19-gif-21844017",
 			"https://tenor.com/view/big-bang-theroy-stressed-hyperventilating-gif-24158173",
 	])
+
+users_endofsuffering = {
+	# Users.titouan: datetime.combine(date(2023, 6, 30), endofday),
+	# Users.guillaume: datetime.combine(date(2023, 6, 30), endofday),
+	# Users.quentin: datetime.combine(date(2023, 6, 30), endofday),
+	# Users.karim: datetime.combine(date(2023, 6, 30), endofday),
+	# Users.ghassan: datetime.combine(date(2023, 6, 30), endofday),
+	# Users.nathan: datetime.combine(date(2023, 6, 30), endofday),
+	# Users.polybot: datetime.combine(date(2023, 6, 30), endofday),
+	Users.dev_user: datetime.combine(date(2023, 6, 30), endofday),
+}
+
+def gettimetosuffer_ofuser(user):
+	if user in users_endofsuffering:
+		return gettimetosuffer(users_endofsuffering[user])
+	else:
+		return "Vous n'avez pas de date de fin de souffrance."
+	

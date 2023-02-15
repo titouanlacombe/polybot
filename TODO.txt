@@ -1,7 +1,3 @@
-régler le pb de timezone by setting it to Paris or change the date format to be timezone independant
-
-add time to suffer foreach user (/timetosuffer_me) qui va chercher leur date de fin dans la config
-
 microservices {
     imagen, polybot, polybot_api
 }

@@ -4,7 +4,7 @@ from datetime import datetime, date, time, timedelta
 from discord.ext.commands import Context
 
 from Message2Images import message2images
-from TimeToSuffer import gettimetosuffer, endofformation, endofday
+from TimeToSuffer import gettimetosuffer, endofformation, endofday, gettimetosuffer_ofuser
 import config.App as App
 import config.Users as Users
 from PolyBot import PolyBot
@@ -112,6 +112,12 @@ def register_commands(polybot: PolyBot):
 	)
 	async def timetosuffer(ctx: Context):
 		await polybot.send(gettimetosuffer(endofformation), reply_to=ctx.message)
+
+	@bot.command(
+		brief="Vous avez envie d'en finir ? attendez la fin de votre soufrance !",
+	)
+	async def timetosuffer_me(ctx: Context):
+		await polybot.send(gettimetosuffer_ofuser(ctx.author.id), reply_to=ctx.message)
 
 	@bot.command(
 		brief="Vous avez envie d'en finir ? attendez la fin de la semaine !",
