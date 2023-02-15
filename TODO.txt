@@ -20,5 +20,4 @@ add GPT-3 api call (try to generate the next message (with author)) {
 }
 
 
-TO TEST:
-more robust user management (no usernames use ids) -> (use pause unpause in prod)
+TEST more robust user management (no usernames use ids) -> (use pause unpause in prod)
