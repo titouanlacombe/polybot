@@ -6,11 +6,6 @@ import config.App as App
 
 log = logging.getLogger(__name__)
 
-async def set_status(polybot: PolyBot, status: discord.Status):
-	status = discord.Status.online if App.in_pro else discord.Status.invisible
-	log.info(f"Setting status to {status}")
-	await polybot.bot.change_presence(status=status)
-
 async def set_message_example(polybot: PolyBot):
 	log.info(f"Searching for message example")
 	async for message in polybot.main_channel.history(limit=10):
@@ -31,17 +26,18 @@ def register_events(polybot: PolyBot):
 		polybot.preprod_channel = discord.utils.get(channels, name="polybot-preprod")
 		polybot.releases_channel = discord.utils.get(channels, name="polybot-releases")
 
+		# Requirements satisfied
+		polybot.ready = True
+
 		# Launch activity loop
 		asyncio.create_task(polybot.activity_loop())
-
-		# Gather api requests
+		
+		# Set online
 		await asyncio.gather(
-			set_status(polybot, discord.Status.online),
-			set_message_example(polybot),
+			polybot.change_presence(status=discord.Status.online),
 			polybot.send(f"Polybot {App.ver} is online"),
+			set_message_example(polybot),
 		)
-
-		polybot.ready = True
 
 		boot_time = datetime.datetime.now() - polybot.up_since
 		log.info(f"Polybot booted in: {int(boot_time.total_seconds() * 1000)} ms")

@@ -250,7 +250,7 @@ class PolyBot:
 	# Function used to test bot response to a message
 	async def message(self, text="", author=1, channel="general"):
 		if self.message_example is None:
-			raise Exception("No message example found (polybot not loaded)")
+			raise Exception("No message example found (not loaded)")
 
 		return await self.handle_message(create_message(self.message_example, text, author, channel))
 
