@@ -19,6 +19,6 @@ add GPT-3 api call (try to generate the next message (with author)) {
 	when asking gpt-3 present most & least successfull jokes with score and ask to create new one
 }
 
-imagen add dall-e backend
+imagen add dall-e backend (midjourney also?)
 
 TEST more robust user management (no usernames use ids) -> (use pause unpause in prod)
