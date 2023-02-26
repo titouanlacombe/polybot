@@ -35,7 +35,7 @@ def register_events(polybot: PolyBot):
 		# Set online
 		await asyncio.gather(
 			polybot.change_presence(status=discord.Status.online),
-			polybot.send(f"Polybot {App.ver} is online"),
+			polybot.send(f"Polybot {App.ver} is online", channel=polybot.releases_channel),
 			set_message_example(polybot),
 		)
 
