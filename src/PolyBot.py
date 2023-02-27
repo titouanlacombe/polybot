@@ -259,4 +259,44 @@ class PolyBot:
 		while True:
 			await self.change_presence(activity=random.choice(self.presences))
 			await asyncio.sleep(App.activity_update_interval)
-			
+	
+	async def objectify_reaction(self, reaction: discord.Reaction):
+		# Flatten users
+		users = []
+		async for user in reaction.users():
+			users.append(user)
+
+		return {
+			"emoji": reaction.emoji,
+			"count": reaction.count,
+			"users": [user.id for user in users],
+		}
+
+	async def objectify_message(self, message: discord.Message):
+		return {
+			"id": message.id,
+			"content": message.content,
+			"author": message.author.id,
+			"channel": message.channel.name,
+			"reactions": [await self.objectify_reaction(reaction) for reaction in message.reactions],
+			"timestamp": message.created_at.isoformat(),
+		}
+
+	async def scrap_messages(self, channel: str|None = None, limit: int = 200, date: str|None = None):
+		if channel is None:
+			channel = self.main_channel.name
+
+		channel: discord.TextChannel = discord.utils.get(self.bot.get_all_channels(), name=channel)
+		if channel is None:
+			raise Exception(f"Channel '{channel}' not found")
+
+		if date is not None:
+			date = datetime.fromisoformat(date)
+		else:
+			date = None
+
+		messages = []
+		async for message in channel.history(limit=limit, after=date, oldest_first=True):
+			messages.append(await self.objectify_message(message))
+
+		return messages

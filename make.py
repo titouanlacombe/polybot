@@ -39,6 +39,9 @@ def up():
 def down():
 	compose("down")
 
+def restart():
+	compose("restart")
+
 def attach(target):
 	compose(f"exec -it {target} bash")
 

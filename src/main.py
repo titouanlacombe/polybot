@@ -37,6 +37,7 @@ poly_rpc_targets = [
 	PolyBot.pbar_create.__name__,
 	PolyBot.pbar_update.__name__,
 	PolyBot.pbar_finish.__name__,
+	PolyBot.scrap_messages.__name__,
 ]
 
 async def main():
@@ -65,7 +66,7 @@ async def main():
 			data: dict = json.loads(message.decode())
 
 			(procedure, args, kwargs) = (data["procedure"], data.get("args", []), data.get("kwargs", {}))
-			log.info(f"Received rpc procedure: {procedure}({args}, {kwargs})")
+			log.debug(f"Received rpc procedure: {procedure}({args}, {kwargs})")
 
 			if procedure not in poly_rpc_targets:
 				raise Exception(f"Unknown RPC procedure '{procedure}'")
@@ -81,7 +82,7 @@ async def main():
 			}
 
 		resp = json.dumps(resp).encode()
-		log.info(f"Sending rpc response: {resp}")
+		log.debug(f"Sending rpc response: {resp}")
 		response.write(resp)
 		response.close()
 
