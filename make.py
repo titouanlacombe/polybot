@@ -31,7 +31,7 @@ def build():
 	compose("build")
 
 def up():
-	(code, out, err) = sh(f"docker network ls | grep {env('APP')}-{_env.short}", use_pipes=True).results()
+	(code, out, err) = sh(f"docker network ls | grep {env('APP')}-{_env.short}", use_pipes=True, throws=False).results()
 	if code != 0:
 		sh(f"docker network create {env('APP')}-{_env.short}")
 	compose("up -d")
