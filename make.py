@@ -20,7 +20,7 @@ def compose(cmd):
 	files = ["./docker-compose.yml"]
 	files.append(f"./docker-compose.{_env.short}.yml")
 
-	sh(f"docker-compose -f {' -f '.join(files)} -p {env('APP_NAME')}-{_env.short} {cmd}")
+	sh(f"docker-compose -f {' -f '.join(files)} -p {env('APP')}-{_env.short} {cmd}")
 
 def prebuild():
 	data.mkdir(exist_ok=True)
@@ -31,9 +31,9 @@ def build():
 	compose("build")
 
 def up():
-	(code, out, err) = sh(f"docker network ls | grep {env('APP_NAME')}-{_env.short}", use_pipes=True).results()
+	(code, out, err) = sh(f"docker network ls | grep {env('APP')}-{_env.short}", use_pipes=True).results()
 	if code != 0:
-		sh(f"docker network create {env('APP_NAME')}-{_env.short}")
+		sh(f"docker network create {env('APP')}-{_env.short}")
 	compose("up -d")
 
 def down():
@@ -47,7 +47,7 @@ def attach(target):
 
 @default()
 def start():
-	log(f"Starting {env('APP_NAME')} {env('VER')} {_env.long}")
+	log(f"Starting {env('APP')} {env('VER')} {_env.long}")
 	prebuild()
 	build()
 	up()
