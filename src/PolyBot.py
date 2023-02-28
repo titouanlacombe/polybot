@@ -1,6 +1,7 @@
-import asyncio, discord, logging, aiohttp, unidecode, re, random
+import asyncio, discord, logging, aiohttp, unidecode, re, random, base64
 from datetime import datetime
 from discord.ext.commands import Bot
+from io import BytesIO
 
 import config.App as App
 from Trigger import Trigger
@@ -160,14 +161,20 @@ class PolyBot:
 		log.info(f"Deleting {message.id}")
 		return await message.delete()
 
-	async def rpc_send(self, content=None, **kwargs):
+	async def rpc_send(self, content=None, files=[], **kwargs):
 		if kwargs.get("reply_to") is not None:
 			kwargs["reply_to"] = self.get_request(kwargs["reply_to"])["message"]
 
 		if kwargs.get("channel") is not None:
 			kwargs["channel"] = discord.utils.get(self.bot.get_all_channels(), name=kwargs["channel"])
 
-		message = await self.send(content, **kwargs)
+		# Convert files to discord.File
+		files = [discord.File(
+			BytesIO(base64.b64decode(file)),
+		) for file in files]
+		log.info(files[0])
+
+		message = await self.send(content, files=files, **kwargs)
 		return None if message is None else message.id
 
 	async def status(self):
