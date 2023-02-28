@@ -161,20 +161,41 @@ class PolyBot:
 		log.info(f"Deleting {message.id}")
 		return await message.delete()
 
-	async def rpc_send(self, content=None, files=[], **kwargs):
+	def auto_embed(self, file):
+		ext = file["name"].split(".")[-1].lower()
+		if ext in ["png", "jpg", "jpeg", "gif"]:
+			return discord.Embed(url=f"data:image/{ext};base64,{file['data']}")
+		if ext in ["mp4", "webm"]:
+			return discord.Embed(url=f"data:video/{ext};base64,{file['data']}")
+		if ext in ["mp3", "wav"]:
+			return discord.Embed(url=f"data:audio/{ext};base64,{file['data']}")
+		return discord.File(
+			BytesIO(base64.b64decode(file["data"])),
+			filename=file["name"],
+		)
+
+	async def rpc_send(self, content=None, **kwargs):
 		if kwargs.get("reply_to") is not None:
 			kwargs["reply_to"] = self.get_request(kwargs["reply_to"])["message"]
 
 		if kwargs.get("channel") is not None:
 			kwargs["channel"] = discord.utils.get(self.bot.get_all_channels(), name=kwargs["channel"])
 
-		# Convert files to discord.File
-		files = [discord.File(
-			BytesIO(base64.b64decode(file)),
-		) for file in files]
-		log.info(files[0])
+		files = kwargs.pop("files", [])
+		kwargs["files"] = []
 
-		message = await self.send(content, files=files, **kwargs)
+		if kwargs.pop("auto_embed"):
+			if not "embeds" in kwargs:
+				kwargs["embeds"] = []
+			for file in files:
+				kwargs["embeds"].append(self.auto_embed(file))
+		else:
+			kwargs["files"] = [discord.File(
+				BytesIO(base64.b64decode(file["data"])),
+				filename=file["name"],
+			) for file in files]
+		
+		message = await self.send(content, **kwargs)
 		return None if message is None else message.id
 
 	async def status(self):
