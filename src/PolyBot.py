@@ -285,7 +285,6 @@ class PolyBot:
 			"content": message.content,
 			"channel": message.channel.id,
 			"author": message.author.id,
-			"channel": message.channel.name,
 			"reactions": [await self.objectify_reaction(reaction) for reaction in message.reactions],
 			"timestamp": message.created_at.isoformat(),
 		}
