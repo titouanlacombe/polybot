@@ -252,6 +252,11 @@ class PolyBot:
 		if trig is not None:
 			return "Triggered", trig
 
+		# Joke generator
+		joke = await self.handle_jokegen(message)
+		if joke is not None:
+			return "Joke", joke
+		
 		return "No response"
 
 	async def handle_message(self, message: discord.Message):
