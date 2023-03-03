@@ -5,6 +5,7 @@ from io import BytesIO
 
 import config.App as App
 from Trigger import Trigger
+from JokeGen import jokegen
 from DiscordProggressBar import DiscordProgressBar
 
 log = logging.getLogger(__name__)
@@ -200,6 +201,14 @@ class PolyBot:
 
 		log.info(f"No trigger found for message")
 		return None
+
+	async def handle_jokegen(self, message: discord.Message):
+		if random.randrange(1, 200) >= 1:
+			log.debug("Not triggering jokegen")
+			return None
+		
+		log.info("Triggering jokegen")
+		return await self.send(jokegen(message), channel=message.channel)
 
 	async def pbar_create(self, request_id: int, total: int, title: str):
 		request = self.get_request(request_id)
