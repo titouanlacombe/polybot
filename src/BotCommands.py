@@ -1,4 +1,4 @@
-import asyncio, logging, base64, yaml, math, random, discord
+import asyncio, logging, base64, yaml, math, random, discord, aiohttp
 from io import BytesIO
 from datetime import datetime, date, time, timedelta
 from discord.ext.commands import Context
@@ -237,12 +237,29 @@ def register_commands(polybot: PolyBot):
 					# Don't wait for delete
 					asyncio.create_task(q_mess.delete())
 			
-			# Call image generator
-			raise Exception("Image generator is not implemented")
-			resp: dict = await polybot.call_service(App.imagen_url, "generate", **image_gen_kwargs)
+			# Create job
+			url = f"{App.api_host}:{App.api_port}/api/jobs"
+			async with aiohttp.ClientSession() as session:
+				resp = await session.put(url, json={
+					"type": "imagen",
+					"input_data": image_gen_kwargs,
+				})
+				resp.raise_for_status()
+			job_id = await resp.text()
 
-		file_obj = BytesIO(base64.b64decode(resp['image'].encode()))
-		await polybot.send(file=discord.File(file_obj, "image.png"), reply_to=ctx.message)
+			# Wait for job to finish
+			while True:
+				await asyncio.sleep(0.1)
+				
+				resp = await session.get(f"{url}/{job_id}")
+				resp.raise_for_status()
+
+				job = await resp.json()
+				if job["output_data"] is not None:
+					break
+
+		file_obj = BytesIO(base64.b64decode(job["output_data"]))
+		await polybot.send(file=discord.File(file_obj, "image.jpg"), reply_to=ctx.message)
 
 	@bot.command(
 		brief="Envie de GAME ?",
