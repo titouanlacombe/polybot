@@ -239,6 +239,7 @@ def register_commands(polybot: PolyBot):
 			
 			# Create job
 			url = f"{App.api_url}/api/jobs/"
+			log.info(f"Creating job {url}, {App.auth_header}")
 			async with aiohttp.ClientSession() as session:
 				resp = await session.post(url, json={
 					"type": "imagen",
