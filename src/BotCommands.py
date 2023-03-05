@@ -244,7 +244,11 @@ def register_commands(polybot: PolyBot):
 					"type": "imagen",
 					"input_data": image_gen_kwargs,
 				}, headers=App.auth_header)
-				resp.raise_for_status()
+
+				try:
+					resp.raise_for_status()
+				except Exception as e:
+					raise Exception(f"Failed to create job ({resp.status} {resp.reason})")
 
 			job_id = await resp.json()["id"]
 
@@ -253,7 +257,11 @@ def register_commands(polybot: PolyBot):
 				await asyncio.sleep(0.1)
 				
 				resp = await session.get(f"{url}/{job_id}/", headers=App.auth_header)
-				resp.raise_for_status()
+
+				try:
+					resp.raise_for_status()
+				except Exception as e:
+					raise Exception(f"Failed to get job ({resp.status} {resp.reason})")
 
 				job = await resp.json()
 				if job["output_data"] is not None:
