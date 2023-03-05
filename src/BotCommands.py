@@ -238,12 +238,12 @@ def register_commands(polybot: PolyBot):
 					asyncio.create_task(q_mess.delete())
 			
 			# Create job
-			url = f"{App.api_host}:{App.api_port}/api/jobs"
+			url = f"{App.api_url}/api/jobs/"
 			async with aiohttp.ClientSession() as session:
 				resp = await session.post(url, json={
 					"type": "imagen",
 					"input_data": image_gen_kwargs,
-				})
+				}, headers=App.auth_header)
 				resp.raise_for_status()
 			job_id = await resp.text()
 
@@ -251,7 +251,7 @@ def register_commands(polybot: PolyBot):
 			while True:
 				await asyncio.sleep(0.1)
 				
-				resp = await session.get(f"{url}/{job_id}")
+				resp = await session.get(f"{url}/{job_id}/", headers=App.auth_header)
 				resp.raise_for_status()
 
 				job = await resp.json()
