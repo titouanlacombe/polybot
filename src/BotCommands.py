@@ -250,7 +250,7 @@ def register_commands(polybot: PolyBot):
 				except Exception as e:
 					raise Exception(f"Failed to create job ({resp.status} {resp.reason})")
 
-			job_id = await resp.json()["id"]
+			job_id = (await resp.json())["id"]
 
 			# Wait for job to finish
 			while True:
