@@ -6,6 +6,7 @@ services:
     build: .
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
+      - API_PASSWORD=${POLYBOT_API_PASSWORD}
       - ENV=${ENV}
       - VER=${VER}
       - TZ=${TZ}
