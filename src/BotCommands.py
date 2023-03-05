@@ -250,13 +250,13 @@ def register_commands(polybot: PolyBot):
 				except Exception as e:
 					raise Exception(f"Failed to create job ({resp.status} {resp.reason})")
 
-				job_id = (await resp.json())["id"]
+				job = await resp.json()
 
 				# Wait for job to finish
 				while True:
 					await asyncio.sleep(0.1)
 					
-					resp = await session.get(f"{url}/{job_id}/", headers=App.auth_header)
+					resp = await session.get(f"{url}{job['id']}/", headers=App.auth_header)
 
 					try:
 						resp.raise_for_status()
