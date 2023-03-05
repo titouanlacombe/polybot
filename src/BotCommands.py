@@ -1,4 +1,4 @@
-import asyncio, logging, base64, yaml, math, random, discord, aiohttp
+import asyncio, logging, base64, yaml, math, random, discord, aiohttp, json
 from io import BytesIO
 from datetime import datetime, date, time, timedelta
 from discord.ext.commands import Context
@@ -242,7 +242,7 @@ def register_commands(polybot: PolyBot):
 			async with aiohttp.ClientSession() as session:
 				resp = await session.post(url, json={
 					"type": "imagen",
-					"input_data": image_gen_kwargs,
+					"input_data": json.dumps(image_gen_kwargs),
 				}, headers=App.auth_header)
 
 				try:
