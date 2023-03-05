@@ -250,22 +250,22 @@ def register_commands(polybot: PolyBot):
 				except Exception as e:
 					raise Exception(f"Failed to create job ({resp.status} {resp.reason})")
 
-			job_id = (await resp.json())["id"]
+				job_id = (await resp.json())["id"]
 
-			# Wait for job to finish
-			while True:
-				await asyncio.sleep(0.1)
-				
-				resp = await session.get(f"{url}/{job_id}/", headers=App.auth_header)
+				# Wait for job to finish
+				while True:
+					await asyncio.sleep(0.1)
+					
+					resp = await session.get(f"{url}/{job_id}/", headers=App.auth_header)
 
-				try:
-					resp.raise_for_status()
-				except Exception as e:
-					raise Exception(f"Failed to get job ({resp.status} {resp.reason})")
+					try:
+						resp.raise_for_status()
+					except Exception as e:
+						raise Exception(f"Failed to get job ({resp.status} {resp.reason})")
 
-				job = await resp.json()
-				if job["output_data"] is not None:
-					break
+					job = await resp.json()
+					if job["output_data"] is not None:
+						break
 
 		file_obj = BytesIO(base64.b64decode(job["output_data"]))
 		await polybot.send(file=discord.File(file_obj, "image.jpg"), reply_to=ctx.message)
