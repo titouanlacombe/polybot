@@ -1,6 +1,4 @@
-finish microservices {
-    imagen, polybot_api
-}
+publish bot commands to server (autocomplete)
 
 add GPT-3 api call (try to generate the next message (with author)) {
 	extract all history into log, fine tune gpt-3 on it? convert emojis to text? remove links? add joke score
@@ -18,7 +16,3 @@ add GPT-3 api call (try to generate the next message (with author)) {
 
 	when asking gpt-3 present most & least successfull jokes with score and ask to create new one
 }
-
-imagen add dall-e backend (midjourney also?)
-
-TEST more robust user management (no usernames use ids) -> (use pause unpause in preprod)
