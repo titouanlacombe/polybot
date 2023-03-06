@@ -16,19 +16,26 @@ log = logging.getLogger(__name__)
 
 image_gen_help = f"""
 Usage:
-Prompt mode: \"{App.command_prefix}imagen Prompt\"
-YAML mode: \"\"\"{App.command_prefix}imagen
-text: 'Prompt'
-option: value
-\"\"\"
+Prompt mode: \"{App.command_prefix}imagen <prompt>\"
+
+YAML mode: \"{App.command_prefix}imagen
+prompt: '<prompt>'
+gen:
+  generator_option: value
+upscale:
+  upscaler_option: value
+\"
 
 Available options:
-- text: input prompt text
-- image_url: input image url (not implemented)
-- num_inference_steps: higher quality but slower (default: 15)
-- guidance_scale: how much should the result be guided by the prompt at the cost of quality (default: 7.5)
-- width: result image width (default: 512)
-- height: result image height (default: 512)
+Generator:
+- prompt: input prompt
+- iter: higher quality but slower (default: 35)
+- guidance: how much should the result be guided by the prompt at the cost of quality (default: 7.5)
+- w: result image width (default: 512)
+- h: result image height (default: 512)
+Upscaler:
+- iter: higher quality but slower (default: 20)
+- guidance: how much should the result be guided by the prompt at the cost of quality (default: 0.5)
 """.strip()
 
 imagen_sem = asyncio.Semaphore(1)
