@@ -267,7 +267,7 @@ def register_commands(polybot: PolyBot):
 				while True:
 					await asyncio.sleep(0.05)
 
-					if time_now() - t > 60:
+					if time_now() - t > 300:
 						raise Exception("Job timed out")
 					
 					resp = await session.get(f"{url}{job['id']}/", headers=App.auth_header)
