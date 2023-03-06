@@ -1,4 +1,5 @@
 import asyncio, logging, base64, yaml, math, random, discord, aiohttp, json
+from time import time as time_now
 from io import BytesIO
 from datetime import datetime, date, time, timedelta
 from discord.ext.commands import Context
@@ -253,8 +254,12 @@ def register_commands(polybot: PolyBot):
 				job = await resp.json()
 
 				# Wait for job to finish
+				t = time_now()
 				while True:
 					await asyncio.sleep(0.05)
+
+					if time_now() - t > 60:
+						raise Exception("Job timed out")
 					
 					resp = await session.get(f"{url}{job['id']}/", headers=App.auth_header)
 
