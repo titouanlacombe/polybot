@@ -222,7 +222,7 @@ def register_commands(polybot: PolyBot):
 				image_gen_kwargs.update(yaml.safe_load(content))
 			except Exception as e:
 				log.info(f"Failed to parse message content as YAML ({e}), assuming it's a prompt")
-				image_gen_kwargs["prompt"] = content
+				image_gen_kwargs["gen"]["prompt"] = content
 
 		# Check user has no job in queue
 		for request in polybot.requests.values():
