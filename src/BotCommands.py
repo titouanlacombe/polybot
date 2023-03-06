@@ -254,7 +254,7 @@ def register_commands(polybot: PolyBot):
 
 				# Wait for job to finish
 				while True:
-					await asyncio.sleep(0.1)
+					await asyncio.sleep(0.05)
 					
 					resp = await session.get(f"{url}{job['id']}/", headers=App.auth_header)
 
@@ -267,7 +267,12 @@ def register_commands(polybot: PolyBot):
 					if job["output_data"] is not None:
 						break
 
-		file_obj = BytesIO(base64.b64decode(job["output_data"]))
+		result = json.loads(job["output_data"])
+		if result["error"] is not None:
+			raise Exception(result["error"])
+		result = result["result"]
+
+		file_obj = BytesIO(base64.b64decode(result))
 		await polybot.send(file=discord.File(file_obj, "image.jpg"), reply_to=ctx.message)
 
 	@bot.command(
