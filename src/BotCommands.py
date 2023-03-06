@@ -282,7 +282,7 @@ def register_commands(polybot: PolyBot):
 						break
 
 		result = json.loads(job["output_data"])
-		if result["error"] is not None:
+		if "error" in result:
 			raise Exception(result["error"])
 		result = result["result"]
 
