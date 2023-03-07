@@ -80,7 +80,7 @@ class PolyBot:
 
 	async def get_auth_header(self):
 		if self.api_token is None:
-			async with self.http_session.post(f"{App.api_url}/token", json={
+			async with self.http_session.post(f"{App.api_url}/api/token/", json={
 					"username": App.api_account,
 					"password": App.api_password
 				}, timeout=self.timeout) as resp:
