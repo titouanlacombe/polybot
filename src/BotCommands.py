@@ -238,6 +238,9 @@ def register_commands(polybot: PolyBot):
 		if imagen_sem.locked():
 			task = asyncio.create_task(polybot.send("Your job has been queued", reply_to=ctx.message))
 
+		# Get auth header
+		auth_header = await polybot.get_auth_header()
+
 		# Wait for semaphore
 		async with imagen_sem:
 			# Recover task result
@@ -253,7 +256,7 @@ def register_commands(polybot: PolyBot):
 				resp = await session.post(url, json={
 					"type": "imagen",
 					"input_data": json.dumps(image_gen_kwargs),
-				}, headers=App.auth_header)
+				}, headers=auth_header)
 
 				try:
 					resp.raise_for_status()
@@ -270,7 +273,7 @@ def register_commands(polybot: PolyBot):
 					if time_now() - t > 300:
 						raise Exception("Job timed out")
 					
-					resp = await session.get(f"{url}{job['id']}/", headers=App.auth_header)
+					resp = await session.get(f"{url}{job['id']}/", headers=auth_header)
 
 					try:
 						resp.raise_for_status()

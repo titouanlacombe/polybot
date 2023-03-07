@@ -24,5 +24,3 @@ if api_password is None:
 
 # Not https because we are in the internal network
 api_url = f"http://{api_host}:{api_port}"
-auth_token = base64.b64encode(f"{api_account}:{api_password}".encode()).decode()
-auth_header = {"Authorization": f"Basic {auth_token}"}

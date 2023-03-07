@@ -41,6 +41,7 @@ class PolyBot:
 		self.ignore_self = ignore_self
 
 		self.ready = False
+		self.api_token = None
 		self.paused = False
 		self.up_since: datetime = datetime.now()
 		self.triggers = triggers
@@ -76,6 +77,21 @@ class PolyBot:
 			raise Exception(response["error"])
 
 		return response["result"]
+
+	async def get_auth_header(self):
+		if self.api_token is None:
+			async with self.http_session.post(f"{App.api_url}/token", json={
+					"username": App.api_account,
+					"password": App.api_password
+				}, timeout=self.timeout) as resp:
+				if not (resp.status >= 200 and resp.status < 300):
+					raise Exception(f"API auth failed with status {resp.status}: {await resp.text()}")
+
+				response: dict = await resp.json()
+			self.api_token = response["token"]
+		return {
+			"Authorization": f"Token {self.api_token}"
+		}
 
 	# --- API RPC ---
 	async def pause(self):
