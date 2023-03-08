@@ -59,6 +59,17 @@ imagen_presets = {
 			"iter": 40,
 		},
 	},
+	"ultra": {
+		"gen": {
+			"iter": 60,
+			"guidance": 7,
+            "w": 768,
+            "h": 768,
+		},
+		"upscale": {
+			"iter": 40,
+		},
+	},
 }
 
 def get_imagen_options(message: str):
