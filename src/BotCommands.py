@@ -18,6 +18,8 @@ image_gen_help = f"""
 Usage:
 Prompt mode: \"{App.command_prefix}imagen <prompt>\"
 
+Preset mode: \"{App.command_prefix}imagen #<preset> <prompt>\"
+
 YAML mode: \"{App.command_prefix}imagen
 prompt: '<prompt>'
 gen:
@@ -29,14 +31,59 @@ upscale:
 Available options:
 Generator:
 - prompt: input prompt
-- iter: higher quality but slower (default: 35)
-- guidance: how much should the result be guided by the prompt at the cost of quality (default: 7.5)
+- iter: higher quality but slower (default: 50)
+- guidance: how much should the result be guided by the prompt at the cost of quality (default: 6)
 - w: result image width (default: 512)
 - h: result image height (default: 512)
 Upscaler:
-- iter: higher quality but slower (default: 20)
-- guidance: how much should the result be guided by the prompt at the cost of quality (default: 0.5)
+- iter: higher quality but slower (default: 30)
+- guidance: how much should the result be guided by the prompt at the cost of quality (default: 2)
 """.strip()
+
+imagen_presets = {
+	"fast": {
+		"gen": {
+			"iter": 30,
+			"guidance": 5,
+		},
+		"upscale": {
+			"skip": True,
+		},
+	},
+	"high": {
+		"gen": {
+			"iter": 60,
+			"guidance": 7,
+		},
+		"upscale": {
+			"iter": 40,
+		},
+	},
+}
+
+def get_imagen_options(message: str):
+	# YAML mode
+	try:
+		return yaml.safe_load(message)
+	except Exception as e:
+		log.info(f"Failed to parse message content as YAML ({e})")
+	
+	# Preset mode
+	if message.startswith("#"):
+		(preset, *prompt) = message[1:].split(" ")
+		if preset not in imagen_presets:
+			raise ValueError(f"Invalid preset \"{preset}\"")
+		
+		options = imagen_presets[preset]
+		options["gen"]["prompt"] = " ".join(prompt)
+		return options
+	
+	# Prompt mode
+	return {
+		"gen": {
+			"prompt": message,
+		},
+	}
 
 imagen_sem = asyncio.Semaphore(1)
 
@@ -205,7 +252,7 @@ def register_commands(polybot: PolyBot):
 	)
 	async def imagen(ctx: Context):
 		content = ctx.message.content.replace(f"{App.command_prefix}imagen", "").strip()
-		if content == "help":
+		if content == "help" or content == "":
 			await polybot.send(image_gen_help, reply_to=ctx.message)
 			return
 
@@ -217,14 +264,7 @@ def register_commands(polybot: PolyBot):
 				raise Exception("Too many images in message")
 			image_gen_kwargs["image_url"] = images[0]
 
-		if len(content) > 0:
-			try:
-				image_gen_kwargs.update(yaml.safe_load(content))
-			except Exception as e:
-				log.info(f"Failed to parse message content as YAML ({e}), assuming it's a prompt")
-				image_gen_kwargs["gen"] = {
-					"prompt": content,
-				}
+		image_gen_kwargs.update(get_imagen_options(content))
 
 		# Check user has no job in queue
 		for request in polybot.requests.values():
@@ -238,9 +278,6 @@ def register_commands(polybot: PolyBot):
 		if imagen_sem.locked():
 			task = asyncio.create_task(polybot.send("Your job has been queued", reply_to=ctx.message))
 
-		# Get auth header
-		auth_header = await polybot.get_auth_header()
-
 		# Wait for semaphore
 		async with imagen_sem:
 			# Recover task result
@@ -253,6 +290,7 @@ def register_commands(polybot: PolyBot):
 			# Create job
 			url = f"{App.api_url}/api/jobs/"
 			async with aiohttp.ClientSession() as session:
+				auth_header = await polybot.get_auth_header()
 				resp = await session.post(url, json={
 					"type": "imagen",
 					"input_data": json.dumps(image_gen_kwargs),
