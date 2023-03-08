@@ -41,7 +41,7 @@ Upscaler:
 """.strip()
 
 imagen_presets = {
-	"fast": {
+	"low": {
 		"gen": {
 			"iter": 30,
 			"guidance": 5,
