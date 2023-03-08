@@ -64,7 +64,10 @@ imagen_presets = {
 def get_imagen_options(message: str):
 	# YAML mode
 	try:
-		return yaml.safe_load(message)
+		decoded = yaml.safe_load(message)
+		if not isinstance(decoded, dict):
+			raise ValueError("Invalid YAML")
+		return decoded
 	except Exception as e:
 		log.info(f"Failed to parse message content as YAML ({e})")
 	
@@ -304,6 +307,7 @@ def register_commands(polybot: PolyBot):
 				job = await resp.json()
 
 				# Wait for job to finish
+				log.info(f"Waiting for job {job['id']} to finish")
 				t = time_now()
 				while True:
 					await asyncio.sleep(0.05)
