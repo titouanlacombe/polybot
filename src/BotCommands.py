@@ -268,15 +268,7 @@ def register_commands(polybot: PolyBot):
 			await polybot.send(image_gen_help, reply_to=ctx.message)
 			return
 
-		image_gen_kwargs = {"request_id": ctx.message.id}
-		
-		images = message2images(ctx.message)
-		if len(images) > 0:
-			if len(images) > 1:
-				raise Exception("Too many images in message")
-			image_gen_kwargs["image_url"] = images[0]
-
-		image_gen_kwargs.update(get_imagen_options(content))
+		image_gen_kwargs = get_imagen_options(content)
 
 		# Check user has no job in queue
 		for request in polybot.requests.values():
@@ -287,6 +279,7 @@ def register_commands(polybot: PolyBot):
 		polybot.requests[ctx.message.id]["type"] = "imagen"
 
 		status_message = await polybot.send("Waiting for worker...", reply_to=ctx.message)
+		image_gen_kwargs["status_message"] = None if status_message is None else status_message.id
 
 		# Create job
 		url = f"{App.api_url}/api/jobs/"
