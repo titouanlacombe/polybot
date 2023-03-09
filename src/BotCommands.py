@@ -99,8 +99,6 @@ def get_imagen_options(message: str):
 		},
 	}
 
-imagen_sem = asyncio.Semaphore(1)
-
 def time_sub(t1, t2):
 	return datetime.combine(date.min, t1) - datetime.combine(date.min, t2)
 
@@ -288,62 +286,61 @@ def register_commands(polybot: PolyBot):
 		# Add job to queue
 		polybot.requests[ctx.message.id]["type"] = "imagen"
 
-		task = None
-		if imagen_sem.locked():
-			task = asyncio.create_task(polybot.send("Your job has been queued", reply_to=ctx.message))
+		status_message = await polybot.send("Waiting for worker...", reply_to=ctx.message)
 
-		# Wait for semaphore
-		async with imagen_sem:
-			# Recover task result
-			if task:
-				q_mess = await task
-				if q_mess:
-					# Don't wait for delete
-					asyncio.create_task(q_mess.delete())
-			
-			# Create job
-			url = f"{App.api_url}/api/jobs/"
-			async with aiohttp.ClientSession() as session:
-				auth_header = await polybot.get_auth_header()
-				resp = await session.post(url, json={
-					"type": "imagen",
-					"input_data": json.dumps(image_gen_kwargs),
-				}, headers=auth_header)
+		# Create job
+		url = f"{App.api_url}/api/jobs/"
+		async with aiohttp.ClientSession() as session:
+			auth_header = await polybot.get_auth_header()
+			resp = await session.post(url, json={
+				"type": "imagen",
+				"input_data": json.dumps(image_gen_kwargs),
+			}, headers=auth_header)
+
+			try:
+				resp.raise_for_status()
+			except Exception as e:
+				raise Exception(f"Failed to create job ({resp.status} {resp.reason})")
+
+			job = await resp.json()
+
+			# Wait for job to finish
+			await polybot.edit(status_message, "Executing job...")
+			log.info(f"Waiting for job {job['id']} to finish")
+			t = time_now()
+			while True:
+				await asyncio.sleep(0.05)
+
+				if time_now() - t > 300:
+					raise Exception("Job timed out")
+				
+				resp = await session.get(f"{url}{job['id']}/", headers=auth_header)
 
 				try:
 					resp.raise_for_status()
 				except Exception as e:
-					raise Exception(f"Failed to create job ({resp.status} {resp.reason})")
+					raise Exception(f"Failed to get job ({resp.status} {resp.reason})")
 
 				job = await resp.json()
+				if job["output_data"] is not None:
+					break
 
-				# Wait for job to finish
-				log.info(f"Waiting for job {job['id']} to finish")
-				t = time_now()
-				while True:
-					await asyncio.sleep(0.05)
+		# Job finished
+		await polybot.delete(status_message)
 
-					if time_now() - t > 300:
-						raise Exception("Job timed out")
-					
-					resp = await session.get(f"{url}{job['id']}/", headers=auth_header)
-
-					try:
-						resp.raise_for_status()
-					except Exception as e:
-						raise Exception(f"Failed to get job ({resp.status} {resp.reason})")
-
-					job = await resp.json()
-					if job["output_data"] is not None:
-						break
-
+		# Error or success
 		result = json.loads(job["output_data"])
 		if "error" in result:
 			raise Exception(result["error"])
 		result = result["result"]
 
 		file_obj = BytesIO(base64.b64decode(result))
-		await polybot.send(file=discord.File(file_obj, "image.jpg"), reply_to=ctx.message)
+
+		await polybot.send(
+			f"**{image_gen_kwargs['gen']['prompt']}** - (Generated in {time_now() - t:.2f} s)",
+			file=discord.File(file_obj, "image.jpg"),
+			reply_to=ctx.message
+		)
 
 	@bot.command(
 		brief="Envie de GAME ?",
