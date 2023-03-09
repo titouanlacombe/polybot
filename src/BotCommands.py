@@ -305,7 +305,7 @@ def register_commands(polybot: PolyBot):
 			job = await resp.json()
 
 			# Wait for job to finish
-			await polybot.edit(status_message, "Executing job...")
+			# await polybot.edit(status_message, "Executing job...")
 			log.info(f"Waiting for job {job['id']} to finish")
 			t = time_now()
 			while True:
