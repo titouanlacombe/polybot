@@ -154,28 +154,28 @@ class PolyBot:
 		kwargs["content"] = content
 
 		if App.in_dev or App.in_sta:
-			log.info(f"Dry run, would edit {message.id} to {kwargs}")
+			log.info(f"Dry run, would edit {message} to {kwargs}")
 			return None
 
 		if App.in_pre:
 			if message.channel != self.preprod_channel:
 				raise Exception("In preprod: can't edit message in prod channel")
 
-		log.info(f"Editing {message.id} to {kwargs}")
+		log.info(f"Editing {message} to {kwargs}")
 		return await message.edit(**kwargs)
 
 	async def delete(self, message: discord.Message):
 		self.check_ready()
 
 		if App.in_dev or App.in_sta:
-			log.info(f"Dry run, would delete {message.id}")
+			log.info(f"Dry run, would delete {message}")
 			return None
 
 		if App.in_pre:
 			if message.channel != self.preprod_channel:
 				raise Exception("In preprod: can't delete message in prod channel")
 
-		log.info(f"Deleting {message.id}")
+		log.info(f"Deleting {message}")
 		return await message.delete()
 
 	async def rpc_send(self, content=None, **kwargs):
